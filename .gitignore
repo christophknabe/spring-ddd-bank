@@ -1,12 +1,16 @@
-*.class
+#For IDE IntelliJ IDEA:
+/.idea/
+/*.iml
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+#For IDE Eclipse:
+/.project
+/.classpath
 
-# Package Files #
-*.jar
-*.war
-*.ear
+#For database Derby:
+/derby.log
+
+#For Maven generated files:
+/target/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
