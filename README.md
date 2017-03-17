@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                                          (C) Christoph Knabe, 2017-03-08
+                                                          (C) Christoph Knabe, 2017-03-17
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
@@ -35,6 +35,7 @@ After this is working you can import the Maven project into your Java IDE.
 - Internationalizable, parameterizable exception message texts
 - Capture of each exception message text in the reference language directly as main Javadoc comment of the exception
 - Tests are run against an empty in-memory database.
+- Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into `/target/site/jacoco-ut/index.html`.
 
 ### Where are the exception message texts?
 In the file `MessageText.properties`. The editable original is in `src/main/resources/`.

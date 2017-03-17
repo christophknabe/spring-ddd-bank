@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**This is a domain service for a clark of a bank.
+/**This is a domain service for a clerk of a bank.
  * @author Christoph Knabe
  * @since 2017-03-01
  */
