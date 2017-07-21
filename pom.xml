@@ -146,6 +146,11 @@
             <name>JBoss Maven Release Repository</name>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
         </repository>
+        <repository><!-- For current MulTEx: -->
+            <id>bht-knabe-repository</id>
+            <name>BHT Knabe Maven 2 repository</name>
+            <url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>

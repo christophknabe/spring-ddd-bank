@@ -6,7 +6,7 @@ A sample project following Domain Driven Design with Spring Data JPA
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
-This sample application is used for a course on Software Engineering.
+This sample application is used for a course on Software Engineering at Beuth University of Applied Sciences Berlin.
 
 This project uses
 
@@ -33,8 +33,8 @@ After this is working you can import the Maven project into your Java IDE.
 - It is a little bank application, where the bank can create clients and clients can create and manage accounts, e.g. deposit and transfer money.
 - The analysis class diagram is in file `src/main/BankModel.pdf`. Its editable source by UMLet has extension `.uxf`.
 - Internationalizable, parameterizable exception message texts
-- Capture of each exception message text in the reference language directly as main Javadoc comment of the exception
-- Tests are run against an empty in-memory database.
+- Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
+- Tests are run against an empty in-memory Derby database.
 - Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into `/target/site/jacoco-ut/index.html`.
 
 ### Where are the exception message texts?
@@ -46,9 +46,9 @@ by the  `ExceptionMessagesDoclet`  as configured for the `maven-javadoc-plugin`.
 
 ## Plans
 
-- Make the domain model less anemic by moving the methods of `ClientService` into class `Client`. This requires the feature **Domain Object Dependency Injection** (DODI), which can only implemented by using full AspectJ compile-time weaving. Still needs research.
-- Nice: Avoid own ID of `AccountAccess`, because this class models an m:n association between `Client` and `Account`. There should not be a possibility for several links between a client and an account. This would require the usage of `client.id` and `account.id` as a composite ID for `AccountAccess`. Not so easy, see http://stackoverflow.com/questions/18739334/jpa-how-to-associate-entities-with-relationship-attributes
-- Implementation of real unit tests with mock implementations of the persistence interfaces.
+- Make the domain model less anemic by moving the methods of `ClientService` into class `Client`. This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. Still needs research.
+- Nice to have: Avoid own ID of `AccountAccess`, because this class models an m:n association between `Client` and `Account`. There should not be a possibility for several links between a client and an account. This would require the usage of `client.id` and `account.id` as a composite ID for `AccountAccess`. Not so easy, see http://stackoverflow.com/questions/18739334/jpa-how-to-associate-entities-with-relationship-attributes
+- Implementation of real unit tests with mock implementations of the repository interfaces.
 - Put an application layer with transaction management on top of the domain model.
 - Export the application layer as a REST service.
 
