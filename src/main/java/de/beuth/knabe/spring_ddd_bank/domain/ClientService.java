@@ -65,30 +65,6 @@ public class ClientService {
         }
     }
 
-
-    /**Finds all clients of the bank. They are ordered by their ascending IDs, that means the same as by their creation time.*/
-    public Iterable<Client> findAllClients(){
-        return clientRepository.findAll();
-    }
-
-    /**Finds all clients of the bank, who are born at the given date or later. They are ordered by their birth date and secondly by their IDs, that means the same as by their creation time.*/
-    public Iterable<Client> findYoungClients(final LocalDate fromBirth){
-        return clientRepository.findAllBornFrom(fromBirth);
-    }
-
-    /**Returns a report about all accounts the passed {@link Client} has access to. */
-    public String getAccountsReport(final Client managedBy) {
-        final StringBuilder result = new StringBuilder();
-        final List<AccountAccess> accountAccesses = accountAccessRepository.findManagedAccountsOf(managedBy, false);
-        result.append(String.format("Accounts of client: %s\n", managedBy.getName()));
-        for(final AccountAccess accountAccess: accountAccesses){
-            final String accessRight = accountAccess.isOwner() ? "isOwner " : "manages";
-            final Account account = accountAccess.getAccount();
-            result.append(String.format("%s\t%5.2f\t%s\n", accessRight, account.getBalance().toDouble(), account.getName()));
-        }
-        return result.toString();
-    }
-
     /**The minimum balance, which must stay on each account.*/
     public static final Amount getMinimumBalance(){return new Amount(-1000, 0);}
 
@@ -133,5 +109,18 @@ public class ClientService {
     /**New balance {0} EUR would become lower than minimum balance {1} EUR.*/
     public static class MinimumBalanceExc extends multex.Exc {}
 
+
+    /**Returns a report about all accounts the passed {@link Client} has access to. */
+    public String getAccountsReport(final Client managedBy) {
+        final StringBuilder result = new StringBuilder();
+        final List<AccountAccess> accountAccesses = accountAccessRepository.findManagedAccountsOf(managedBy, false);
+        result.append(String.format("Accounts of client: %s\n", managedBy.getName()));
+        for(final AccountAccess accountAccess: accountAccesses){
+            final String accessRight = accountAccess.isOwner() ? "isOwner " : "manages";
+            final Account account = accountAccess.getAccount();
+            result.append(String.format("%s\t%5.2f\t%s\n", accessRight, account.getBalance().toDouble(), account.getName()));
+        }
+        return result.toString();
+    }
 
 }

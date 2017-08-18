@@ -5,6 +5,7 @@
 #For IDE Eclipse:
 /.project
 /.classpath
+/.settings/
 
 #For database Derby:
 /derby.log

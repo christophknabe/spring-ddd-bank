@@ -16,8 +16,8 @@ public class Amount {
     /**The money amount in Euro Cents*/
     private long cents;
 
-    /**Necessary for JPA object recreation when reading from database*/
-    Amount() {}
+    /**Necessary for attributes of JPA entities internally.*/
+    private Amount() {}
 
     /**Constructs an amount from the given euros and cents. The arguments cannot exceed the working range.*/
     public Amount(final int euros, final int cents){

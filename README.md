@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                                          (C) Christoph Knabe, 2017-03-17
+                                                          (C) Christoph Knabe, 2017-03-17, 2017-08-18
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
@@ -14,6 +14,7 @@ This project uses
 - Maven 3
 - Spring Boot
 - Spring Data + JPA + Hibernate + Derby
+- AspectJ Compile Time Weaving for main sources
 - JUnit 4
 - The Exception Handling and Reporting Framework MulTEx
 
@@ -21,7 +22,8 @@ Detailed version indications you can find in the file `pom.xml`.
 
 By  `mvn clean test`   all necessary libraries will be fetched, the project will be compiled, exception message texts will be collected and the test suite will be executed.
 
-After this is working you can import the Maven project into your Java IDE.
+After this is working you can import the Maven project into your Java IDE 
+(Spring Tool Suite is recommended, as AspectJ weaving is needed for the compile phase).
 
 ## Which DDD principles are implemented?
 - Modelling the domain layer as one package, which does not depend on any other package besides standard Java SE packages as `java.time` and `javax.persistence`. The latter only for the JPA annotations.
@@ -35,19 +37,27 @@ After this is working you can import the Maven project into your Java IDE.
 - Internationalizable, parameterizable exception message texts
 - Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
 - Tests are run against an empty in-memory Derby database.
-- Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into `/target/site/jacoco-ut/index.html`.
+- Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into [target/site/jacoco-ut/index.html](file:target/site/jacoco-ut/index.html).
 
 ### Where are the exception message texts?
-In the file `MessageText.properties`. The editable original is in `src/main/resources/`.
-During Maven phase `compile` it is copied to `target/classes/`.
+In the file `MessageText.properties`. The editable original with some fixed message texts is in `src/main/resources/`.
+By Maven phase `compile` this file is copied to `target/classes/`.
 During the following phase `process-classes` the exception message texts are extracted from the JavaDoc comments of all exceptions under `src/main/java/`
 by the  `ExceptionMessagesDoclet`  as configured for the `maven-javadoc-plugin`. They are appended to the message text file in `target/classes/`.
+This process is excluded from m2e lifecycle mapping in the `pom.xml`.
 
 
 ## Plans
 
-- Make the domain model less anemic by moving the methods of `ClientService` into class `Client`. This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. Still needs research.
-- Nice to have: Avoid own ID of `AccountAccess`, because this class models an m:n association between `Client` and `Account`. There should not be a possibility for several links between a client and an account. This would require the usage of `client.id` and `account.id` as a composite ID for `AccountAccess`. Not so easy, see http://stackoverflow.com/questions/18739334/jpa-how-to-associate-entities-with-relationship-attributes
+- Make the domain model less anemic by moving all methods of `ClientService` into class `Client`. 
+  This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
+  See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable). 
+  Technically already working, but the most methods still have to be transferred.
+- Make `Amount` a better value object by freezing its attributes. Seems, that for this goal Hibernate has to be used instead of JPA.
+- Nice to have: Avoid own ID of `AccountAccess`, because this class models an m:n association between `Client` and `Account`. 
+  There should not be a possibility for several links between a client and an account.
+  This would require the usage of `client.id` and `account.id` as a composite ID for `AccountAccess`.
+  Not so easy, see [JPA: How to associate entities with relationship attributes?](http://stackoverflow.com/questions/18739334/jpa-how-to-associate-entities-with-relationship-attributes)
 - Implementation of real unit tests with mock implementations of the repository interfaces.
 - Put an application layer with transaction management on top of the domain model.
 - Export the application layer as a REST service.

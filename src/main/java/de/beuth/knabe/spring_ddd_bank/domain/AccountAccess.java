@@ -19,8 +19,8 @@ public class AccountAccess extends EntityBase<AccountAccess> {
     @ManyToOne
     private Account account;
 
-    /**Necessary for JPA object recreation when reading from database*/
-    AccountAccess() {}
+    /**Necessary for JPA entities internally.*/
+    private AccountAccess() {}
 
     public AccountAccess(final Client client, final boolean isOwner, final Account account) {
         this.client = client;

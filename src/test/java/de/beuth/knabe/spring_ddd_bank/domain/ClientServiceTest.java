@@ -20,6 +20,7 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,17 +40,10 @@ import static org.junit.Assert.fail;
 @SpringBootTest
 public class ClientServiceTest {
 
-    /**Only for use in the deleteAll method!*/
-    @Autowired
-    private AccountAccessRepository accountAccessRepository;
 
-    /**Only for use in the deleteAll method!*/
+    /**Only for use in the cleanUp method!*/
     @Autowired
-    private ClientRepository clientRepository;
-
-    /**Only for use in the deleteAll method!*/
-    @Autowired
-    private AccountRepository accountRepository;
+    private CleanupService cleanupService;
 
     @Autowired
     private BankService bankService;
@@ -58,31 +52,10 @@ public class ClientServiceTest {
     private ClientService clientService;
 
     @Before
-    public void clear(){
-        accountAccessRepository.deleteAll();
-        clientRepository.deleteAll();
-        accountRepository.deleteAll();
+    public void cleanUp(){
+        cleanupService.deleteAll();
         Locale.setDefault(Locale.GERMANY);
     }
-/*
-    @Test public void t060KontoEroeffnen() throws Exception {
-        System.out.println("kontoEroeffnen:");
-        final LgKontozugriff gansVerwaltet  = _gans.kontoEroeffnen("_gansKonto");
-        _gansKonto = gansVerwaltet.getKonto();
-        assertTrue(gansVerwaltet.isInhaber());
-        assertEquals(0, _gansKonto.getSaldo());
-        assertSame(_gans, gansVerwaltet.getKunde());
-
-        final LgKontozugriff guthsmuthsVereinsVerwaltet = _gans.kontoEroeffnen("_guthsmuthsVereinsKonto");
-        assertTrue(guthsmuthsVereinsVerwaltet.isInhaber());
-        _guthsmuthsVereinsKonto = guthsmuthsVereinsVerwaltet.getKonto();
-        _muellerGiroKonto = _mueller.kontoEroeffnen("_muellerGiroKonto").getKonto();
-        assertTrue("_muellerGiroKonto.getOid() > 0", _muellerGiroKonto.getOid() > 0);
-        _muellerSparKonto = _mueller.kontoEroeffnen("_muellerSparKonto").getKonto();
-        assertTrue("_muellerSparKonto.getOid() > 0", _muellerSparKonto.getOid() > 0);
-        assertTrue("OIDs of _muellerGiroKonto and _muellerSparKonto must be different!", _muellerGiroKonto.getOid().intValue() != _muellerSparKonto.getOid().intValue());
-    }
-    */
 
     @Test
     public void createAccountCheckProperties(){
@@ -175,7 +148,39 @@ public class ClientServiceTest {
             fail("ClientService.MinimumBalanceExc expected");
         }catch (ClientService.MinimumBalanceExc expected){}
     }
+    
+    @Test
+    public void addAccountManager(){
+        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Account jacksGiro = clientService.createAccount(jack, "Jack's Giro").getAccount();
+        final Account jacksSavings = clientService.createAccount(jack, "Jack's Savings").getAccount();
 
+        final Client chloe = bankService.createClient("Chloe O'Brian", LocalDate.parse("1992-12-01"));
+        //Client cannot transfer from an account, if she is not manager of the account:
+        try{
+            clientService.transfer(chloe, jacksGiro, jacksSavings, new Amount(0,01));
+            fail("ClientService.WithoutRightExc expected");
+        }catch (ClientService.WithoutRightExc expected){}
+        
+        //Client cannot add an account manager, if she is not owner of the account:
+        try {
+			chloe.addAccountManager(jacksGiro, chloe);
+            fail("Client.NotOwnerExc expected");
+		} catch (Client.NotOwnerExc expected){}
+        
+        jack.addAccountManager(jacksGiro, chloe);
+        //Now chloe can transfer from jacksGiro account:
+        clientService.transfer(chloe, jacksGiro, jacksSavings, new Amount(0,01));
+        
+        //But chloe is only manager of the account, not owner. She cannot add another Manager to the account.
+        final Client tony = bankService.createClient("Tony Almeida", LocalDate.parse("1964-03-22"));
+        try {
+			chloe.addAccountManager(jacksGiro, tony);
+            fail("Client.NotOwnerExc expected");
+		} catch (Client.NotOwnerExc expected){}    	
+    }
+
+    //TODO Test against double adding of a Client as manager to the same Account. 17-08-18
 
     /**Makes a String representation of all passed clients, separated by commas. The format of a 2 client result will be "1999-12-31 name1, 2017-12-31 name2".*/
     private String stringize(Iterable<Client> clients) {

@@ -10,12 +10,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableLoadTimeWeaving;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 @SpringBootApplication // that is @Configuration @EnableAutoConfiguration @ComponentScan
+@EnableSpringConfigured //for spring-aspects
 public class Application {
 
 	private static final Logger log = LoggerFactory.getLogger(Application.class);

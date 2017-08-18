@@ -18,6 +18,7 @@ package de.beuth.knabe.spring_ddd_bank.domain;
 
 import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ import static org.junit.Assert.*;
 @SpringBootTest
 public class BankServiceTest {
 
-    /**Only for use in the deleteAll method!*/
+    /**Only for use in the cleanUp method!*/
     @Autowired
     private CleanupService cleanupService;
 
@@ -45,7 +46,7 @@ public class BankServiceTest {
     private ClientService clientService;
 
     @Before
-    public void deleteAll(){
+    public void cleanUp(){
         cleanupService.deleteAll();
     }
 

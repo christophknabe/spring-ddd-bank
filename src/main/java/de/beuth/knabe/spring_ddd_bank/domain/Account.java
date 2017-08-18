@@ -10,8 +10,8 @@ public class Account extends EntityBase<Account> {
     private String name;
     private Amount balance = new Amount(0);
 
-    /**Necessary for JPA object recreation when reading from database*/
-    Account() {}
+    /**Necessary for JPA entities internally.*/
+    private Account() {}
 
     public Account(final String name) {
         this.name = name;
