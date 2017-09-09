@@ -1,16 +1,16 @@
 package de.beuth.knabe.spring_ddd_bank.domain;
 
-import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
-import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
-import multex.MultexUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
+import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
+import multex.MultexUtil;
 
 /**This is a domain service for a clerk of a bank.
  * @author Christoph Knabe

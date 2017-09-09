@@ -17,7 +17,8 @@ public class Amount {
     private long cents;
 
     /**Necessary for attributes of JPA entities internally.*/
-    private Amount() {}
+    @SuppressWarnings("unused")
+	private Amount() {}
 
     /**Constructs an amount from the given euros and cents. The arguments cannot exceed the working range.*/
     public Amount(final int euros, final int cents){

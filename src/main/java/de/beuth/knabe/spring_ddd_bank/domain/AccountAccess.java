@@ -3,7 +3,6 @@ package de.beuth.knabe.spring_ddd_bank.domain;
 import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 /**Many-to-many association "Client may access Account" with specific privileges.
  * @author  Christoph Knabe
@@ -20,7 +19,8 @@ public class AccountAccess extends EntityBase<AccountAccess> {
     private Account account;
 
     /**Necessary for JPA entities internally.*/
-    private AccountAccess() {}
+    @SuppressWarnings("unused")
+	private AccountAccess() {}
 
     public AccountAccess(final Client client, final boolean isOwner, final Account account) {
         this.client = client;

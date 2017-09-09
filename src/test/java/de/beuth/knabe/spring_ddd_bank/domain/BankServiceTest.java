@@ -16,18 +16,18 @@
 
 package de.beuth.knabe.spring_ddd_bank.domain;
 
-import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDate;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.time.LocalDate;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 //@DataJpaTest
@@ -41,9 +41,6 @@ public class BankServiceTest {
 
     @Autowired
     private BankService bankService;
-
-    @Autowired
-    private ClientService clientService;
 
     @Before
     public void cleanUp(){
@@ -113,10 +110,10 @@ public class BankServiceTest {
         final Client kim = bankService.createClient("Kim Bauer", LocalDate.parse("1994-05-21"));
         final Client chloe = bankService.createClient("Chloe O'Brian", LocalDate.parse("1992-12-01"));
         assertTrue(chloe.getId() > kim.getId());
-        final AccountAccess kimAccount = clientService.createAccount(kim, "Kim's Account");
-        final AccountAccess chloeAccount = clientService.createAccount(chloe, "Chloe's Account");
-        clientService.deposit(kimAccount.getAccount(), new Amount(1000,01));
-        clientService.deposit(chloeAccount.getAccount(), new Amount(1000,00));
+        final AccountAccess kimAccount = kim.createAccount("Kim's Account");
+        final AccountAccess chloeAccount = chloe.createAccount("Chloe's Account");
+        kim.deposit(kimAccount.getAccount(), new Amount(1000,01));
+        chloe.deposit(chloeAccount.getAccount(), new Amount(1000,00));
         {
             //Expecting no clients:
             final Iterable<Client> noClients = bankService.findRichClients(new Amount(1000,02));
@@ -135,7 +132,7 @@ public class BankServiceTest {
             final String result = stringize(twoClients);
             assertEquals("1994-05-21 Kim Bauer, 1992-12-01 Chloe O'Brian", result);
         }
-        clientService.deposit(chloeAccount.getAccount(), new Amount(0,01));
+        chloe.deposit(chloeAccount.getAccount(), new Amount(0,01));
         {
             //Expecting two equally rich clients. The entity with the higher ID should be first.:
             final Iterable<Client> twoClients = bankService.findRichClients(new Amount(1000,01));

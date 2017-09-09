@@ -15,7 +15,7 @@ import javax.persistence.MappedSuperclass;
  * *
  */
 @MappedSuperclass
-public abstract class EntityBase<T extends EntityBase> {
+public abstract class EntityBase<T extends EntityBase<T>> {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

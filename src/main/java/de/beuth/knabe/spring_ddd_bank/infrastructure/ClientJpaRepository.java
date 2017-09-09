@@ -1,14 +1,14 @@
 package de.beuth.knabe.spring_ddd_bank.infrastructure;
 
-import de.beuth.knabe.spring_ddd_bank.domain.Client;
-import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
-import de.beuth.knabe.spring_ddd_bank.infrastructure.imports.ImportedClientJpaRepository;
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import de.beuth.knabe.spring_ddd_bank.domain.Client;
+import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
+import de.beuth.knabe.spring_ddd_bank.infrastructure.imports.ImportedClientJpaRepository;
 
 /**A Repository for Client entities implemented with Spring Data JPA.
  * @author Christoph Knabe
