@@ -82,6 +82,7 @@ public class Amount {
         return new Amount(result);
     }
 
+    /**Returns the amount of euros contained in this object, with 2 fractional decimal digits.*/
     public double toDouble(){
         return cents / 100.0;
     }

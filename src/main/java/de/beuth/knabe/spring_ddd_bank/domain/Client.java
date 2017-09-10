@@ -1,11 +1,8 @@
 package de.beuth.knabe.spring_ddd_bank.domain;
 
-import de.beuth.knabe.spring_ddd_bank.domain.Client.AmountExc;
 import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
-import multex.Exc;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import javax.persistence.Entity;
@@ -15,6 +12,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**A client of a bank along with some methods he can do.
+ * This entity is a Rich Domain Object. It can access services injected into it by Spring DODI.
+ */
 @Entity 
 @Configurable
 public class Client extends EntityBase<Client> {
@@ -46,10 +46,11 @@ public class Client extends EntityBase<Client> {
                 "Client{id=%d, name='%s', birthDate='%s'}",
                 getId(), name, birthDate);
     }
+
+    //Required repositories as by Ports and Adapters Pattern:
     
     @Autowired
-    private transient AccountAccessRepository accountAccessRepository;
-    
+    private transient AccountAccessRepository accountAccessRepository;    
     @Autowired
     private transient AccountRepository accountRepository; 
 
@@ -64,12 +65,12 @@ public class Client extends EntityBase<Client> {
 	}
 
     /**Deposits the given amount into the destination account.
-     * @throws Client.AmountExc Illegal amount (negative or zero)
+     * @throws AmountExc Illegal amount (negative or zero)
      */
     public void deposit(
             final Account destination,
             final Amount amount
-    ) throws Client.AmountExc
+    ) throws AmountExc
     {
         //1. Error checking:
         if(amount.compareTo(Amount.ZERO) <= 0){
@@ -86,12 +87,12 @@ public class Client extends EntityBase<Client> {
 
 	/**Transfers the given amount from the source account to the destination account.
 	 * @throws WithoutRightExc The sender is not a manager of the source account.
-	 * @throws Client.AmountExc Illegal amount (negative or zero)
+	 * @throws AmountExc Illegal amount (negative or zero)
 	 * @throws MinimumBalanceExc The source account's balance would fall under the minimum balance.
 	 */
 	public void transfer(
 			final Account source, final Account destination, final Amount amount
-	) throws Client.AmountExc, WithoutRightExc, MinimumBalanceExc
+	) throws AmountExc, WithoutRightExc, MinimumBalanceExc
 	{
 	    //1. Error checking:
 	    if(amount.toDouble() <= 0){

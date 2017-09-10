@@ -4,6 +4,10 @@ import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
 
 import javax.persistence.Entity;
 
+/**
+ * An account, which a client of a bank can manage.
+ * This entity is an Anemic Domain Object, as it only has stupid setters.
+ */
 @Entity
 public class Account extends EntityBase<Account> {
 

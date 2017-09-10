@@ -5,6 +5,7 @@ import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
 import javax.persistence.*;
 
 /**Many-to-many association "Client may access Account" with specific privileges.
+ * This entity is an Anemic Domain Object, as it only has stupid setters.
  * @author  Christoph Knabe
  */
 @Entity

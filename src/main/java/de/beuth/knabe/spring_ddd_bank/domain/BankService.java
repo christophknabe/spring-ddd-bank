@@ -57,7 +57,7 @@ public class BankService {
     }
 
     /**Deletes the given {@link Client}.
-     * @throws IllegalStateException Client has accounts, where he is the owner.*/
+     * @throws DeleteExc Client has accounts, where he is the owner.*/
     public void deleteClient(final Client client){
         final List<AccountAccess> managedAccounts = accountAccessRepository.findManagedAccountsOf(client, true);
         for(final AccountAccess accountAccess: managedAccounts){
