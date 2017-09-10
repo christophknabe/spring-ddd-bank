@@ -27,9 +27,18 @@ After this is working you can import the Maven project into your Java IDE
 
 ## Which DDD principles are implemented?
 - Modelling the domain layer as one package, which does not depend on any other package besides standard Java SE packages as `java.time` and `javax.persistence`. The latter only for the JPA annotations.
+
 - Referencing required services only by self-defined, minimal interfaces (in package `domain.imports`).
+
 - Implementing required services in the infrastructure layer (in package `infrastructure`).
+
 - Linking together required services and their implementations by Dependency Injection.
+
+- Avoid an [anemic domain model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class `Client`. 
+
+  This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
+  See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable).​
+
 
 ## Other Characteristics
 - It is a little bank application, where the bank can create clients and clients can create and manage accounts, e.g. deposit and transfer money.
@@ -49,10 +58,6 @@ This process is excluded from m2e lifecycle mapping in the `pom.xml`.
 
 ## Plans
 
-- Make the domain model less anemic by moving all methods of `ClientService` into class `Client`. 
-  This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
-  See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable). 
-  Technically already working, but the most methods still have to be transferred.
 - Make `Amount` a better value object by freezing its attributes. Seems, that for this goal Hibernate has to be used instead of JPA.
 - Nice to have: Avoid own ID of `AccountAccess`, because this class models an m:n association between `Client` and `Account`. 
   There should not be a possibility for several links between a client and an account.
