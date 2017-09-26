@@ -21,6 +21,10 @@ public interface ImportedClientJpaRepository extends JpaRepository<Client, Long>
     Client save(Client client);
 
     void delete(Client client);
+    
+    Optional<Client> findOneById(Long id);
+    
+    Optional<Client> findOneByNameAndBirthDate(String name, LocalDate birthDate);
 
     List<Client> findAllByOrderByIdDesc();
 

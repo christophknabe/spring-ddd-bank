@@ -54,7 +54,7 @@ public class Client extends EntityBase<Client> {
     @Autowired
     private transient AccountRepository accountRepository; 
 
-	/**Creates a bank account with the given accountName and a zero balance.
+	/**Command: Creates a bank account with the given accountName and a zero balance.
 	 * @param accountName a mnemonic for the purpose or usage of this account
 	 * @return the link object for accessing the owner and the created account
 	 */
@@ -64,7 +64,7 @@ public class Client extends EntityBase<Client> {
 	    return accountAccessRepository.save(accountAccess);
 	}
 
-    /**Deposits the given amount into the destination account.
+    /**Command: Deposits the given amount into the destination account.
      * @throws AmountExc Illegal amount (negative or zero)
      */
     public void deposit(
@@ -85,7 +85,7 @@ public class Client extends EntityBase<Client> {
         }
     }
 
-	/**Transfers the given amount from the source account to the destination account.
+	/**Command: Transfers the given amount from the source account to the destination account.
 	 * @throws WithoutRightExc The sender is not a manager of the source account.
 	 * @throws AmountExc Illegal amount (negative or zero)
 	 * @throws MinimumBalanceExc The source account's balance would fall under the minimum balance.
@@ -123,7 +123,7 @@ public class Client extends EntityBase<Client> {
 	public static class MinimumBalanceExc extends multex.Exc {}
 
 
-    /**Adds the given manager Client to the given account in the role as manager, but not owner.
+    /**Command: Adds the given manager Client to the given account in the role as manager, but not owner.
      * @throws NotOwnerExc this Client is not owner of the account.
      * @throws DoubleManagerExc the given manager Client is already manager of the account.*/
     public AccountAccess addAccountManager(final Account account, Client manager) {
@@ -156,8 +156,14 @@ public class Client extends EntityBase<Client> {
 	public static class AmountExc extends multex.Exc {}
 
 
-	/**Returns a report about all accounts the passed {@link Client} has access to. */
-	public String getAccountsReport() {
+    
+    /**Query: Finds the Account with the given id, if exists.*/
+    public Optional<Account> findAccount(final Long id) {
+        return accountRepository.find(id);
+    }
+    
+	/**Query: Returns a report about all accounts the passed {@link Client} has access to. */
+	public String accountsReport() {
 	    final StringBuilder result = new StringBuilder();
 	    final List<AccountAccess> accountAccesses = accountAccessRepository.findManagedAccountsOf(this, false);
 	    result.append(String.format("Accounts of client: %s\n", getName()));

@@ -2,10 +2,13 @@ package de.beuth.knabe.spring_ddd_bank.infrastructure;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import de.beuth.knabe.spring_ddd_bank.domain.Account;
+import de.beuth.knabe.spring_ddd_bank.domain.AccountAccess;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 import de.beuth.knabe.spring_ddd_bank.infrastructure.imports.ImportedClientJpaRepository;
@@ -32,6 +35,16 @@ public class ClientJpaRepository implements ClientRepository {
 
     public void delete(Client client){
         impl.delete(client);
+    }
+
+	@Override
+	public Optional<Client> find(Long id) {
+		return impl.findOneById(id);
+	}
+
+    @Override
+    public Optional<Client> find(final String name, final LocalDate birthDate) {
+        return impl.findOneByNameAndBirthDate(name, birthDate);
     }
 
     public List<Client> findAll(){

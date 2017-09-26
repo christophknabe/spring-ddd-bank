@@ -8,6 +8,7 @@
 /.settings/
 
 #For database Derby:
+/derby-db/
 /derby.log
 
 #For Maven generated files:

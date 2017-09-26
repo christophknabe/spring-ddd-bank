@@ -4,11 +4,11 @@
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>820</x>
-      <y>500</y>
+      <y>490</y>
       <w>250</w>
       <h>160</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;Value Object&gt;&gt;
+    <panel_attributes>&lt;&lt;value object&gt;&gt;
 Amount
 --
 --
@@ -24,11 +24,11 @@ toDouble(): double</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>840</x>
-      <y>380</y>
+      <y>370</y>
       <w>150</w>
       <h>80</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
 Account
 --
 -name: String
@@ -39,30 +39,32 @@ Account
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>0</x>
-      <y>210</y>
-      <w>420</w>
-      <h>140</h>
+      <y>170</y>
+      <w>410</w>
+      <h>170</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;Service&gt;&gt;
+    <panel_attributes>&lt;&lt;service&gt;&gt;
 BankService
 --
 --
+&lt;&lt;commands&gt;&gt;
 createClient(name: String, birthDate: LocalDate): Client
+deleteClient(client: Client)
+&lt;&lt;queries&gt;&gt;
 findAllClients(): Client[]
 findYoungClients(fromBirth: LocalDate): Client[]
-findRichClients(minBalance: Amount): Client[]
-deleteClient(client: Client)</panel_attributes>
+findRichClients(minBalance: Amount): Client[]</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>580</x>
-      <y>490</y>
+      <y>480</y>
       <w>200</w>
       <h>70</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
 AccountAccess
 --
 isOwner: boolean</panel_attributes>
@@ -72,7 +74,7 @@ isOwner: boolean</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>500</x>
-      <y>370</y>
+      <y>360</y>
       <w>360</w>
       <h>70</h>
     </coordinates>
@@ -86,7 +88,7 @@ manages&gt;</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>660</x>
-      <y>390</y>
+      <y>380</y>
       <w>50</w>
       <h>120</h>
     </coordinates>
@@ -96,42 +98,44 @@ manages&gt;</panel_attributes>
   <element>
     <type>com.umlet.element.Note</type>
     <coordinates>
-      <x>400</x>
-      <y>110</y>
+      <x>460</x>
+      <y>90</y>
       <w>220</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>bg=yellow
 Analysis Model of a Bank
-Christoph Knabe, 2017-09-10</panel_attributes>
+Christoph Knabe, 2017-09-13</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>0</x>
-      <y>410</y>
+      <y>400</y>
       <w>530</w>
-      <h>170</h>
+      <h>200</h>
     </coordinates>
-    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+    <panel_attributes>&lt;&lt;entity&gt;&gt;
 Client
 --
 -name: String
 -birthDate: LocalDate
 --
+&lt;&lt;commands&gt;&gt;
 createAccount(accountName: String): AccountAccess
 deposit(destination: Account, amount: Amount)
 transfer(source: Account, destination: Account, amount: Amount)
 addAccountManager(account: Account, manager: Client): AccountAccess
-getAccountsReport(): String</panel_attributes>
+&lt;&lt;queries&gt;&gt;
+accountsReport(): String</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>910</x>
-      <y>430</y>
+      <y>420</y>
       <w>50</w>
       <h>90</h>
     </coordinates>
@@ -142,11 +146,27 @@ getAccountsReport(): String</panel_attributes>
     <type>com.umlet.element.Relation</type>
     <coordinates>
       <x>150</x>
-      <y>320</y>
+      <y>310</y>
       <w>50</w>
       <h>110</h>
     </coordinates>
     <panel_attributes>lt=&lt;.</panel_attributes>
     <additional_attributes>30;90;30;30</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.custom.Text</type>
+    <coordinates>
+      <x>600</x>
+      <y>210</y>
+      <w>510</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>Explanation:
+&lt;&lt;entity&gt;&gt; Objects have an identity and are persistent.
+&lt;&lt;service&gt;&gt; Container for operations, which are not specific for an entity.
+&lt;&lt;value object&gt;&gt; Objects without identity and persistence
+&lt;&lt;commands&gt;&gt; Following operations modify the system state.
+&lt;&lt;queries&gt;&gt; Following operations do not modify the system state.</panel_attributes>
+    <additional_attributes/>
   </element>
 </diagram>

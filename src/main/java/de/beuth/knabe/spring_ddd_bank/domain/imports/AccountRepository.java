@@ -1,12 +1,20 @@
 package de.beuth.knabe.spring_ddd_bank.domain.imports;
 
+import java.util.Optional;
+
 import de.beuth.knabe.spring_ddd_bank.domain.Account;
+import de.beuth.knabe.spring_ddd_bank.domain.Client;
 
 /**Required repository for {@link Account} objects.
  * @author Christoph Knabe
  * @since 2017-03-03
  */
 public interface AccountRepository {
+
+    /**Returns the {@link Account} object with the given id, if existing.
+     * @throws IllegalArgumentException  id is null
+     */
+	Optional<Account> find(Long id);
 
     /**Deletes all Accounts. Useful for test scenarions in order to start with an empty account set.*/
     void deleteAll();

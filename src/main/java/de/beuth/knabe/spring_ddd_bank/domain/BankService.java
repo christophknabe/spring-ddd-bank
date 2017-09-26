@@ -2,6 +2,7 @@ package de.beuth.knabe.spring_ddd_bank.domain;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -30,7 +31,7 @@ public class BankService {
         this.accountAccessRepository = accountAccessRepository;
     }
 
-    /**Creates a bank client with the given name and birth date.
+    /**Command: Creates a bank client with the given name and birth date.
      * @param name the full name of the new client, must not be empty
      * @param birthDate the birth date of the new client, must not be null
      */
@@ -39,24 +40,7 @@ public class BankService {
         return client;
     }
 
-    /**Finds all clients of the bank. They are ordered by their descending IDs, that means the newest come first.*/
-    public List<Client> findAllClients(){
-        return clientRepository.findAll();
-    }
-
-    /**Finds all clients of the bank, who are born at the given date or later. They are ordered by their ascending age and secondly by their descending IDs.*/
-    public List<Client> findYoungClients(final LocalDate fromBirth){
-        return clientRepository.findAllBornFrom(fromBirth);
-    }
-
-    /**Finds all clients of the bank, who own or manage an account with the given mimimum balance. They are ordered by their descending account balance and secondly by their descending IDs.*/
-    public List<Client> findRichClients(final Amount minBalance){
-        final List<AccountAccess> fullAccounts = accountAccessRepository.findFullAccounts(minBalance);
-        final Stream<Client> richClients = fullAccounts.stream().map(accountAccess -> accountAccess.getClient()).distinct();
-        return richClients.collect(Collectors.toList());
-    }
-
-    /**Deletes the given {@link Client}.
+    /**Command: Deletes the given {@link Client}.
      * @throws DeleteExc Client has accounts, where he is the owner.*/
     public void deleteClient(final Client client){
         final List<AccountAccess> managedAccounts = accountAccessRepository.findManagedAccountsOf(client, true);
@@ -72,5 +56,33 @@ public class BankService {
 
     /**Cannot delete client {0}, Still owns account {1}.*/
     public static class DeleteExc extends multex.Exc {}
+    
+    /**Query: Finds the client with the given id, if exists.*/
+    public Optional<Client> findClient(final Long id) {
+        return clientRepository.find(id);
+    }
+    
+    /**Query: Finds the client with the given name and birthDate. @deprecated sollte durch findClient(id) ersetzt werden!
+     * @deprecated use findClient(id) instead!*/
+    public Optional<Client> findClient(final String name, final LocalDate birthDate) {
+        return clientRepository.find(name, birthDate);
+    }
+
+    /**Query: Finds all clients of the bank. They are ordered by their descending IDs, that means the newest come first.*/
+    public List<Client> findAllClients(){
+        return clientRepository.findAll();
+    }
+
+    /**Query: Finds all clients of the bank, who are born at the given date or later. They are ordered by their ascending age and secondly by their descending IDs.*/
+    public List<Client> findYoungClients(final LocalDate fromBirth){
+        return clientRepository.findAllBornFrom(fromBirth);
+    }
+
+    /**Query: Finds all clients of the bank, who own or manage an account with the given mimimum balance. They are ordered by their descending account balance and secondly by their descending IDs.*/
+    public List<Client> findRichClients(final Amount minBalance){
+        final List<AccountAccess> fullAccounts = accountAccessRepository.findFullAccounts(minBalance);
+        final Stream<Client> richClients = fullAccounts.stream().map(accountAccess -> accountAccess.getClient()).distinct();
+        return richClients.collect(Collectors.toList());
+    }
 
 }

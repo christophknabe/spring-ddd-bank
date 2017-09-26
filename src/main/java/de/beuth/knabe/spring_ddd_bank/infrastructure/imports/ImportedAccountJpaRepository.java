@@ -1,9 +1,12 @@
 package de.beuth.knabe.spring_ddd_bank.infrastructure.imports;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Account;
+import de.beuth.knabe.spring_ddd_bank.domain.Client;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**Required repository for accounts. The methods are named according to the Spring Data JPA convention.
  * They can be implemented by Spring during bean creation, but can be implemented independently of Spring, too.
@@ -15,6 +18,8 @@ public interface ImportedAccountJpaRepository extends JpaRepository<Account, Lon
 
     void deleteAll();
 
+    Optional<Account> findOneById(Long id);
+    
     Account save(Account account);
 
     List<Account> findAllByOrderByIdAsc();

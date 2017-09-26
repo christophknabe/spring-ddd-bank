@@ -1,12 +1,16 @@
 package de.beuth.knabe.spring_ddd_bank.domain.imports;
 
+import de.beuth.knabe.spring_ddd_bank.domain.Account;
+import de.beuth.knabe.spring_ddd_bank.domain.AccountAccess;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 /**Required repository for {@link Client} objects.
  * @author Christoph Knabe
+ * @version 2017-09-20
  * @since 2017-03-01
  */
 public interface ClientRepository {
@@ -20,6 +24,15 @@ public interface ClientRepository {
 
     /**Deletes the given client.*/
     void delete(Client client);
+
+    /**Returns the {@link Client} object with the given id, if existing.
+     * @throws IllegalArgumentException  id is null
+     */
+    Optional<Client> find(Long id);
+
+    /**Returns the {@link Client} object for the given name and birthDate, if existing.
+     * @deprecated use find(id) instead!*/
+    Optional<Client> find(String name, LocalDate birthDate);
 
     /**Finds all {@link Client}s and returns them ordered by descending IDs.*/
     List<Client> findAll();

@@ -63,7 +63,7 @@ public class ClientServiceTest {
         assertEquals(0.0, jacksSavingsAccount.getBalance().toDouble(), 0.001);
         assertEquals(jack.getId(), jacksSavings.getClient().getId());
         assertEquals(true, jack.sameIdentityAs(jacksSavings.getClient()));
-        final String report = jack.getAccountsReport();
+        final String report = jack.accountsReport();
         assertEquals("Accounts of client: Jack Bauer\n" +
                 "isOwner \t 0,00\tJack's Savings\n", report);
     }
@@ -73,7 +73,7 @@ public class ClientServiceTest {
         final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
         final AccountAccess jacksGiro = jack.createAccount("Jack's Giro");
         jack.deposit(jacksGiro.getAccount(), new Amount(999999999,99));
-        final String report = jack.getAccountsReport();
+        final String report = jack.accountsReport();
         assertEquals("Accounts of client: Jack Bauer\nisOwner \t999999999,99\tJack's Giro\n", report);
     }
 
@@ -85,7 +85,7 @@ public class ClientServiceTest {
             jack.deposit(jacksGiro, Amount.ZERO);
             fail("Client.AmountExc expected");
         } catch (Client.AmountExc expected) {}
-        final String report = jack.getAccountsReport();
+        final String report = jack.accountsReport();
         assertEquals("Accounts of client: Jack Bauer\nisOwner \t 0,00\tJack's Giro\n", report);
     }
 
@@ -96,7 +96,7 @@ public class ClientServiceTest {
         final AccountAccess jacksSavings = jack.createAccount("Jack's Savings");
         jack.deposit(jacksGiro.getAccount(), new Amount(999999999,99));
         jack.deposit(jacksSavings.getAccount(), new Amount(0,1));
-        final String report = jack.getAccountsReport();
+        final String report = jack.accountsReport();
         assertEquals("Accounts of client: Jack Bauer\n" +
                 "isOwner \t 0,01\tJack's Savings\n" +
                 "isOwner \t999999999,99\tJack's Giro\n", report);
@@ -110,7 +110,7 @@ public class ClientServiceTest {
         final Amount minimumBalance = Account.getMinimumBalance();
         final Amount maximumTransferAmount = minimumBalance.times(-1);
         jack.transfer(jacksGiro, jacksSavings, maximumTransferAmount);
-        final String report = jack.getAccountsReport();
+        final String report = jack.accountsReport();
         final String maximumTransferAmountString = maximumTransferAmount.toString();
         assertEquals("Accounts of client: Jack Bauer\n" +
                 "isOwner \t" + maximumTransferAmountString + "\tJack's Savings\n" +

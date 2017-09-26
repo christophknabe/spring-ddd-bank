@@ -23,17 +23,21 @@
     </properties>
 
     <dependencies>
+        <!-- According to https://spring.io/guides/gs/rest-service/ 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>-->
+        <!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <!-- deactivated 2017-03-03. But may be H2 is quicker than Derby for in-memory usage.
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-        </dependency>
-        -->
-        <!-- Derby Database (in-memory and persistent) -->
+        <!-- Derby Database (in-memory in test suite, or in-directory in production code) -->
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
@@ -46,13 +50,12 @@
         <dependency>
             <groupId>de.tfh-berlin.knabe</groupId>
             <artifactId>multex</artifactId>
-            <version>8.3</version>
+            <version>${multexVersion}</version>
         </dependency>
         <!-- Following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
         </dependency>
     </dependencies>
 
