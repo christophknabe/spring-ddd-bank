@@ -129,7 +129,7 @@ public class ApplicationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    /*Example of a transaction, which stores two objects of type Client.*/
+    /*Example of a transaction, which stores two objects of type Client and sometimes fails.*/
     @PostMapping("/client/test")
     public ResponseEntity<ClientResource[]> create2Clients() {
     	System.out.printf(

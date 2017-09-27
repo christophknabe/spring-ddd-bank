@@ -52,7 +52,7 @@ public class ExceptionAdvice {
 		
 		//prepare log report with messages and stack trace:
 		out.setLength(0);
-		out.append("\nProcessing REST request threw exception:\n");
+		out.append("Processing REST request threw exception:\n");
 		out.append(messages);
 		out.append(Util.lineSeparator);
 		out.append(Msg.stackTraceFollows);
