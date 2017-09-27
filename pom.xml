@@ -1,253 +1,296 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.bht-berlin.knabe</groupId>
-    <artifactId>spring-ddd-bank</artifactId>
-    <version>0.1-SNAPSHOT</version>
+	<groupId>de.bht-berlin.knabe</groupId>
+	<artifactId>spring-ddd-bank</artifactId>
+	<version>0.1-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.4.3.RELEASE</version>
-    </parent>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.3.RELEASE</version>
+	</parent>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>1.8</java.version>
-        <aspectj.version>1.8.9</aspectj.version>
-        <multexVersion>8.3</multexVersion>
-        <messageTextFile>MessageText.properties</messageTextFile>
-    </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>1.8</java.version>
+		<aspectj.version>1.8.9</aspectj.version>
+		<multexVersion>8.3</multexVersion>
+		<messageTextFile>MessageText.properties</messageTextFile>
+	</properties>
 
-    <dependencies>
-        <!-- According to https://spring.io/guides/gs/rest-service/ 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>-->
-        <!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-hateoas</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <!-- Derby Database (in-memory in test suite, or in-directory in production code) -->
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.tfh-berlin.knabe</groupId>
-            <artifactId>multex</artifactId>
-            <version>${multexVersion}</version>
-        </dependency>
-        <!-- Following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-        </dependency>
-    </dependencies>
+	<dependencies>
+		<!-- According to https://spring.io/guides/gs/rest-service/ <dependency> 
+			<groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> 
+			</dependency> -->
+		<!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- Derby Database (in-memory in test suite, or in-directory in production 
+			code) -->
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>de.tfh-berlin.knabe</groupId>
+			<artifactId>multex</artifactId>
+			<version>${multexVersion}</version>
+		</dependency>
+		<!-- Following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+		</dependency>
+	</dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!-- Disable Maven Compiler Plugin for production sources following https://stackoverflow.com/questions/14614446/how-do-i-disable-the-maven-compiler-plugin -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- Use AspectJ Maven Plugin for compiling production sources following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.10</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <complianceLevel>${java.version}</complianceLevel>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <aspectLibraries>
-                        <aspectLibrary>
-                            <groupId>org.springframework</groupId>
-                            <artifactId>spring-aspects</artifactId>
-                        </aspectLibrary>
-                    </aspectLibraries>
-                </configuration>
-                <dependencies>
-                    <!-- Avoid AspectJ version clashes between 1.8.9 and 1.8.10 following https://stackoverflow.com/questions/41646801/maven-aspectj-weaving-for-java8 -->
-                    <dependency>
-                        <groupId>org.aspectj</groupId>
-                        <artifactId>aspectjweaver</artifactId>
-                        <version>${aspectj.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
-                <!-- Here used for extraction of exception message texts in the reference language from the exception Javadoc comments. -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <!-- Specific configuration for the messages report -->
-                            <doclet>multex.tool.ExceptionMessagesDoclet</doclet>
-                            <docletArtifact>
-                                <groupId>de.tfh-berlin.knabe</groupId>
-                                <artifactId>multex</artifactId>
-                                <version>${multexVersion}</version>
-                            </docletArtifact>
-                            <useStandardDocletOptions>false</useStandardDocletOptions>
-                            <show>private</show>
-                            <verbose>false</verbose>
-                            <debug>false</debug>
-                            <additionalparam>
-                                -out ${project.build.directory}/classes/${messageTextFile}
-                            </additionalparam>
-                            <!-- For the project-reports page-->
-                            <name>ExceptionTexts</name>
-                            <description>Extraction of Exception Message Texts from Source Code</description>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <!-- Java Code Coverage analyzer. See https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
-                <executions>
-                    <!--
-                        Prepares the property pointing to the JaCoCo runtime agent, which is passed as VM argument, when the Maven Surefire plugin is executed.
-                    -->
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-                            <!-- Sets the name of the property containing the settings for the JaCoCo runtime agent. -->
-                            <propertyName>surefireArgLine</propertyName>
-                        </configuration>
-                    </execution>
-                    <!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the collected execution data. -->
-                            <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.18.1</version>
-                <configuration>
-                    <!-- Sets the VM argument line for test runs in Surefire, created by the upper prepare-agent goal of the jacoco-maven-plugin. -->
-                    <argLine>${surefireArgLine}</argLine>
-                </configuration>
-            </plugin>
-        </plugins>
-        <pluginManagement>
-        	<plugins>
-        		<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        		<plugin>
-        			<groupId>org.eclipse.m2e</groupId>
-        			<artifactId>lifecycle-mapping</artifactId>
-        			<version>1.0.0</version>
-        			<configuration>
-        				<lifecycleMappingMetadata>
-        					<pluginExecutions>
-        						<pluginExecution>
-        							<pluginExecutionFilter>
-        								<groupId>
-        									org.apache.maven.plugins
-        								</groupId>
-        								<artifactId>
-        									maven-javadoc-plugin
-        								</artifactId>
-        								<versionRange>
-        									[2.9.1,)
-        								</versionRange>
-        								<goals>
-        									<goal>javadoc</goal>
-        								</goals>
-        							</pluginExecutionFilter>
-        							<action>
-        								<ignore></ignore>
-        							</action>
-        						</pluginExecution>
-        					</pluginExecutions>
-        				</lifecycleMappingMetadata>
-        			</configuration>
-        		</plugin>
-        	</plugins>
-        </pluginManagement>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<!-- Disable Maven Compiler Plugin for production sources following https://stackoverflow.com/questions/14614446/how-do-i-disable-the-maven-compiler-plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase>none</phase>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Use AspectJ Maven Plugin instead for compiling production sources 
+				following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<complianceLevel>${java.version}</complianceLevel>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+				</configuration>
+				<dependencies>
+					<!-- Avoid AspectJ version clashes between 1.8.9 and 1.8.10 following 
+						https://stackoverflow.com/questions/41646801/maven-aspectj-weaving-for-java8 -->
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjweaver</artifactId>
+						<version>${aspectj.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>download-dependency-sources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>sources</goal>
+						</goals>
+						<configuration>
+							<!-- configure the plugin here -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- Here used for extraction of exception message texts in the reference 
+					language from the exception Javadoc comments. -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+						<phase>process-classes</phase>
+						<configuration>
+							<!-- Specific configuration for the messages report -->
+							<doclet>multex.tool.ExceptionMessagesDoclet</doclet>
+							<docletArtifact>
+								<groupId>de.tfh-berlin.knabe</groupId>
+								<artifactId>multex</artifactId>
+								<version>${multexVersion}</version>
+							</docletArtifact>
+							<useStandardDocletOptions>false</useStandardDocletOptions>
+							<show>private</show>
+							<verbose>false</verbose>
+							<debug>false</debug>
+							<additionalparam>
+								-out ${project.build.directory}/classes/${messageTextFile}
+							</additionalparam>
+							<!-- For the project-reports page -->
+							<name>ExceptionTexts</name>
+							<description>Extraction of Exception Message Texts from Source
+								Code</description>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<!-- Java Code Coverage analyzer. See https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<!-- Prepares the property pointing to the JaCoCo runtime agent, which 
+						is passed as VM argument, when the Maven Surefire plugin is executed. -->
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the execution data. -->
+							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+							<!-- Sets the name of the property containing the settings for the 
+								JaCoCo runtime agent. -->
+							<propertyName>surefireArgLine</propertyName>
+						</configuration>
+					</execution>
+					<!-- Ensures that the code coverage report for unit tests is created 
+						after unit tests have been run. -->
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<!-- Sets the path to the file which contains the collected execution 
+								data. -->
+							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+							<!-- Sets the output directory for the code coverage report. -->
+							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<!-- Sets the VM argument line for test runs in Surefire, created by 
+						the upper prepare-agent goal of the jacoco-maven-plugin. -->
+					<argLine>${surefireArgLine}</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-javadoc-plugin
+										</artifactId>
+										<versionRange>
+											[2.9.1,)
+										</versionRange>
+										<goals>
+											<goal>javadoc</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[3.0.2,)
+										</versionRange>
+										<goals>
+											<goal>sources</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
-    <repositories>
-        <repository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </repository>
-        <repository>
-            <id>org.jboss.repository.releases</id>
-            <name>JBoss Maven Release Repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
-        </repository>
-        <repository><!-- For current MulTEx: -->
-            <id>bht-knabe-repository</id>
-            <name>BHT Knabe Maven 2 repository</name>
-            <url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>
-        </repository>
-    </repositories>
+	<repositories>
+		<repository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</repository>
+		<repository>
+			<id>org.jboss.repository.releases</id>
+			<name>JBoss Maven Release Repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+		</repository>
+		<repository><!-- For current MulTEx: -->
+			<id>bht-knabe-repository</id>
+			<name>BHT Knabe Maven 2 repository</name>
+			<url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>
+		</repository>
+	</repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>spring-releases</id>
-            <name>Spring Releases</name>
-            <url>https://repo.spring.io/libs-release</url>
-        </pluginRepository>
-    </pluginRepositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-releases</id>
+			<name>Spring Releases</name>
+			<url>https://repo.spring.io/libs-release</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 </project>
