@@ -7,8 +7,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import de.beuth.knabe.spring_ddd_bank.domain.Account;
-import de.beuth.knabe.spring_ddd_bank.domain.AccountAccess;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 import de.beuth.knabe.spring_ddd_bank.infrastructure.imports.ImportedClientJpaRepository;

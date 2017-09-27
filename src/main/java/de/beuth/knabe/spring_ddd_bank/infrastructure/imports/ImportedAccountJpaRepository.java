@@ -1,12 +1,11 @@
 package de.beuth.knabe.spring_ddd_bank.infrastructure.imports;
 
-import de.beuth.knabe.spring_ddd_bank.domain.Account;
-import de.beuth.knabe.spring_ddd_bank.domain.Client;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
-import java.util.Optional;
+import de.beuth.knabe.spring_ddd_bank.domain.Account;
 
 /**Required repository for accounts. The methods are named according to the Spring Data JPA convention.
  * They can be implemented by Spring during bean creation, but can be implemented independently of Spring, too.

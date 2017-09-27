@@ -1,8 +1,5 @@
 package de.beuth.knabe.spring_ddd_bank.rest;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
 
 /**Data about a client of a bank. Usable as Data Transfer Object.*/

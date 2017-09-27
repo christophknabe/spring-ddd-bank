@@ -1,12 +1,10 @@
 package de.beuth.knabe.spring_ddd_bank.domain.imports;
 
-import de.beuth.knabe.spring_ddd_bank.domain.Account;
-import de.beuth.knabe.spring_ddd_bank.domain.AccountAccess;
-import de.beuth.knabe.spring_ddd_bank.domain.Client;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import de.beuth.knabe.spring_ddd_bank.domain.Client;
 
 /**Required repository for {@link Client} objects.
  * @author Christoph Knabe
