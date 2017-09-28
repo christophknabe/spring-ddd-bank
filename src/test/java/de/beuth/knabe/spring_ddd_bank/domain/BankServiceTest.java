@@ -50,33 +50,40 @@ public class BankServiceTest {
 
     @Test
     public void findAndCreateClient(){
+		//Before createClient no clients can be found:
+        final Iterable<Client> noClients = bankService.findAllClients();
+        _assertEmpty(noClients);
+        
+        //Create a Client:
         final LocalDate jackBirthDate = LocalDate.parse("1966-12-31");
-		{
-			//Before createClient the Client can not be found:
-			final Optional<Client> optionalClient = bankService.findClient("Jack Bauer", jackBirthDate);
-			assertEquals(Optional.<Client>empty(), optionalClient);
-		}
 		final Client newClient = bankService.createClient("Jack Bauer", jackBirthDate);
 		//By createClient a new Client object was created with an id:
         final Long clientId = newClient.getId();
 		assertNotNull(clientId);
-		{
-			//By this id we always can retrieve the Client:
-			final Optional<Client> optionalClient = bankService.findClient(clientId);
-			assertNotNull(optionalClient);
-			assertEquals(true, optionalClient.isPresent());
-			final Client client = optionalClient.get();
-			assertEquals(clientId, client.getId());
-			assertEquals("Jack Bauer", client.getName());
-			assertEquals(jackBirthDate, client.getBirthDate());
-		}	
+
+		//By this id we always can retrieve the Client:
+		final Optional<Client> optionalClient = bankService.findClient(clientId);
+		assertNotNull(optionalClient);
+		assertEquals(true, optionalClient.isPresent());
+		final Client client = optionalClient.get();
+		assertEquals(clientId, client.getId());
+		assertEquals("Jack Bauer", client.getName());
+		assertEquals(jackBirthDate, client.getBirthDate());
     }
 
     @Test
     public void createNothingFindAllClients() {
         final Iterable<Client> noClients = bankService.findAllClients();
-        assertEquals(false, noClients.iterator().hasNext());
+        _assertEmpty(noClients);
     }
+
+	private void _assertEmpty(final Iterable<Client> clients) {	
+		int count = 0;
+		for(final Client c: clients) {
+			count++;
+		}
+		assertEquals("Iterable<Client> should be empty.", 0, count);
+	}
 
     @Test
     public void createClientsFindAllClients() {

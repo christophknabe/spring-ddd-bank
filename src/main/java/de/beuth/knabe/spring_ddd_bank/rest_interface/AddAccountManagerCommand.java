@@ -1,4 +1,4 @@
-package de.beuth.knabe.spring_ddd_bank.rest;
+package de.beuth.knabe.spring_ddd_bank.rest_interface;
 
 /**Command to add the Client with the given managerClientId as a manager to the Account with the given accountId.*/
 public class AddAccountManagerCommand {

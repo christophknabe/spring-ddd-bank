@@ -1,4 +1,4 @@
-package de.beuth.knabe.spring_ddd_bank.rest;
+package de.beuth.knabe.spring_ddd_bank.rest_interface;
 
 import java.time.LocalDate;
 import java.util.List;

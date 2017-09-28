@@ -28,10 +28,6 @@ public interface ClientRepository {
      */
     Optional<Client> find(Long id);
 
-    /**Returns the {@link Client} object for the given name and birthDate, if existing.
-     * @deprecated use find(id) instead!*/
-    Optional<Client> find(String name, LocalDate birthDate);
-
     /**Finds all {@link Client}s and returns them ordered by descending IDs.*/
     List<Client> findAll();
 

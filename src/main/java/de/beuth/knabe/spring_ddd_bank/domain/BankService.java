@@ -61,12 +61,6 @@ public class BankService {
     public Optional<Client> findClient(final Long id) {
         return clientRepository.find(id);
     }
-    
-    /**Query: Finds the client with the given name and birthDate. @deprecated sollte durch findClient(id) ersetzt werden!
-     * @deprecated use findClient(id) instead!*/
-    public Optional<Client> findClient(final String name, final LocalDate birthDate) {
-        return clientRepository.find(name, birthDate);
-    }
 
     /**Query: Finds all clients of the bank. They are ordered by their descending IDs, that means the newest come first.*/
     public List<Client> findAllClients(){

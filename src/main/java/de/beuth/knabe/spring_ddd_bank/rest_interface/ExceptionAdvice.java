@@ -1,4 +1,4 @@
-package de.beuth.knabe.spring_ddd_bank.rest;
+package de.beuth.knabe.spring_ddd_bank.rest_interface;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -47,7 +47,6 @@ public class ExceptionAdvice {
 		serverMessages.append("Processing REST request threw exception:\n");
 		final Locale defaultLocale = Locale.getDefault();
 		final ResourceBundle defaultResourceBundle = ResourceBundle.getBundle(BASE_NAME, defaultLocale);
-		System.out.println("requestResourceBundle: " + requestResourceBundle + ", defaultResourceBundle: " + defaultResourceBundle);
 		if(!defaultResourceBundle.equals(requestResourceBundle)) {
 			serverMessages.append(clientMesagesString);
 			serverMessages.append("\n-----\n");

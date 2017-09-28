@@ -1,4 +1,4 @@
-package de.beuth.knabe.spring_ddd_bank.rest;
+package de.beuth.knabe.spring_ddd_bank.rest_interface;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;

@@ -40,11 +40,6 @@ public class ClientJpaRepository implements ClientRepository {
 		return impl.findOneById(id);
 	}
 
-    @Override
-    public Optional<Client> find(final String name, final LocalDate birthDate) {
-        return impl.findOneByNameAndBirthDate(name, birthDate);
-    }
-
     public List<Client> findAll(){
         return impl.findAllByOrderByIdDesc();
     }
