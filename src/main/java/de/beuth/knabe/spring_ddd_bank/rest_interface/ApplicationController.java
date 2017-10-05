@@ -23,7 +23,8 @@ import de.beuth.knabe.spring_ddd_bank.domain.BankService;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
 import multex.Exc;
 
-//Make the controller transactional according to answer of Rogério at https://stackoverflow.com/questions/23118789/why-we-shouldnt-make-a-spring-mvc-controller-transactional
+/**A Spring Web MVC controller offering a REST service for accessing all external operations of the application.*/
+//Made transactional according to the answer of Rogério at https://stackoverflow.com/questions/23118789/why-we-shouldnt-make-a-spring-mvc-controller-transactional
 @Transactional @RestController
 public class ApplicationController {
 

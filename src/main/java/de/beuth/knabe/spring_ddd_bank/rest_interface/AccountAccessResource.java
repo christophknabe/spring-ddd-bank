@@ -12,21 +12,7 @@ public class AccountAccessResource {
 	public String accountName;
 	public String accountBalance;
 	
-	@Deprecated
-	public AccountAccessResource(
-			final Long clientId, 
-			final boolean isOwner, 
-			final Long accountId, 
-			final String accountName,
-			final String accountBalance) 
-	{
-		this.clientId = clientId;
-		this.isOwner = isOwner;
-		this.accountId = accountId;
-		this.accountName = accountName;
-		this.accountBalance = accountBalance;
-	}
-	
+	/**Constructs a data transfer object from the given domain entity.*/
 	public AccountAccessResource(final AccountAccess entity){
     	final Account account = entity.getAccount();
 		this.clientId = entity.getClient().getId();

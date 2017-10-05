@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                                          (C) Christoph Knabe, 2017-03-17, 2017-08-18
+                                                (C) Christoph Knabe, 2017-03-17, 2017-10-04
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
@@ -26,23 +26,28 @@ After this is working you can import the Maven project into your Java IDE
 (Spring Tool Suite is recommended, as AspectJ weaving is needed for the compile phase).
 
 ## Which DDD principles are implemented?
+
 - Modelling the domain layer as one package, which does not depend on any other package besides standard Java SE packages as `java.time` and `javax.persistence`. The latter only for the JPA annotations.
 
-- Referencing required services only by self-defined, minimal interfaces (in package `domain.imports`).
+- Avoid an [anemic domain model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class `Client`.  
+  This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
+  See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable).
+
+- The Domain Layer references required services only by self-defined, minimal interfaces (in package `domain.imports`).
 
 - Implementing required services in the infrastructure layer (in package `infrastructure`).
 
-- Linking together required services and their implementations by Dependency Injection.
+- Linking together required services and their implementations by Dependency Injection. 
 
-- Avoid an [anemic domain model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class `Client`. 
-
-  This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
-  See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable).​
+- Implementing an interface layer for external access to the application. 
+  This is implemented as a REST service in package `rest_interface`.
 
 
 ## Other Characteristics
+
 - It is a little bank application, where the bank can create clients and clients can create and manage accounts, e.g. deposit and transfer money.
 - The analysis class diagram is in file `src/main/BankModel.pdf`. Its editable source by UMLet has extension `.uxf`.
+- As simplification an application layer is not implemented, but the interface layer is made transactional.
 - Internationalizable, parameterizable exception message texts
 - Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
 - Tests are run against an empty in-memory Derby database.
@@ -64,8 +69,6 @@ This process is excluded from m2e lifecycle mapping in the `pom.xml`.
   This would require the usage of `client.id` and `account.id` as a composite ID for `AccountAccess`.
   Not so easy, see [JPA: How to associate entities with relationship attributes?](http://stackoverflow.com/questions/18739334/jpa-how-to-associate-entities-with-relationship-attributes)
 - Implementation of real unit tests with mock implementations of the repository interfaces.
-- Put an application layer with transaction management on top of the domain model.
-- Export the application layer as a REST service.
 
 ## References and Sources
 - [Detailed example text about DDD](https://www.mirkosertic.de/blog/2013/04/domain-driven-design-example/)

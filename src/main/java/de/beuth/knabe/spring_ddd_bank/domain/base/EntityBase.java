@@ -11,8 +11,7 @@ import javax.persistence.MappedSuperclass;
  * Inspired by the DDD Sample project.
  * @author Christoph Knabe
  * @since 2017-03-06
- * @see <a href="https://github.com/citerus/dddsample-core/blob/master/src/main/java/se/citerus/dddsample/domain/shared/Entity.java">Entity in the DDD Sample</a>
- * *
+ * @see <a href="https://github.com/citerus/dddsample-core/blob/master/src/main/java/se/citerus/dddsample/domain/shared/Entity.java">Entity in the DDD Sample</a> 
  */
 @MappedSuperclass
 public abstract class EntityBase<T extends EntityBase<T>> {

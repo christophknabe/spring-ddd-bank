@@ -1,8 +1,5 @@
 package de.beuth.knabe.spring_ddd_bank;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;

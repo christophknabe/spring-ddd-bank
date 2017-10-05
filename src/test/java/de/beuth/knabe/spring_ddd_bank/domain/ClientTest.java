@@ -30,11 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+/**Test driver for the Rich Domain Object {@linkplain Client}*/
 @RunWith(SpringRunner.class)
 //@DataJpaTest
 //@AutoConfigureTestDatabase
 @SpringBootTest
-public class ClientServiceTest {
+public class ClientTest {
 
 
     /**Only for use in the cleanUp method!*/

@@ -24,6 +24,7 @@ import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 
+/**Test driver for the value object {@linkplain Amount}*/
 public class AmountTest {
 
     /**The exactness, by which euros have to be calculated when represented as double floating point numbers.*/

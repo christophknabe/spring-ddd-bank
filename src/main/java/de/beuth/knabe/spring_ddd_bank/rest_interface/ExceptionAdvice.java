@@ -19,7 +19,7 @@ import multex.Msg;
 /**
  * Centralized Exception Reporting for all Controller classes.
  * 
- * @see {@linkplain https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service}
+ * @see <a href="https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service">Building a HATEOAS REST Service</a> with Spring.
  */
 @ControllerAdvice
 public class ExceptionAdvice {
