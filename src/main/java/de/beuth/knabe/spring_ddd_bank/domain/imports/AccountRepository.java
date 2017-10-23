@@ -15,7 +15,7 @@ public interface AccountRepository {
      */
 	Optional<Account> find(Long id);
 
-    /**Deletes all Accounts. Useful for test scenarions in order to start with an empty account set.*/
+    /**Deletes all Accounts. Useful for test scenarios in order to start with an empty account set.*/
     void deleteAll();
 
     /**Gives the account a unique, higher ID and saves the client.
