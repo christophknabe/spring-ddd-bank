@@ -68,6 +68,9 @@ This process is excluded from m2e lifecycle mapping in the `pom.xml`.
   There should not be a possibility for several links between a client and an account.
   This would require the usage of `client.id` and `account.id` as a composite ID for `AccountAccess`.
   Not so easy, see [JPA: How to associate entities with relationship attributes?](http://stackoverflow.com/questions/18739334/jpa-how-to-associate-entities-with-relationship-attributes)
+- Implement another kind of persistence interface beside Spring Data JPA, 
+  e.g. JPA Criteria API, as the interface-based implementation of Spring Data
+  is confusing to beginners.
 - Implementation of real unit tests with mock implementations of the repository interfaces.
 
 ## References and Sources
