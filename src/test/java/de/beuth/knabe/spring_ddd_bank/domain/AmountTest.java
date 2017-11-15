@@ -69,28 +69,28 @@ public class AmountTest {
             assertEquals("-21474836,48", amount.toString());
         }
         {
-            final Amount amount = new Amount(Amount.MAX_VALUE);
+            final Amount amount = new Amount(Amount.maxValue());
             final double result = amount.toDouble();
-            assertEquals(Amount.MAX_VALUE, result, DELTA);
+            assertEquals(Amount.maxValue(), result, DELTA);
         }
         {
-            final Amount amount = new Amount(-Amount.MAX_VALUE);
+            final Amount amount = new Amount(Amount.minValue());
             final double result = amount.toDouble();
-            assertEquals(-Amount.MAX_VALUE, result, DELTA);
+            assertEquals(Amount.minValue(), result, DELTA);
         }
     }
 
     @Test
     public void outsideRangeConstruction(){
-        final double overgreatValue = Amount.MAX_VALUE + 1E16;
+        final double overgreatValue = Amount.maxValue() + 0.01;
         try{
             new Amount(overgreatValue);
-            fail("IllegalArgumentException expected");
-        }catch(IllegalArgumentException expected){}
+            fail("Amount.RangeExc expected");
+        }catch(Amount.RangeExc expected){}
         try{
             new Amount(-overgreatValue);
-            fail("IllegalArgumentException expected");
-        }catch(IllegalArgumentException expected){}
+            fail("Amount.RangeExc expected");
+        }catch(Amount.RangeExc expected){}
     }
 
     @Test
@@ -106,20 +106,20 @@ public class AmountTest {
             assertEquals(99999.99, result.toDouble(), DELTA);
         }
         {
-            final Amount max = new Amount(Amount.MAX_VALUE);
-            final Amount badDelta = new Amount(1E16);
+            final Amount max = new Amount(Amount.maxValue());
+            final Amount badDelta = new Amount(0,1);
             try{
                 max.plus(badDelta);
-                fail("IllegalArgumentException expected");
-            }catch(IllegalArgumentException expected){}
+                fail("Amount.RangeExc expected");
+            }catch(Amount.RangeExc expected){}
         }
         {
-            final Amount min = new Amount(-Amount.MAX_VALUE);
-            final Amount badDelta = new Amount(-1E16);
+            final Amount min = new Amount(Amount.minValue());
+            final Amount badDelta = new Amount(0,-1);
             try{
                 min.plus(badDelta);
-                fail("IllegalArgumentException expected");
-            }catch(IllegalArgumentException expected){}
+                fail("(Amount.RangeExc expected");
+            }catch(Amount.RangeExc expected){}
         }
     }
 
@@ -136,20 +136,20 @@ public class AmountTest {
             assertEquals(99999.99, result.toDouble(), DELTA);
         }
         {
-            final Amount max = new Amount(Amount.MAX_VALUE);
-            final Amount badDelta = new Amount(-1E16);
+            final Amount max = new Amount(Amount.maxValue());
+            final Amount badDelta = new Amount(0,-1);
             try{
                 max.minus(badDelta);
-                fail("IllegalArgumentException expected");
-            }catch(IllegalArgumentException expected){}
+                fail("Amount.RangeExc expected");
+            }catch(Amount.RangeExc expected){}
         }
         {
-            final Amount min = new Amount(-Amount.MAX_VALUE);
-            final Amount badDelta = new Amount(+1E16);
+            final Amount min = new Amount(Amount.minValue());
+            final Amount badDelta = new Amount(0,1);
             try{
                 min.minus(badDelta);
-                fail("IllegalArgumentException expected");
-            }catch(IllegalArgumentException expected){}
+                fail("Amount.RangeExc expected");
+            }catch(Amount.RangeExc expected){}
         }
     }
 
@@ -166,18 +166,18 @@ public class AmountTest {
             assertEquals(-100000.0, result.toDouble(), DELTA);
         }
         {
-            final Amount max = new Amount(Amount.MAX_VALUE);
+            final Amount max = new Amount(Amount.maxValue());
             try{
-                max.times(1.1);
-                fail("IllegalArgumentException expected");
-            }catch(IllegalArgumentException expected){}
+                max.times(1.00000000000001);
+                fail("Amount.RangeExc expected");
+            }catch(Amount.RangeExc expected){}
         }
         {
-            final Amount min = new Amount(-Amount.MAX_VALUE);
+            final Amount min = new Amount(Amount.minValue());
             try{
-                min.times(1.1);
-                fail("IllegalArgumentException expected");
-            }catch(IllegalArgumentException expected){}
+                min.times(1.00000000000001);
+                fail("Amount.RangeExc expected");
+            }catch(Amount.RangeExc expected){}
         }
     }
 

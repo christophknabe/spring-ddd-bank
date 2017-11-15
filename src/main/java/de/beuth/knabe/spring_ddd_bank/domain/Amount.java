@@ -1,6 +1,7 @@
 package de.beuth.knabe.spring_ddd_bank.domain;
 
 import javax.persistence.Embeddable;
+import static multex.MultexUtil.create;
 
 /**
  * Value Object representing a Euro money amount with two decimal fraction digits.
@@ -8,8 +9,10 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class Amount {
 
-    /**The maximum positive value that should be used as a Euro amount. The corresponding negative number is usable as minimum amount.*/
-    public static final double MAX_VALUE = 9E16;
+    /**Returns the maximum positive value that should be used as a Euro amount.*/
+    public static double maxValue() {return 9E13;}
+    /**Returns the minimum negative value that should be used as a Euro amount.*/
+    public static double minValue() {return -maxValue();}
 
     public static final Amount ZERO = new Amount(0,0);
 
@@ -31,22 +34,30 @@ public class Amount {
      * @throws IllegalArgumentException  the resulting value is out of range
      */
     public Amount(final double euros){
+    	if(euros < minValue() || maxValue() < euros) {
+    		throw create(RangeExc.class, euros, minValue(), maxValue());
+    	}
         final long result = Math.round(euros *100.0);
         //System.out.printf("Amount of %f euros results in %d cents.\n", euros, result);
-        if(result ==Long.MIN_VALUE || result ==Long.MAX_VALUE){
+        if(result == Long.MIN_VALUE || result == Long.MAX_VALUE){
             throw new IllegalArgumentException(String.format("Amount of %f euros is out of range.", euros));
         }
         cents = result;
     }
-
+    
+    /**The amount of {0} euros is out of range. It must be between {1} and {2}.*/
+    public static class RangeExc extends multex.Exc {}
+    
     public long getCents(){return cents;}
 
     /**Returns the sum of this Amount and the other Amount.
      * @throws IllegalArgumentException  the resulting value is out of range
      */
     public Amount plus(final Amount other){
-        final double result = this.toDouble() + other.toDouble();
-        return new Amount(result);
+        final double doubleResult = this.toDouble() + other.toDouble();
+        final Amount result = new Amount(doubleResult);
+        //System.out.printf("Sum of %s euros and %s euros results in %s euros.\n", this, other, result);
+		return result;
     }
 
     @Override
