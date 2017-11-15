@@ -23,14 +23,23 @@
 	</properties>
 
 	<dependencies>
-		<!-- According to https://spring.io/guides/gs/rest-service/ <dependency> 
-			<groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> 
-			</dependency> -->
+		<!-- According to https://spring.io/guides/gs/rest-service/ -->
+		<!-- 
+		<dependency> 
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId> 
+		</dependency> 
+		-->
 		<!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
+		<!-- According to https://spring.io/guides/gs/securing-web/ -->		
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -138,7 +147,10 @@
 						<goals>
 							<goal>javadoc</goal>
 						</goals>
+						<!-- 
 						<phase>process-classes</phase>
+						 -->
+						<phase>compile</phase>
 						<configuration>
 							<!-- Specific configuration for the messages report -->
 							<doclet>multex.tool.ExceptionMessagesDoclet</doclet>
