@@ -40,6 +40,11 @@ public class ClientJpaRepository implements ClientRepository {
 		return impl.findOneById(id);
 	}
 
+	@Override
+	public Optional<Client> find(String username) {
+		return impl.findOneByUsername(username);
+	}
+
     public List<Client> findAll(){
         return impl.findAllByOrderByIdDesc();
     }

@@ -5,6 +5,9 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.security.access.annotation.Secured;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import static multex.MultexUtil.create;
 
@@ -17,9 +20,10 @@ import java.util.Optional;
  */
 @Entity 
 @Configurable
+//@Secured("CLIENT") //Only role CLIENT may call the methods in this domain class. You can apply this annotation at the class or at the method level.
 public class Client extends EntityBase<Client> {
-
-    private String name;
+ 
+    private String username;
     private LocalDate birthDate;
 
 
@@ -27,13 +31,16 @@ public class Client extends EntityBase<Client> {
     @SuppressWarnings("unused")
 	private Client() {}
 
-    public Client(final String name, final LocalDate birthDate) {
-        this.name = name;
+    /**Creates a Client from its unique user name and birthDate. For simplicity we do not store a full name of the Client.*/
+    public Client(final String username, final LocalDate birthDate) {
+        this.username = username;
         this.birthDate = birthDate;
     }
 
-	public String getName() {
-		return name;
+	/**Returns the username of this client, by which he is supposed to login into the application.*/
+	@Column(unique=true, nullable=false)
+	public String getUsername() {
+		return username;
 	}
 
     public LocalDate getBirthDate() {
@@ -44,7 +51,7 @@ public class Client extends EntityBase<Client> {
     public String toString() {
         return String.format(
                 "Client{id=%d, name='%s', birthDate='%s'}",
-                getId(), name, birthDate);
+                getId(), username, birthDate);
     }
 
     //Required repositories as by Ports and Adapters Pattern:
@@ -162,13 +169,15 @@ public class Client extends EntityBase<Client> {
         return accountRepository.find(id);
     }
     
-	/**Query: Returns a report about all accounts the passed {@link Client} has access to. */
+	/**Query: Returns a report about all accounts this {@link Client} has the right to manage.
+	 * @return Report with a line for each account manageable. It has 3 columns: the access right (isOwner|manages), the balance, the name of the account. 
+	 * 		The columns are separated by tab characters. */
 	public String accountsReport() {
 	    final StringBuilder result = new StringBuilder();
 	    final List<AccountAccess> accountAccesses = accountAccessRepository.findManagedAccountsOf(this, false);
-	    result.append(String.format("Accounts of client: %s\n", getName()));
+	    result.append(String.format("Accounts of client: %s\n", getUsername()));
 	    for(final AccountAccess accountAccess: accountAccesses){
-	        final String accessRight = accountAccess.isOwner() ? "isOwner " : "manages";
+	        final String accessRight = accountAccess.isOwner() ? "isOwner" : "manages";
 	        final Account account = accountAccess.getAccount();
 	        result.append(String.format("%s\t%5.2f\t%s\n", accessRight, account.getBalance().toDouble(), account.getName()));
 	    }

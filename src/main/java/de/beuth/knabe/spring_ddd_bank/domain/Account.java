@@ -35,7 +35,7 @@ public class Account extends EntityBase<Account> {
 
     public Amount getBalance(){ return balance;}
 
-    public void setBalance(final Amount amount){ this.balance = amount;}
+    void setBalance(final Amount amount){ this.balance = amount;}
 
 	/**The minimum balance, which must stay on each account.*/
 	public static final Amount getMinimumBalance(){return new Amount(-1000, 0);}

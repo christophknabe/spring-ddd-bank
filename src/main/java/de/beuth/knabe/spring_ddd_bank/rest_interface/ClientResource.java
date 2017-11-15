@@ -21,7 +21,7 @@ public class ClientResource {
     /**Constructs a ClientResource with the data of the passed Client entity.*/
     public ClientResource(final Client entity) {
     	this.id = entity.getId();
-        this.name = entity.getName();
+        this.name = entity.getUsername();
         this.birthDate = Util.MEDIUM_DATE_FORMATTER.format(entity.getBirthDate());
     }
 

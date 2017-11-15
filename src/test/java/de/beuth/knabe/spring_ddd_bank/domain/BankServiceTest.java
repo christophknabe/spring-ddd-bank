@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +46,12 @@ public class BankServiceTest {
     private BankService bankService;
 
     @Before
-    public void cleanUp(){
+    public void cleanUpBefore(){
+        cleanupService.deleteAll();
+    }
+
+    @After
+    public void cleanUpAfter(){
         cleanupService.deleteAll();
     }
 
@@ -57,7 +63,7 @@ public class BankServiceTest {
         
         //Create a Client:
         final LocalDate jackBirthDate = LocalDate.parse("1966-12-31");
-		final Client newClient = bankService.createClient("Jack Bauer", jackBirthDate);
+		final Client newClient = bankService.createClient("jack", jackBirthDate);
 		//By createClient a new Client object was created with an id:
         final Long clientId = newClient.getId();
 		assertNotNull(clientId);
@@ -68,7 +74,7 @@ public class BankServiceTest {
 		assertEquals(true, optionalClient.isPresent());
 		final Client client = optionalClient.get();
 		assertEquals(clientId, client.getId());
-		assertEquals("Jack Bauer", client.getName());
+		assertEquals("jack", client.getUsername());
 		assertEquals(jackBirthDate, client.getBirthDate());
     }
 
@@ -88,18 +94,18 @@ public class BankServiceTest {
 
     @Test
     public void createClientsFindAllClients() {
-        bankService.createClient("Kim Bauer", LocalDate.parse("1994-05-21"));
-        bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        bankService.createClient("kim", LocalDate.parse("1994-05-21"));
+        bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final Iterable<Client> clients = bankService.findAllClients();
         final String result = stringize(clients);
-        assertEquals("1966-12-31 Jack Bauer, 1994-05-21 Kim Bauer", result);
+        assertEquals("1966-12-31 jack, 1994-05-21 kim", result);
     }
 
     @Test
     public void findYoungClients() {
-        bankService.createClient("Kim Bauer", LocalDate.parse("1994-05-21"));
-        bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
-        bankService.createClient("Chloe O'Brian", LocalDate.parse("1992-12-01"));
+        bankService.createClient("kim", LocalDate.parse("1994-05-21"));
+        bankService.createClient("jack", LocalDate.parse("1966-12-31"));
+        bankService.createClient("chloe", LocalDate.parse("1992-12-01"));
         {
             //Expecting no clients:
             final Iterable<Client> noClients = bankService.findYoungClients(LocalDate.parse("1994-05-22"));
@@ -110,32 +116,32 @@ public class BankServiceTest {
             //Expecting one client:
             final Iterable<Client> oneClients = bankService.findYoungClients(LocalDate.parse("1994-05-21"));
             final String result = stringize(oneClients);
-            assertEquals("1994-05-21 Kim Bauer", result);
+            assertEquals("1994-05-21 kim", result);
         }
         {
             //Expecting two clients:
             final Iterable<Client> twoClients = bankService.findYoungClients(LocalDate.parse("1992-12-01"));
             final String result = stringize(twoClients);
-            assertEquals("1994-05-21 Kim Bauer, 1992-12-01 Chloe O'Brian", result);
+            assertEquals("1994-05-21 kim, 1992-12-01 chloe", result);
         }
         {
             //Expecting still two clients:
             final Iterable<Client> twoClients = bankService.findYoungClients(LocalDate.parse("1967-01-01"));
             final String result = stringize(twoClients);
-            assertEquals("1994-05-21 Kim Bauer, 1992-12-01 Chloe O'Brian", result);
+            assertEquals("1994-05-21 kim, 1992-12-01 chloe", result);
         }
         {
             //Expecting three clients:
             final Iterable<Client> twoClients = bankService.findYoungClients(LocalDate.parse("1966-12-31"));
             final String result = stringize(twoClients);
-            assertEquals("1994-05-21 Kim Bauer, 1992-12-01 Chloe O'Brian, 1966-12-31 Jack Bauer", result);
+            assertEquals("1994-05-21 kim, 1992-12-01 chloe, 1966-12-31 jack", result);
         }
     }
 
     @Test
     public void findRichClients() {
-        final Client kim = bankService.createClient("Kim Bauer", LocalDate.parse("1994-05-21"));
-        final Client chloe = bankService.createClient("Chloe O'Brian", LocalDate.parse("1992-12-01"));
+        final Client kim = bankService.createClient("kim", LocalDate.parse("1994-05-21"));
+        final Client chloe = bankService.createClient("chloe", LocalDate.parse("1992-12-01"));
         assertTrue(chloe.getId() > kim.getId());
         final AccountAccess kimAccount = kim.createAccount("Kim's Account");
         final AccountAccess chloeAccount = chloe.createAccount("Chloe's Account");
@@ -151,20 +157,20 @@ public class BankServiceTest {
             //Expecting one client:
             final Iterable<Client> oneClients = bankService.findRichClients(new Amount(1000,01));
             final String result = stringize(oneClients);
-            assertEquals("1994-05-21 Kim Bauer", result);
+            assertEquals("1994-05-21 kim", result);
         }
         {
             //Expecting two clients, the richer should come first:
             final Iterable<Client> twoClients = bankService.findRichClients(new Amount(1000,00));
             final String result = stringize(twoClients);
-            assertEquals("1994-05-21 Kim Bauer, 1992-12-01 Chloe O'Brian", result);
+            assertEquals("1994-05-21 kim, 1992-12-01 chloe", result);
         }
         chloe.deposit(chloeAccount.getAccount(), new Amount(0,01));
         {
             //Expecting two equally rich clients. The entity with the higher ID should be first.:
             final Iterable<Client> twoClients = bankService.findRichClients(new Amount(1000,01));
             final String result = stringize(twoClients);
-            assertEquals("1992-12-01 Chloe O'Brian, 1994-05-21 Kim Bauer", result);
+            assertEquals("1992-12-01 chloe, 1994-05-21 kim", result);
         }
     }
 
@@ -179,7 +185,7 @@ public class BankServiceTest {
             assertNotNull(client.getId());
             result.append(client.getBirthDate());
             result.append(' ');
-            result.append(client.getName());
+            result.append(client.getUsername());
         }
         return result.toString();
     }

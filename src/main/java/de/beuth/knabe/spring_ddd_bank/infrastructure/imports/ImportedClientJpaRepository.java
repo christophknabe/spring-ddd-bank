@@ -15,7 +15,7 @@ import java.util.Optional;
  */
 public interface ImportedClientJpaRepository extends JpaRepository<Client, Long> {
 
-    /**Deletes all Clients. Useful for test scenarions in order to start with an empty client set*/
+    /**Deletes all Clients. Useful for test scenarios in order to start with an empty client set*/
     void deleteAll();
 
     Client save(Client client);
@@ -24,7 +24,9 @@ public interface ImportedClientJpaRepository extends JpaRepository<Client, Long>
     
     Optional<Client> findOneById(Long id);
     
-    Optional<Client> findOneByNameAndBirthDate(String name, LocalDate birthDate);
+    Optional<Client> findOneByUsername(String username);
+    
+    Optional<Client> findOneByUsernameAndBirthDate(String name, LocalDate birthDate);
 
     List<Client> findAllByOrderByIdDesc();
 

@@ -31,7 +31,7 @@ public class ExceptionAdvice {
 	private static final Logger log = LoggerFactory.getLogger(ExceptionAdvice.class);
 
 	@ResponseBody
-	@ExceptionHandler({Exc.class, Failure.class})
+	@ExceptionHandler({Exception.class})
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	/**Reports the given Exception with messages localized according to the given Locale of the web request.*/
 	VndErrors reportException(final Exception ex, final Locale requestLocale) {

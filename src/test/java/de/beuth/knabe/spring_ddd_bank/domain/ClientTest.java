@@ -53,11 +53,11 @@ public class ClientTest {
 
     @Test
     public void createAccountCheckProperties(){
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final AccountAccess jacksSavings = jack.createAccount("Jack's Savings");
         assertNotNull(jacksSavings);
         assertEquals(jack, jacksSavings.getClient());
-        assertEquals("Jack Bauer", jacksSavings.getClient().getName());
+        assertEquals("jack", jacksSavings.getClient().getUsername());
         assertEquals(true, jacksSavings.isOwner());
         final Account jacksSavingsAccount = jacksSavings.getAccount();
         assertEquals("Jack's Savings", jacksSavingsAccount.getName());
@@ -65,47 +65,47 @@ public class ClientTest {
         assertEquals(jack.getId(), jacksSavings.getClient().getId());
         assertEquals(true, jack.sameIdentityAs(jacksSavings.getClient()));
         final String report = jack.accountsReport();
-        assertEquals("Accounts of client: Jack Bauer\n" +
-                "isOwner \t 0,00\tJack's Savings\n", report);
+        assertEquals("Accounts of client: jack\n" +
+                "isOwner\t 0,00\tJack's Savings\n", report);
     }
 
     @Test
     public void deposit(){
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final AccountAccess jacksGiro = jack.createAccount("Jack's Giro");
         jack.deposit(jacksGiro.getAccount(), new Amount(999999999,99));
         final String report = jack.accountsReport();
-        assertEquals("Accounts of client: Jack Bauer\nisOwner \t999999999,99\tJack's Giro\n", report);
+        assertEquals("Accounts of client: jack\nisOwner\t999999999,99\tJack's Giro\n", report);
     }
 
     @Test
     public void depositAmountExc(){
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
         try {
             jack.deposit(jacksGiro, Amount.ZERO);
             fail("Client.AmountExc expected");
         } catch (Client.AmountExc expected) {}
         final String report = jack.accountsReport();
-        assertEquals("Accounts of client: Jack Bauer\nisOwner \t 0,00\tJack's Giro\n", report);
+        assertEquals("Accounts of client: jack\nisOwner\t 0,00\tJack's Giro\n", report);
     }
 
     @Test
     public void depositsReport(){
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final AccountAccess jacksGiro = jack.createAccount("Jack's Giro");
         final AccountAccess jacksSavings = jack.createAccount("Jack's Savings");
         jack.deposit(jacksGiro.getAccount(), new Amount(999999999,99));
         jack.deposit(jacksSavings.getAccount(), new Amount(0,1));
         final String report = jack.accountsReport();
-        assertEquals("Accounts of client: Jack Bauer\n" +
-                "isOwner \t 0,01\tJack's Savings\n" +
-                "isOwner \t999999999,99\tJack's Giro\n", report);
+        assertEquals("Accounts of client: jack\n" +
+                "isOwner\t 0,01\tJack's Savings\n" +
+                "isOwner\t999999999,99\tJack's Giro\n", report);
     }
 
     @Test
     public void transfer(){
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
         final Account jacksSavings = jack.createAccount("Jack's Savings").getAccount();
         final Amount minimumBalance = Account.getMinimumBalance();
@@ -113,14 +113,14 @@ public class ClientTest {
         jack.transfer(jacksGiro, jacksSavings, maximumTransferAmount);
         final String report = jack.accountsReport();
         final String maximumTransferAmountString = maximumTransferAmount.toString();
-        assertEquals("Accounts of client: Jack Bauer\n" +
-                "isOwner \t" + maximumTransferAmountString + "\tJack's Savings\n" +
-                "isOwner \t-" + maximumTransferAmountString + "\tJack's Giro\n", report);
+        assertEquals("Accounts of client: jack\n" +
+                "isOwner\t" + maximumTransferAmountString + "\tJack's Savings\n" +
+                "isOwner\t-" + maximumTransferAmountString + "\tJack's Giro\n", report);
     }
 
     @Test
     public void transferExc(){
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
         final Account jacksSavings = jack.createAccount("Jack's Savings").getAccount();
         try{
@@ -128,7 +128,7 @@ public class ClientTest {
             fail("Client.AmountExc expected");
         }catch (Client.AmountExc expected){}
 
-        final Client chloe = bankService.createClient("Chloe O'Brian", LocalDate.parse("1992-12-01"));
+        final Client chloe = bankService.createClient("chloe", LocalDate.parse("1992-12-01"));
         try{
             chloe.transfer(jacksGiro, jacksSavings, new Amount(0,01));
             fail("Client.WithoutRightExc expected");
@@ -146,10 +146,10 @@ public class ClientTest {
     @Test
     public void addAccountManager(){
     	//GIVEN:
-        final Client jack = bankService.createClient("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
         final Account jacksSavings = jack.createAccount("Jack's Savings").getAccount();
-        final Client chloe = bankService.createClient("Chloe O'Brian", LocalDate.parse("1992-12-01"));
+        final Client chloe = bankService.createClient("chloe", LocalDate.parse("1992-12-01"));
         
         //Client cannot transfer from an account, if she is not manager of the account:
         try{
@@ -171,7 +171,7 @@ public class ClientTest {
         chloe.transfer(jacksGiro, jacksSavings, new Amount(0,01));
         
         //But chloe is only manager of the account, not owner. She cannot add another Manager to the account.
-        final Client tony = bankService.createClient("Tony Almeida", LocalDate.parse("1964-03-22"));
+        final Client tony = bankService.createClient("tony", LocalDate.parse("1964-03-22"));
         try {
 			chloe.addAccountManager(jacksGiro, tony);
             fail("Client.NotOwnerExc expected");
@@ -196,7 +196,7 @@ public class ClientTest {
             assertNotNull(client.getId());
             result.append(client.getBirthDate());
             result.append(' ');
-            result.append(client.getName());
+            result.append(client.getUsername());
         }
         return result.toString();
     }

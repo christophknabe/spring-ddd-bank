@@ -33,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
+import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 
 /**Test driver for the {@linkplain ClientJpaRepository}*/
 @RunWith(SpringRunner.class)
@@ -43,12 +44,17 @@ public class ClientJpaRepositoryTest {
 	
 
     @Autowired
-    private ClientJpaRepository testee;
+    private ClientRepository testee;
 
     @Before
     public void cleanUp(){
     	testee.deleteAll();
         Locale.setDefault(Locale.GERMANY);
+    }
+    
+    @Test
+    public void isJpaRepository() {
+    	assertEquals(ClientJpaRepository.class.getName(), testee.getClass().getName()); 
     }
 
     @Test
@@ -61,20 +67,45 @@ public class ClientJpaRepositoryTest {
 			final Optional<Client> result = testee.find(1L);
 			assertEquals(Optional.empty(), result);
 		}
+		{
+			final Optional<Client> result = testee.find("jack");
+			assertEquals(Optional.empty(), result);
+		}
     }
 
     @Test
     public void saveAndFind(){
-        final Client jack = new Client("Jack Bauer", LocalDate.parse("1966-12-31"));
+        final Client jack = new Client("jack", LocalDate.parse("1966-12-31"));
         assertNull(jack.getId());
         final List<Client> noClients = testee.findAll();
         assertEquals(Collections.emptyList(), noClients);
         
         testee.save(jack);
+        final Long jackId = jack.getId();
+        assertNotNull(jackId);
         {
             final List<Client> allClients = testee.findAll();
-            assertEquals(Arrays.asList(jack), allClients);
-        	
+            assertEquals(Arrays.asList(jack), allClients);        	
+        }
+        {
+            final Client foundJack = testee.find(jackId).get();
+            assertEquals(jack, foundJack);        	
+        }
+        {
+            final Client foundJack = testee.find("jack").get();
+            assertEquals(jack, foundJack);        	
+        }
+    }
+
+    @Test
+    public void deleteAndFind(){
+        final Client jack = new Client("jack", LocalDate.parse("1966-12-31"));
+        final Client chloe = new Client("chloe", LocalDate.parse("1977-01-01"));        
+        testee.save(jack);
+        testee.save(chloe);
+        {
+            final List<Client> allClients = testee.findAll(); //newest first
+            assertEquals(Arrays.asList(chloe, jack), allClients);        	
         }
     }
     

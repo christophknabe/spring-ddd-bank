@@ -13,7 +13,7 @@ import de.beuth.knabe.spring_ddd_bank.domain.Client;
  */
 public interface ClientRepository {
 
-    /**Deletes all Clients. Useful for test scenarions in order to start with an empty client set.*/
+    /**Deletes all Clients. Useful for test scenarios in order to start with an empty client set.*/
     void deleteAll();
 
     /**Gives the client a unique, higher ID and saves the client.
@@ -27,6 +27,11 @@ public interface ClientRepository {
      * @throws IllegalArgumentException  id is null
      */
     Optional<Client> find(Long id);
+
+    /**Returns the {@link Client} object with the given username, if existing.
+     * @throws IllegalArgumentException  username is null or empty
+     */
+    Optional<Client> find(String username);
 
     /**Finds all {@link Client}s and returns them ordered by descending IDs.*/
     List<Client> findAll();

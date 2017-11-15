@@ -1,16 +1,16 @@
 package de.beuth.knabe.spring_ddd_bank.rest_interface;
 
-/**Command to add the Client with the given managerClientId as a manager to the Account with the given accountId.*/
+/**Command to add the Client with the given username as a manager to the Account with the given accountId.*/
 public class AddAccountManagerCommand {
 
 	public Long accountId;
-	public Long managerClientId;
+	public String username;
 
     @Override
     public String toString() {
         return String.format(
-                "AddAccountManagerCommand{accountId=%d, managerClientId=%d}",
-                accountId, managerClientId);
+                "AddAccountManagerCommand{accountId=%d, username=%s}",
+                accountId, username);
     }
 
 }
