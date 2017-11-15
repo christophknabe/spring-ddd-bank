@@ -1,4 +1,4 @@
-#Documentation of the REST Endpoints of the Bank Application
+# Documentation of the REST Endpoints of the Bank Application
 
 | Verb   | Resource URI with Request Params | Effect                                   |
 | ------ | -------------------------------- | ---------------------------------------- |
