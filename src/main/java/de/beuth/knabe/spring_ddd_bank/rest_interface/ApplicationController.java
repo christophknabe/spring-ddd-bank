@@ -86,10 +86,10 @@ public class ApplicationController {
     		){
 		_print(method, request);
 		if(clientResource.id != null) {
-			throw create(ClientCreateWithIdExc.class, clientResource.name, clientResource.id);
+			throw create(ClientCreateWithIdExc.class, clientResource.username, clientResource.id);
 		}
     	final LocalDate birthLocalDate = LocalDate.parse(clientResource.birthDate, Util.MEDIUM_DATE_FORMATTER);
-		final Client client = bankService.createClient(clientResource.name, birthLocalDate);
+		final Client client = bankService.createClient(clientResource.username, birthLocalDate);
         return new ResponseEntity<>(new ClientResource(client), HttpStatus.CREATED);
     }
     

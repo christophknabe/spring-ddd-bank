@@ -52,6 +52,7 @@ After this is working you can import the Maven project into your Java IDE
 - Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
 - Tests are run against an empty in-memory Derby database.
 - Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into [target/site/jacoco-ut/index.html](file:target/site/jacoco-ut/index.html).
+- Simple Spring Security with a fixed number of predefined users (1 bank, and 4 clients).
 
 ### Where are the exception message texts?
 In the file `MessageText.properties`. The editable original with some fixed message texts is in `src/main/resources/`.
