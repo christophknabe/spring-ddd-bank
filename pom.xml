@@ -4,6 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
+    <name>Spring DDD Bank</name>
 	<groupId>de.bht-berlin.knabe</groupId>
 	<artifactId>spring-ddd-bank</artifactId>
 	<version>0.1-SNAPSHOT</version>

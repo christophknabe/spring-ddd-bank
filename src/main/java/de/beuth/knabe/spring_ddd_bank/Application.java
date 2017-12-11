@@ -57,7 +57,6 @@ private static void setDerbySystemHome() {
 		return args -> {
 			log.info("Spring Application started.");
 			// displayAllBeans(applicationContext);
-			//startDerbyNetworkServer(derbyPort);
 		};
 	}
 

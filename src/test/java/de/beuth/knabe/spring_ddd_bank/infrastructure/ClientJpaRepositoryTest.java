@@ -37,8 +37,6 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 
 /**Test driver for the {@linkplain ClientJpaRepository}*/
 @RunWith(SpringRunner.class)
-//@DataJpaTest
-//@AutoConfigureTestDatabase
 @SpringBootTest
 public class ClientJpaRepositoryTest {
 	
@@ -53,7 +51,7 @@ public class ClientJpaRepositoryTest {
     }
     
     @Test
-    public void isJpaRepository() {
+    public void isJpaRepositoryImplementation() {
     	assertEquals(ClientJpaRepository.class.getName(), testee.getClass().getName()); 
     }
 
@@ -104,14 +102,49 @@ public class ClientJpaRepositoryTest {
         testee.save(jack);
         testee.save(chloe);
         {
-            final List<Client> allClients = testee.findAll(); //newest first
-            assertEquals(Arrays.asList(chloe, jack), allClients);        	
+            final List<Client> clients = testee.findAll(); //newest first
+            assertEquals(Arrays.asList(chloe, jack), clients);        	
+        }
+        {
+            testee.delete(chloe);
+            final List<Client> clients = testee.findAll(); //newest first
+            assertEquals(Arrays.asList(jack), clients);        	
+        }
+        {
+            testee.delete(jack);
+            final List<Client> clients = testee.findAll(); //newest first
+            assertEquals(Arrays.asList(), clients);        	
         }
     }
-    
-    /*
-     * The test coverage should be improved by adding more test cases 
-     * including all methods of the testee.
-     */
+
+    @Test
+    public void findAllBornFrom(){
+        final LocalDate jackBirthDate = LocalDate.parse("1966-12-31");
+		final Client jack = new Client("jack", jackBirthDate);
+        final LocalDate chloeBirthDate = LocalDate.parse("1977-01-01");
+		final Client chloe = new Client("chloe", chloeBirthDate);        
+        testee.save(jack);
+        testee.save(chloe);
+        {
+            final List<Client> clients = testee.findAll(); //newest first
+            assertEquals(Arrays.asList(chloe, jack), clients);        	
+        }
+        {
+            final List<Client> clients = testee.findAllBornFrom(jackBirthDate); //newest first
+            assertEquals(Arrays.asList(chloe, jack), clients);        	
+        }
+        {
+            final List<Client> clients = testee.findAllBornFrom(jackBirthDate.plusDays(1)); //newest first
+            assertEquals(Arrays.asList(chloe), clients);        	
+        }
+        {
+            final List<Client> clients = testee.findAllBornFrom(chloeBirthDate); //newest first
+            assertEquals(Arrays.asList(chloe), clients);        	
+        }
+        {
+            final List<Client> clients = testee.findAllBornFrom(chloeBirthDate.plusDays(1)); //newest first
+            assertEquals(Arrays.asList(), clients);        	
+        }
+    }
 
 }
