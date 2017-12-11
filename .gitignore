@@ -1,17 +1,20 @@
-#For IDE IntelliJ IDEA:
+#Files to be ignored. Knabe
+
+#Created by IDE IntelliJ IDEA:
 /.idea/
 /*.iml
 
-#For IDE Eclipse:
+#Created by IDE Eclipse:
 /.project
 /.classpath
 /.settings/
 
-#For database Derby:
+#Created by database Derby if derby-db is the database name in the Derby URL:
 /derby-db/
 /derby.log
+#But file /derby.properties is useful to be versioned!
 
-#For Maven generated files:
+#Created by Maven:
 /target/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
