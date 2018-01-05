@@ -105,7 +105,7 @@ manages&gt;</panel_attributes>
     </coordinates>
     <panel_attributes>bg=yellow
 Analysis Model of a Bank
-Christoph Knabe, 2017-11-15</panel_attributes>
+Christoph Knabe, 2018-01-05</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -161,7 +161,7 @@ accountsReport(): String</panel_attributes>
       <w>510</w>
       <h>110</h>
     </coordinates>
-    <panel_attributes>Explanation:
+    <panel_attributes>Stereotypes:
 &lt;&lt;entity&gt;&gt; Objects have an identity and are persistent.
 &lt;&lt;service&gt;&gt; Container for operations, which are not specific for an entity.
 &lt;&lt;value object&gt;&gt; Objects without identity and persistence
