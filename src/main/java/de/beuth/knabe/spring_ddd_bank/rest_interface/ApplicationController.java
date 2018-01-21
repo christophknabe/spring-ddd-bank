@@ -7,6 +7,10 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -56,15 +60,24 @@ public class ApplicationController {
     @GetMapping(path="/")
     public ResponseEntity<String> home(final WebSecurityConfig config, final HttpMethod method, final WebRequest request) {
 		_print(method, request);
-        final ResponseEntity<String> responseEntity = new ResponseEntity<>("Welcome to the Banking Web App. Predefined users with empty passwords are " + config.predefinedUsernames() + ". Use URIs under /bank/ or /client/", HttpStatus.OK);
+        final ResponseEntity<String> responseEntity =
+				new ResponseEntity<>("Welcome to the Banking Web App. " +
+						"<br />Predefined users are " + config.predefinedUsernames() +
+						"<br />Passwords are equal to usernames. " +
+						"<br />Use URIs under /bank/ or /client/" +
+						"<br /><a href=\"swagger-ui.html\">Click here for api documentation</a>", HttpStatus.OK);
 		return responseEntity;
     }
     
     //For the banker role all URIs under /bank:
 
     /*A transaction, which creates two random objects of type Client, but sometimes fails after the first one.*/
+    @ApiOperation(value = "Creates 2 random clients, sometimes fail after first. " +
+			"Returns a list of all clients. This is useful for populating the database " +
+			"and for checking, if the transaction rollback mechanism works.",
+			authorizations = {@Authorization(value="basicAuth")})
     @PostMapping("/bank/pair")
-    public ResponseEntity<ClientResource[]> create2Clients(final HttpMethod method, final WebRequest request) {
+    public ResponseEntity<ClientResource[]> create2Clients(@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
     	final long now = System.currentTimeMillis();
     	final long number = now % 100;
@@ -78,11 +91,13 @@ public class ApplicationController {
     	final List<Client> clients = bankService.findAllClients();
         return _clientsToResources(clients);
     }
-    
+
+    @ApiOperation(value = "Create a client from the passed client resource.",
+			authorizations = {@Authorization(value="basicAuth")})
     @PostMapping("/bank/client")
     public ResponseEntity<ClientResource> createClient(
     		@RequestBody  final ClientResource clientResource,
-    		final HttpMethod method, final WebRequest request
+			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
 		if(clientResource.id != null) {
@@ -96,22 +111,28 @@ public class ApplicationController {
     /**The client to be created with username {0} must not have an ID, but has {1}*/
     public static class ClientCreateWithIdExc extends multex.Exc {}
 
+    @ApiOperation(value = "Delete the client with the given username.",
+			authorizations = {@Authorization(value="basicAuth")})
     @DeleteMapping("/bank/client/{username}")
     public ResponseEntity<String> deleteClient(
-    		@PathVariable  final String username,
-    		final HttpMethod method, final WebRequest request
+    		@PathVariable @ApiParam("username of client")  final String username,
+			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
     	final Client client = bankService.findClient(username).get();
     	bankService.deleteClient(client);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }	
-    
+
+    @ApiOperation(value = "Find clients. Omit Paramters to retrieve all clients.",
+			authorizations = {@Authorization(value="basicAuth")})
     @GetMapping(path="/bank/client")
     public ResponseEntity<ClientResource[]> findClients(
+    		@ApiParam("Returns all clients born at fromBirth or later.")
     		@RequestParam(name="fromBirth", defaultValue="") final String fromBirth,
+    		@ApiParam("Returns all clients with an account with a balance of minBalance or more.")
     		@RequestParam(name="minBalance", defaultValue="") final String minBalance,
-    		final HttpMethod method, final WebRequest request
+    		@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
     	final List<Client> clients;
@@ -131,11 +152,14 @@ public class ApplicationController {
     }
     
     //For the client role all URIs under /client:
-    
+
+	@ApiOperation(value = "Creates a new account for the authenticated client with his userName. " +
+			"The account gets the name, which is passed as request body.",
+			authorizations = {@Authorization(value="basicAuth")})
     @PostMapping("/client/account")
     public ResponseEntity<AccountAccessResource> createAccount(
     		@RequestBody  final String accountName,
-    		final HttpMethod method, final WebRequest request
+    		@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
 		final Client client = _findClient(request);
@@ -145,9 +169,12 @@ public class ApplicationController {
     }
     
     /*Resource for a coarse grained business process according to https://www.thoughtworks.com/de/insights/blog/rest-api-design-resource-modeling*/
+    @ApiOperation(value = "Deposits the given amount of money to the account with the given accountId. " +
+			"This is executed as the authenticated client with his username.",
+			authorizations = {@Authorization(value="basicAuth")})
     @PostMapping("/client/deposit")
     public ResponseEntity<Void> deposit(@RequestBody  final DepositCommand command,
-    		final HttpMethod method, final WebRequest request
+    		@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
 		final Client client = _findClient(request);
@@ -158,9 +185,13 @@ public class ApplicationController {
     }
 
     /*Resource for a coarse grained business process according to https://www.thoughtworks.com/de/insights/blog/rest-api-design-resource-modeling*/
+    @ApiOperation(value = "Transfers the given amount of money from the account with the given sourceAccountId to " +
+			"the account with the given destinationAccountId. Requires, that the current user is the owner " +
+			"of the given source account.",
+			authorizations = {@Authorization(value="basicAuth")})
     @PostMapping("/client/transfer")
     public ResponseEntity<AccountResource> transfer(@RequestBody  final TransferCommand command,
-    		final HttpMethod method, final WebRequest request
+    		@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
 		final Client client = _findClient(request);
@@ -173,10 +204,13 @@ public class ApplicationController {
     }    
 
     /*Resource for a coarse grained business process according to https://www.thoughtworks.com/de/insights/blog/rest-api-design-resource-modeling*/
+    @ApiOperation(value = "Adds the client with the given username as an account manager to the account with the " +
+			"given accountId. Requires, that the current user is the owner of the given account.",
+			authorizations = {@Authorization(value="basicAuth")})
     @PostMapping("/client/manager")
     public ResponseEntity<AccountAccessResource> addAccountManager(
     		@RequestBody  final AddAccountManagerCommand command,
-    		final HttpMethod method, final WebRequest request
+    		@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
 		final Client client = _findClient(request);
@@ -186,9 +220,10 @@ public class ApplicationController {
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     } 
 
+    @ApiOperation(value = "accountsReport", authorizations = {@Authorization(value="basicAuth")})
     @GetMapping("/client/account")
     public ResponseEntity<String> accountsReport(
-    		final HttpMethod method, final WebRequest request
+    		@ApiParam(hidden = true) final HttpMethod method, final WebRequest request
     		){
 		_print(method, request);
 		final Client client = _findClient(request);

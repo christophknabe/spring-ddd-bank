@@ -20,6 +20,7 @@
 		<java.version>1.8</java.version>
 		<aspectj.version>1.8.9</aspectj.version>
 		<multexVersion>8.3</multexVersion>
+		<swagger.version>2.8.0</swagger.version>
 		<messageTextFile>MessageText.properties</messageTextFile>
 	</properties>
 
@@ -75,6 +76,16 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -316,6 +327,11 @@
 			<id>bht-knabe-repository</id>
 			<name>BHT Knabe Maven 2 repository</name>
 			<url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>
+		</repository>
+		<repository><!-- For Swagger -->
+			<id>jcenter-snapshots</id>
+			<name>jcenter</name>
+			<url>https://jcenter.bintray.com/</url>
 		</repository>
 	</repositories>
 
