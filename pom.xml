@@ -328,11 +328,6 @@
 			<name>BHT Knabe Maven 2 repository</name>
 			<url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>
 		</repository>
-		<repository><!-- For Swagger -->
-			<id>jcenter-snapshots</id>
-			<name>jcenter</name>
-			<url>https://jcenter.bintray.com/</url>
-		</repository>
 	</repositories>
 
 	<pluginRepositories>
