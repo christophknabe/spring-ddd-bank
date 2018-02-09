@@ -4,29 +4,26 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 
-    <name>Spring DDD Bank</name>
+	<name>Spring DDD Bank</name>
 	<groupId>de.bht-berlin.knabe</groupId>
 	<artifactId>spring-ddd-bank</artifactId>
 	<version>0.1-SNAPSHOT</version>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>1.4.3.RELEASE</version>
 	</parent>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 		<aspectj.version>1.8.9</aspectj.version>
+		<derby.version>10.12.1.1</derby.version>
 		<multexVersion>8.3</multexVersion>
 		<messageTextFile>MessageText.properties</messageTextFile>
 	</properties>
-
 	<dependencies>
-		<!-- According to https://spring.io/guides/gs/rest-service/ -->
-		<!-- <dependency> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-web</artifactId> 
-			</dependency> -->
 		<!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -58,7 +55,8 @@
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbyclient</artifactId>
 			<version>${derby.version}</version>
-			<!-- Install artifact into the local repo, so that a database browser can pick it up, but do not deliver it with the product:  -->
+			<!-- Install artifact into the local repo, so that a database browser 
+				can pick it up, but do not deliver it with the product: -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -131,25 +129,7 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.0.2</version>
-				<executions>
-					<execution>
-						<id>download-dependency-sources</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>sources</goal>
-						</goals>
-						<configuration>
-							<!-- configure the plugin here -->
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
 				<executions>
 					<execution>
 						<!-- Here used for extraction of exception message texts in the reference 
@@ -224,7 +204,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.18.1</version>
 				<configuration>
 					<!-- Sets the VM argument line for test runs in Surefire, created by 
 						the upper prepare-agent goal of the jacoco-maven-plugin. -->
@@ -298,6 +277,16 @@
 					<show>private</show>
 				</configuration>
 			</plugin>
+			<!-- Do not look for possible repositories for each dependency in order 
+				to speed up project site generation. See https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+				</configuration>
+			</plugin>
 		</plugins>
 	</reporting>
 
@@ -306,25 +295,18 @@
 			<id>spring-releases</id>
 			<name>Spring Releases</name>
 			<url>https://repo.spring.io/libs-release</url>
-		</repository>
-		<repository>
-			<id>org.jboss.repository.releases</id>
-			<name>JBoss Maven Release Repository</name>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository><!-- For current MulTEx: -->
 			<id>bht-knabe-repository</id>
 			<name>BHT Knabe Maven 2 repository</name>
 			<url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/libs-release</url>
-		</pluginRepository>
-	</pluginRepositories>
 
 </project>
