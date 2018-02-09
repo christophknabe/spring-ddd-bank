@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                                (C) Christoph Knabe, 2017-03-17, 2017-10-04
+                                            (C) Christoph Knabe, 2017-03-17 ... 2018-02-09
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
@@ -24,6 +24,8 @@ By  `mvn clean test`   all necessary libraries will be fetched, the project will
 
 After this is working you can import the Maven project into your Java IDE 
 (Spring Tool Suite is recommended, as AspectJ weaving is needed for the compile phase).
+
+You can run the application (a REST server) in your IDE by running class `de.beuth.knabe.spring_ddd_bank.Application` or in Maven by `mvn spring-boot:run` or after `mvn package` by `java -jar target/spring-ddd-bank-0.1-SNAPSHOT.jar`. In the last lines of the log you will see the number of the port (usually 8080), on which the server will listen.
 
 ## Which DDD principles are implemented?
 
