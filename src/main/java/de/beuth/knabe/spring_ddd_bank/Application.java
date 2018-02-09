@@ -85,6 +85,7 @@ private static void setDerbySystemHome() {
 		// System.out.println(server.getCurrentProperties());
 	}
 
+	/**Displays the names of all Spring beans in the given application context.*/
 	private static void displayAllBeans(final ApplicationContext applicationContext) {
 		System.out.println("Application.displayAllBeans:");
 		final String[] allBeanNames = applicationContext.getBeanDefinitionNames();

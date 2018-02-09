@@ -3,7 +3,6 @@ package de.beuth.knabe.spring_ddd_bank.rest_interface;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Stream;
 
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,7 +92,8 @@ public class ApplicationController {
     }
     
     /**The client to be created with username {0} must not have an ID, but has {1}*/
-    public static class ClientCreateWithIdExc extends multex.Exc {}
+    @SuppressWarnings("serial")
+	public static class ClientCreateWithIdExc extends multex.Exc {}
 
     @DeleteMapping("/bank/client/{username}")
     public ResponseEntity<String> deleteClient(
@@ -240,7 +239,8 @@ public class ApplicationController {
 	}
     
     /**There is no Client object for the username {0}.*/
-    public static class NoClientForUserExc extends Exc{}
+    @SuppressWarnings("serial")
+	public static class NoClientForUserExc extends Exc{}
 
     
 }

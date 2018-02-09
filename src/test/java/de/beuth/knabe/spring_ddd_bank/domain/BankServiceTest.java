@@ -86,7 +86,7 @@ public class BankServiceTest {
 
 	private void _assertEmpty(final Iterable<Client> clients) {	
 		int count = 0;
-		for(final Client c: clients) {
+		for(@SuppressWarnings("unused") final Client c: clients) {
 			count++;
 		}
 		assertEquals("Iterable<Client> should be empty.", 0, count);

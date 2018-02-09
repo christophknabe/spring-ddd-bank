@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,12 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 /**Configuration for securing the application.
  * @see <a href="https://spring.io/guides/gs/securing-web/">Spring: Getting Started Guide "Securing a Web Application"</a> 
  *      for defining users with basic authentication and for access control to URIs.
- * @see <a href="http://websystique.com/spring-security/spring-security-4-method-security-using-preauthorize-postauthorize-secured-el/">Spring Security 4 Method security using @PreAuthorize,@PostAuthorize, @Secured, EL</a> 
- *      for enabling securing methods by the @Secured annotation.
  * */
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(securedEnabled=true) No success to get it work. Knabe 17-11-10
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String CLIENT_ROLE = "CLIENT";
 	private static final String BANK_ROLE = "BANK";

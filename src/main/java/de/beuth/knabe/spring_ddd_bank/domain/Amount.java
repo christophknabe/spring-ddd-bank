@@ -46,7 +46,8 @@ public class Amount {
     }
     
     /**The amount of {0} euros is out of range. It must be between {1} and {2}.*/
-    public static class RangeExc extends multex.Exc {}
+    @SuppressWarnings("serial")
+	public static class RangeExc extends multex.Exc {}
     
     public long getCents(){return cents;}
 

@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
@@ -20,7 +19,6 @@ import static multex.MultexUtil.create;
  * @since 2017-03-01
  */
 @Service
-//@Secured("BANK") //Only role BANK may call the methods in this service class. You can apply this annotation at the class or at the method level.
 public class BankService {
 
     //Required repositories as by Ports and Adapters Pattern:
@@ -49,7 +47,8 @@ public class BankService {
     }
     
     /**Illegal username "{0}". Must have 1..31 characters, start with a letter and contain only english letters, underscores, and decimal digits.*/
-    public static class UsernameExc extends multex.Exc {}
+    @SuppressWarnings("serial")
+	public static class UsernameExc extends multex.Exc {}
 
     /**Command: Deletes the given {@link Client}.
      * @throws DeleteExc Client has accounts, where he is the owner.*/
@@ -66,7 +65,8 @@ public class BankService {
     }
 
     /**Cannot delete client {0}, Still owns account {1}.*/
-    public static class DeleteExc extends multex.Exc {}
+    @SuppressWarnings("serial")
+	public static class DeleteExc extends multex.Exc {}
 
     /**Query: Finds the client with the given id, if exists.
      * @deprecated Use {@link #findClient(String)} for search by username instead. Since 2017-11-13

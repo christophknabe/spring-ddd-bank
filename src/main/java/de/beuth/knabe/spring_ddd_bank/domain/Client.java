@@ -5,8 +5,6 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.security.access.annotation.Secured;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import static multex.MultexUtil.create;
@@ -20,7 +18,6 @@ import java.util.Optional;
  */
 @Entity 
 @Configurable
-//@Secured("CLIENT") //Only role CLIENT may call the methods in this domain class. You can apply this annotation at the class or at the method level.
 public class Client extends EntityBase<Client> {
  
     private String username;
