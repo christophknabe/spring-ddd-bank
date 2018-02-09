@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -34,6 +35,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/").permitAll()
             .antMatchers("/bank/**").hasRole(BANK_ROLE)
             .antMatchers("/client/**").hasRole(CLIENT_ROLE)
+            // For swagger-ui. See http://springfox.github.io/springfox/docs/current/#answers-to-common-questions-and-problems
+            // No. 26 "Why is http://host:port/swagger-ui.html blank" ...
+            .antMatchers(
+                    HttpMethod.GET,
+                    "/v2/api-docs",
+                    "/swagger-resources/**",
+                    "/swagger-ui.html**",
+                    "/webjars/**",
+                    "favicon.ico"
+            ).permitAll()
             .anyRequest().authenticated()
             .and().httpBasic() //Authenticate with username and password.
             //For REST services disable CSRF protection. 
@@ -50,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         final InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthentication = auth.inMemoryAuthentication();
         for(final String username: predefinedUsernames) {
         	final String role = username.equalsIgnoreCase(BANK_ROLE) ? BANK_ROLE : CLIENT_ROLE;
-			inMemoryAuthentication.withUser(username).password("").roles(role);
+			inMemoryAuthentication.withUser(username).password(username).roles(role);
         }
     }
     

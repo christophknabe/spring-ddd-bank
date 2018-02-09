@@ -21,6 +21,7 @@
 		<aspectj.version>1.8.9</aspectj.version>
 		<derby.version>10.12.1.1</derby.version>
 		<multexVersion>8.3</multexVersion>
+		<swagger.version>2.8.0</swagger.version>
 		<messageTextFile>MessageText.properties</messageTextFile>
 	</properties>
 	<dependencies>
@@ -73,6 +74,16 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
 		</dependency>
 	</dependencies>
 
