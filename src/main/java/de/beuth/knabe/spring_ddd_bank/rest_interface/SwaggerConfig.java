@@ -14,6 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Swagger Configuration for REST-API documentation.
@@ -48,19 +49,33 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfo(
-                "Spring DDD Bank API",
-                "A sample project following Domain Driven Design with Spring Data JPA" +
-                        "<br />Predefined users are " + webSecurityConfig.predefinedUsernames() +
-                        "<br />Passwords are equal to usernames." +
-                        "<br />Keep in mind to login via the Authorize button before calling API methods.",
+                "Spring DDD Bank REST Webservice",
+                "<p>A sample project following Domain Driven Design with Spring Data JPA</p>" +
+                        "<p>Usernames are predefined. The banker's username is <b>bank</b></p>" +
+                        "<p>Client usernames are <b>" + _clientUsernames() + "</b></p>" +
+                        "<p>Each user's password is equal to the username. </p>" +
+                        "<p>URIs under <b>/bank/</b> are for bankers, under <b>/client/</b> are for clients.</p>" +
+                        "<p>Keep in mind to login via the <b>Authorize</b> button before calling API methods.</p>" +
+                        "<p>Click on <b>application-controller</b> in order to see the API methods.</p>" +
+                        "",
                 null,
                 null,
                 new Contact(
-                        "Christoph Knabe", null, null
+                        "Christoph Knabe", "http://public.beuth-hochschule.de/~knabe/", null
                 ),
                 null,
                 null,
                 Collections.emptyList()
         );
+    }
+
+    private String _clientUsernames(){
+        final StringBuilder result = new StringBuilder();
+        for(final String username: webSecurityConfig.predefinedUsernames()){
+            result.append(", ");
+            result.append(username);
+        }
+        result.replace(0, ", bank, ".length(), "");
+        return result.toString();
     }
 }

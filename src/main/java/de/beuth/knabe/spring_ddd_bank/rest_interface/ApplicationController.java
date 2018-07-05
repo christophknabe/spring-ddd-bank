@@ -56,21 +56,21 @@ public class ApplicationController {
     //For everyone (guests):
     
     @GetMapping(path="/")
-    public ResponseEntity<String> home(final WebSecurityConfig config, final HttpMethod method, final WebRequest request) {
+    public ResponseEntity<String> home(/*final WebSecurityConfig webSecurityConfig, */final HttpMethod method, final WebRequest request) {
 		_print(method, request);
-        final ResponseEntity<String> responseEntity =
-				new ResponseEntity<>("Welcome to the Banking Web App. " +
-						"<br />Predefined users are " + config.predefinedUsernames() +
-						"<br />Passwords are equal to usernames. " +
-						"<br />Use URIs under /bank/ or /client/" +
-						"<br /><a href=\"swagger-ui.html\">Click here for api documentation</a>", HttpStatus.OK);
+		final String htmlContent =
+				"<!DOCTYPE html><html><body>" +
+				"<h1>Welcome to the Spring DDD Bank REST Webservice.</h1>" +
+				"<p style='font-size: large;'>Click here for <a href='swagger-ui.html'>REST API documentation</a> powered by <a href='https://swagger.io/'>Swagger</a></p>" +
+				"</body></html>";
+		final ResponseEntity<String> responseEntity = new ResponseEntity<>(htmlContent, HttpStatus.OK);
 		return responseEntity;
     }
     
     //For the banker role all URIs under /bank:
 
     /*A transaction, which creates two random objects of type Client, but sometimes fails after the first one.*/
-    @ApiOperation(value = "Creates 2 random clients, sometimes fail after first. " +
+    @ApiOperation(value = "Creates 2 random clients, sometimes fails after first. " +
 			"Returns a list of all clients. This is useful for populating the database " +
 			"and for checking, if the transaction rollback mechanism works.",
 			authorizations = {@Authorization(value="basicAuth")})
@@ -123,7 +123,7 @@ public class ApplicationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }	
 
-    @ApiOperation(value = "Find clients. Omit Paramters to retrieve all clients.",
+    @ApiOperation(value = "Find clients. Omit Parameters to retrieve all clients.",
 			authorizations = {@Authorization(value="basicAuth")})
     @GetMapping(path="/bank/client")
     public ResponseEntity<ClientResource[]> findClients(
