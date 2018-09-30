@@ -9,8 +9,7 @@
 /.classpath
 /.settings/
 
-#Created by database Derby if derby-db is the database name in the Derby URL:
-/derby-db/
+#Created by database Derby when running the test suite:
 /derby.log
 #But file /derby.properties is useful to be versioned!
 
