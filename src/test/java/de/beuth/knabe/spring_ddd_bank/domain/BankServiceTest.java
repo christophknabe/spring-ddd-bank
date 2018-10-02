@@ -62,19 +62,18 @@ public class BankServiceTest {
         _assertEmpty(noClients);
         
         //Create a Client:
+        final String jackUsername = "jack";
         final LocalDate jackBirthDate = LocalDate.parse("1966-12-31");
-		final Client newClient = bankService.createClient("jack", jackBirthDate);
+		final Client newClient = bankService.createClient(jackUsername, jackBirthDate);
 		//By createClient a new Client object was created with an id:
         final Long clientId = newClient.getId();
 		assertNotNull(clientId);
 
-		//By this id we always can retrieve the Client:
-		final Optional<Client> optionalClient = bankService.findClient(clientId);
-		assertNotNull(optionalClient);
-		assertEquals(true, optionalClient.isPresent());
-		final Client client = optionalClient.get();
+		//We can retrieve the Client by his username:
+		final Client client = bankService.findClient(jackUsername);
+		assertNotNull(client);
 		assertEquals(clientId, client.getId());
-		assertEquals("jack", client.getUsername());
+		assertEquals(jackUsername, client.getUsername());
 		assertEquals(jackBirthDate, client.getBirthDate());
     }
 

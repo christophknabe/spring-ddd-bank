@@ -3,6 +3,8 @@ package de.beuth.knabe.spring_ddd_bank.rest_interface;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.hateoas.VndErrors;
@@ -12,12 +14,18 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import de.beuth.knabe.spring_ddd_bank.domain.Amount;
+import de.beuth.knabe.spring_ddd_bank.domain.BankService;
+import de.beuth.knabe.spring_ddd_bank.domain.Client;
+import de.beuth.knabe.spring_ddd_bank.rest_interface.ApplicationController.ClientCreateWithIdExc;
 import multex.Msg;
 
 /**
  * Centralized Exception Reporting for all Controller classes.
  * 
  * @see <a href="https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service">Building a HATEOAS REST Service</a> with Spring.
+ * @see <a href="https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc">Exception Handling in Spring MVC</a>.
+ * @author Christoph Knabe
  */
 @ControllerAdvice
 public class ExceptionAdvice {
@@ -30,10 +38,15 @@ public class ExceptionAdvice {
 
 	@ResponseBody
 	@ExceptionHandler({Exception.class})
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	/**Reports the given Exception with messages localized according to the given Locale of the web request.*/
-	VndErrors reportException(final Exception ex, final Locale requestLocale) {
-		//prepare messages for client with the Locale of the request:
+	/**Reports the given Exception with messages in three ways:
+	 * <ol>
+	 *   <li>with messages in default language and with stack trace to the error log</li>
+	 *   <li>with localized messages according to the given Locale of the web request to the REST client</li>
+	 *   <li>as HTTP status code to the REST client</li>
+	 * </ol>
+	 */
+	VndErrors reportException(final Exception ex, final Locale requestLocale, final HttpServletResponse response) {
+		//prepare messages for REST client with the Locale of the request:
 		/** Message texts for exceptions. */
 		final ResourceBundle requestResourceBundle = ResourceBundle.getBundle(BASE_NAME, requestLocale);
 		final StringBuffer clientMessages = new StringBuffer();
@@ -54,6 +67,38 @@ public class ExceptionAdvice {
 		//log the report on the server:
 		log.error(serverMessages.toString());
 		//respond with localized messages to the client:
+		response.setStatus(exceptionToStatus(ex).value());
 		return new VndErrors("error", clientMesagesString);
 	}
+
+	final String restInterfacePackagePrefix = _computePackagePrefix(ApplicationController.ClientCreateWithIdExc.class);
+	final String domainPackagePrefix = _computePackagePrefix(Client.NotOwnerExc.class);
+	
+	/**Converts the given exception to the most suiting HTTP response status. 
+	 * @return one of {@link HttpStatus.NOT_FOUND}, {@link HttpStatus.FORBIDDEN}, {@link HttpStatus.BAD_REQUEST}, {@link HttpStatus.INTERNAL_SERVER_ERROR}
+	 */
+	HttpStatus exceptionToStatus(final Exception exc) {
+		if(exc instanceof BankService.NoClientForUserExc) {
+			return HttpStatus.NOT_FOUND;
+		}
+		if(exc instanceof Client.NotOwnerExc) {
+			return HttpStatus.FORBIDDEN;
+		}
+		if(exc instanceof Client.WithoutRightExc) {
+			return HttpStatus.FORBIDDEN;
+		}
+        final String excClassName = exc.getClass().getName();
+		if(excClassName.startsWith(restInterfacePackagePrefix) || excClassName.startsWith(domainPackagePrefix)) {
+			return HttpStatus.BAD_REQUEST;
+		}
+		return HttpStatus.INTERNAL_SERVER_ERROR;
+	}
+	
+	/**Returns the name prefix of all classes in the package of the given exception class.
+	 * @return if the given class is modeled in the package <code>tld.mysoftware.domain</code>, the result will be <code>tld.mysoftware.domain.</code> */
+	String _computePackagePrefix(final Class<?> excClass) {
+		final String packageName = excClass.getPackage().getName();
+		return packageName + '.';
+	}
+	
 }

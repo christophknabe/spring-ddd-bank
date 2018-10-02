@@ -14,7 +14,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Swagger Configuration for REST-API documentation.
