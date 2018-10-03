@@ -62,7 +62,8 @@ public class BankService {
 	}
 
 	/**
-	 * Command: Deletes the given {@link Client}.
+	 * Command: Deletes the given {@link Client}. 
+	 * If he has manager account access to some accounts, TODO 
 	 * 
 	 * @throws DeleteExc
 	 *             Client has accounts, where he is the owner.
@@ -87,20 +88,20 @@ public class BankService {
 	/**
 	 * Query: Finds the client with the given username.
 	 * 
-	 * @throws NoClientForUserExc
+	 * @throws ClientNotFoundExc
 	 *             There is no client object with the given username.
 	 */
-	public Client findClient(final String username) throws NoClientForUserExc {
-		final Optional<Client> client = clientRepository.find(username);
-		if (!client.isPresent()) {
-			throw create(NoClientForUserExc.class, username);
+	public Client findClient(final String username) throws ClientNotFoundExc {
+		final Optional<Client> optional = clientRepository.find(username);
+		if (!optional.isPresent()) {
+			throw create(ClientNotFoundExc.class, username);
 		}
-		return client.get();
+		return optional.get();
 	}
 
 	/** There is no Client object for the username {0}. */
 	@SuppressWarnings("serial")
-	public static class NoClientForUserExc extends Exc {
+	public static class ClientNotFoundExc extends Exc {
 	}
 
 	/**

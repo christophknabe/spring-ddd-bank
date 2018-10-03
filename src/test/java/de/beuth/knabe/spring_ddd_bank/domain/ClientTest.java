@@ -70,6 +70,33 @@ public class ClientTest {
     }
 
     @Test
+    public void findAndCreateAccount(){
+        final String jackUsername = "jack";
+        final Client jack = bankService.createClient(jackUsername, LocalDate.parse("1966-12-31"));
+		//Before createAccount no accounts can be found:
+        final String noAccounts = jack.accountsReport();
+        assertEquals("Accounts of client: jack\n", noAccounts);
+        try {
+        	jack.findAccount(1L);
+            fail("Client.AccountNotFoundExc expected");
+        } catch (Client.AccountNotFoundExc expected) {}
+        
+        //Create an Account:
+        final AccountAccess jacksSavingsAccess = jack.createAccount("Jack's Savings");
+		assertNotNull("Jack's Savings", jacksSavingsAccess);
+		
+		//By createAccount a new Account object was created with an id:
+        final Account jacksSavingsAccount = jacksSavingsAccess.getAccount();
+        final Long jacksSavingsAccountId = jacksSavingsAccount.getId();
+		assertNotNull("jacksSavingsAccountId", jacksSavingsAccountId);
+
+		//We can retrieve the Account by its ID:
+		final Account account = jack.findAccount(jacksSavingsAccountId);
+		assertNotNull(account);
+		assertEquals(jacksSavingsAccountId, account.getId());
+    }
+
+    @Test
     public void deposit(){
         final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final AccountAccess jacksGiro = jack.createAccount("Jack's Giro");
@@ -119,7 +146,7 @@ public class ClientTest {
     }
 
     @Test
-    public void transferExc(){
+	public void transferExc(){
         final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
         final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
         final Account jacksSavings = jack.createAccount("Jack's Savings").getAccount();

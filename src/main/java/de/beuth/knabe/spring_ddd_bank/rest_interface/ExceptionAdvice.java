@@ -23,82 +23,101 @@ import multex.Msg;
 /**
  * Centralized Exception Reporting for all Controller classes.
  * 
- * @see <a href="https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service">Building a HATEOAS REST Service</a> with Spring.
- * @see <a href="https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc">Exception Handling in Spring MVC</a>.
+ * @see <a href=
+ *      "https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service">Building
+ *      a HATEOAS REST Service</a> with Spring.
+ * @see <a href=
+ *      "https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc">Exception
+ *      Handling in Spring MVC</a>.
  * @author Christoph Knabe
  */
 @ControllerAdvice
 public class ExceptionAdvice {
 
-
-	/**The baseName for locating the exception message text resource bundle.*/ 
+	/** The baseName for locating the exception message text resource bundle. */
 	public static final String BASE_NAME = "MessageText";
 
 	private static final Logger log = LoggerFactory.getLogger(ExceptionAdvice.class);
 
 	@ResponseBody
-	@ExceptionHandler({Exception.class})
-	/**Reports the given Exception with messages in three ways:
+	@ExceptionHandler({ Exception.class })
+	/**
+	 * Reports the given Exception with messages in three ways:
 	 * <ol>
-	 *   <li>with messages in default language and with stack trace to the error log</li>
-	 *   <li>with localized messages according to the given Locale of the web request to the REST client</li>
-	 *   <li>as HTTP status code to the REST client</li>
+	 * <li>with messages in default language and with stack trace to the error
+	 * log</li>
+	 * <li>with localized messages according to the given Locale of the web request
+	 * to the REST client</li>
+	 * <li>as HTTP status code to the REST client</li>
 	 * </ol>
 	 */
 	VndErrors reportException(final Exception ex, final Locale requestLocale, final HttpServletResponse response) {
-		//prepare messages for REST client with the Locale of the request:
+		// prepare messages for REST client with the Locale of the request:
 		/** Message texts for exceptions. */
 		final ResourceBundle requestResourceBundle = ResourceBundle.getBundle(BASE_NAME, requestLocale);
 		final StringBuffer clientMessages = new StringBuffer();
 		multex.Msg.printMessages(clientMessages, ex, requestResourceBundle);
 		final String clientMesagesString = clientMessages.toString();
 
-		//prepare log report with messages and stack trace:
+		// prepare log report with messages and stack trace:
 		final StringBuffer serverMessages = new StringBuffer();
 		serverMessages.append("Processing REST request threw exception:\n");
 		final Locale defaultLocale = Locale.getDefault();
 		final ResourceBundle defaultResourceBundle = ResourceBundle.getBundle(BASE_NAME, defaultLocale);
-		if(!defaultResourceBundle.equals(requestResourceBundle)) {
+		if (!defaultResourceBundle.equals(requestResourceBundle)) {
 			serverMessages.append(clientMesagesString);
 			serverMessages.append("\n-----\n");
 		}
 		Msg.printReport(serverMessages, ex, defaultResourceBundle);
-		
-		//log the report on the server:
+
+		// log the report on the server:
 		log.error(serverMessages.toString());
-		//respond with localized messages to the client:
+		// respond with localized messages to the client:
 		response.setStatus(exceptionToStatus(ex).value());
 		return new VndErrors("error", clientMesagesString);
 	}
 
 	final String restInterfacePackagePrefix = _computePackagePrefix(ApplicationController.ClientCreateWithIdExc.class);
 	final String domainPackagePrefix = _computePackagePrefix(Client.NotOwnerExc.class);
-	
-	/**Converts the given exception to the most suiting HTTP response status. 
-	 * @return one of {@link HttpStatus.NOT_FOUND}, {@link HttpStatus.FORBIDDEN}, {@link HttpStatus.BAD_REQUEST}, {@link HttpStatus.INTERNAL_SERVER_ERROR}
+
+	/**
+	 * Converts the given exception to the most suiting HTTP response status.
+	 * 
+	 * @return one of {@link HttpStatus.NOT_FOUND}, {@link HttpStatus.FORBIDDEN},
+	 *         {@link HttpStatus.BAD_REQUEST},
+	 *         {@link HttpStatus.INTERNAL_SERVER_ERROR}
 	 */
 	HttpStatus exceptionToStatus(final Exception exc) {
-		if(exc instanceof BankService.NoClientForUserExc) {
+		if (exc instanceof BankService.ClientNotFoundExc) {
 			return HttpStatus.NOT_FOUND;
 		}
-		if(exc instanceof Client.NotOwnerExc) {
+		if (exc instanceof Client.AccountNotFoundExc) {
+			return HttpStatus.NOT_FOUND;
+		}
+		if (exc instanceof Client.NotOwnerExc) {
 			return HttpStatus.FORBIDDEN;
 		}
-		if(exc instanceof Client.WithoutRightExc) {
+		if (exc instanceof Client.WithoutRightExc) {
 			return HttpStatus.FORBIDDEN;
 		}
-        final String excClassName = exc.getClass().getName();
-		if(excClassName.startsWith(restInterfacePackagePrefix) || excClassName.startsWith(domainPackagePrefix)) {
+		final String excClassName = exc.getClass().getName();
+		if (excClassName.startsWith(restInterfacePackagePrefix) || excClassName.startsWith(domainPackagePrefix)) {
 			return HttpStatus.BAD_REQUEST;
 		}
 		return HttpStatus.INTERNAL_SERVER_ERROR;
 	}
-	
-	/**Returns the name prefix of all classes in the package of the given exception class.
-	 * @return if the given class is modeled in the package <code>tld.mysoftware.domain</code>, the result will be <code>tld.mysoftware.domain.</code> */
+
+	/**
+	 * Returns the name prefix of all classes in the package of the given exception
+	 * class.
+	 * 
+	 * @return if the given class is modeled in the package
+	 *         <code>tld.mysoftware.domain</code>, the result will be
+	 *         <code>tld.mysoftware.domain.</code>
+	 */
 	String _computePackagePrefix(final Class<?> excClass) {
 		final String packageName = excClass.getPackage().getName();
 		return packageName + '.';
 	}
-	
+
 }

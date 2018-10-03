@@ -192,7 +192,7 @@ public class ApplicationController {
 			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final Client client = _findClient(request);
-		final Account destinationAccount = client.findAccount(command.accountId).get();
+		final Account destinationAccount = client.findAccount(command.accountId);
 		final Amount amount = new Amount(command.amount);
 		client.deposit(destinationAccount, amount);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -211,8 +211,8 @@ public class ApplicationController {
 			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final Client client = _findClient(request);
-		final Account sourceAccount = client.findAccount(command.sourceAccountId).get();
-		final Account destinationAccount = client.findAccount(command.destinationAccountId).get();
+		final Account sourceAccount = client.findAccount(command.sourceAccountId);
+		final Account destinationAccount = client.findAccount(command.destinationAccountId);
 		final Amount amount = new Amount(command.amount);
 		client.transfer(sourceAccount, destinationAccount, amount);
 		final AccountResource result = new AccountResource(sourceAccount);
@@ -232,7 +232,7 @@ public class ApplicationController {
 			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final Client client = _findClient(request);
-		final Account account = client.findAccount(command.accountId).get();
+		final Account account = client.findAccount(command.accountId);
 		final Client manager = bankService.findClient(command.username);
 		final AccountAccessResource result = new AccountAccessResource(client.addAccountManager(account, manager));
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
@@ -282,7 +282,7 @@ public class ApplicationController {
 	 * Finds the Client for the username, which has been authenticated with this web
 	 * request.
 	 * 
-	 * @throws BankService.NoClientForUserExc
+	 * @throws BankService.ClientNotFoundExc
 	 *             There is no client object with the username of the authenticated
 	 *             user of this web request.
 	 */
