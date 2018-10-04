@@ -182,8 +182,9 @@ public class BankServiceTest {
 	}
 
 	/**
-	 * Makes a String representation of all passed clients, separated by commas. The
-	 * format of a 2 client result will be "1999-12-31 name1, 2017-12-31 name2".
+	 * Makes a String representation of all passed clients, separated by commas. 
+	 * @param clients a collection of {@link Client}s
+	 * @return the String representation in the format "1999-12-31 name1, 2017-12-31 name2"
 	 */
 	private String stringize(Iterable<Client> clients) {
 		final StringBuilder result = new StringBuilder();

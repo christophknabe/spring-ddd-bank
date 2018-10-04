@@ -24,7 +24,7 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 import de.beuth.knabe.spring_ddd_bank.rest_interface.ApplicationController.ClientCreateWithIdExc;
 import multex.Exc;
 
-/** Test driver for the {@linkplain ClientJpaRepository} */
+/** Test driver for the {@link ExceptionAdvice} */
 public class ExceptionAdviceTest {
 
 	@Autowired

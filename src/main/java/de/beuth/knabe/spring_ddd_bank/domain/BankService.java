@@ -36,13 +36,18 @@ public class BankService {
 	}
 
 	/**
-	 * Command: Creates a new bank client.
+	 * Command: Creates a new bank {@link Client} with given username and birthDate
+	 * and saves it giving it a unique ID.
 	 * 
 	 * @param username
 	 *            the unique username of the new client. It must match the regular
 	 *            expression <code>[a-z_A-Z][a-z_A-Z0-9]{0,30}</code>.
 	 * @param birthDate
 	 *            the birth date of the new client, must not be null
+	 * @return the saved new {@link Client} with the ID set.
+	 * @throws UsernameExc
+	 *             the username does not match the required pattern.
+	 * 
 	 */
 	public Client createClient(final String username, final LocalDate birthDate) {
 		final Pattern pattern = Pattern.compile("[a-z_A-Z][a-z_A-Z0-9]{0,30}");
@@ -54,7 +59,7 @@ public class BankService {
 	}
 
 	/**
-	 * Illegal username "{0}". Must have 1..31 characters, start with a letter and 
+	 * Illegal username "{0}". Must have 1..31 characters, start with a letter and
 	 * contain only english letters, underscores, and decimal digits.
 	 */
 	@SuppressWarnings("serial")
@@ -62,11 +67,15 @@ public class BankService {
 	}
 
 	/**
-	 * Command: Deletes the given {@link Client}. 
-	 * If he has manager account access to some accounts, TODO 
+	 * Command: Deletes the given {@link Client}. The {@link Client} looses all
+	 * manager account accesses to accounts, where he was manager.
+	 * 
+	 * @param client
+	 *            the {@link Client} to be deleted
 	 * 
 	 * @throws DeleteExc
-	 *             Client has accounts, where he is the owner.
+	 *             Client has accounts, where he is the owner. So he cannot yet be
+	 *             deleted.
 	 */
 	public void deleteClient(final Client client) {
 		final List<AccountAccess> managedAccounts = accountAccessRepository.findManagedAccountsOf(client, true);
@@ -88,6 +97,10 @@ public class BankService {
 	/**
 	 * Query: Finds the client with the given username.
 	 * 
+	 * @param username
+	 *            the unique username to be used for locating the {@link Client}
+	 * @return the {@link Client} with the given username
+	 * 
 	 * @throws ClientNotFoundExc
 	 *             There is no client object with the given username.
 	 */
@@ -105,8 +118,10 @@ public class BankService {
 	}
 
 	/**
-	 * Query: Finds all clients of the bank. They are ordered by their descending
-	 * IDs, that means the newest come first.
+	 * Query: Finds all clients of the bank.
+	 * 
+	 * @return all {@link Client}s of the bank ordered by their descending IDs, that
+	 *         means the newest come first.
 	 */
 	public List<Client> findAllClients() {
 		return clientRepository.findAll();
@@ -114,8 +129,12 @@ public class BankService {
 
 	/**
 	 * Query: Finds all clients of the bank, who are born at the given date or
-	 * later. They are ordered by their ascending age and secondly by their
-	 * descending IDs.
+	 * later.
+	 * 
+	 * @param fromBirth
+	 *            the earliest birth date from which {@link Client}s are considered
+	 * @return all young {@link Client}s ordered by their ascending age and secondly
+	 *         by their descending IDs.
 	 */
 	public List<Client> findYoungClients(final LocalDate fromBirth) {
 		return clientRepository.findAllBornFrom(fromBirth);
@@ -123,8 +142,13 @@ public class BankService {
 
 	/**
 	 * Query: Finds all clients of the bank, who own or manage an account with the
-	 * given mimimum balance. They are ordered by their descending account balance
-	 * and secondly by their descending IDs.
+	 * given mimimum balance.
+	 * 
+	 * @return all {@link Client}s with {@link Account} with the given mimimum
+	 *         balance. They are ordered by their descending account balance and
+	 *         secondly by their descending IDs.
+	 * @param minBalance
+	 *            the minimum balance of considered {@link Account}s
 	 */
 	public List<Client> findRichClients(final Amount minBalance) {
 		final List<AccountAccess> fullAccounts = accountAccessRepository.findFullAccounts(minBalance);

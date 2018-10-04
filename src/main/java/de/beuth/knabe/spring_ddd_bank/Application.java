@@ -36,20 +36,25 @@ public class Application {
 	 * expected in the user's home directory and all databases will be created
 	 * inside of the user's home directory.
 	 */
-private static void setDerbySystemHome() {
-	final String derbySystemHomeKey = "derby.system.home";
-	final String derbySystemHomeValue = System.getProperty(derbySystemHomeKey);
-	if (derbySystemHomeValue == null) {
-		final String userHomeValue = System.getProperty("user.home");
-		System.setProperty(derbySystemHomeKey, userHomeValue);
+	private static void setDerbySystemHome() {
+		final String derbySystemHomeKey = "derby.system.home";
+		final String derbySystemHomeValue = System.getProperty(derbySystemHomeKey);
+		if (derbySystemHomeValue == null) {
+			final String userHomeValue = System.getProperty("user.home");
+			System.setProperty(derbySystemHomeKey, userHomeValue);
+		}
+		log.info("Directory {} is location for Derby databases, file derby.log and configuration file derby.properties",
+				System.getProperty(derbySystemHomeKey));
 	}
-	log.info("Directory {} is location for Derby databases, file derby.log and configuration file derby.properties",
-			System.getProperty(derbySystemHomeKey));
-}
 
 	/**
 	 * This is an example how to start a bean yourself with access to the command
 	 * line arguments and other injected beans.
+	 * 
+	 * @param applicationContext
+	 *            object to access many Spring services
+	 * @return a Bean logging that the application started and having access to the
+	 *         command line
 	 */
 	@Bean
 	@Autowired
@@ -67,8 +72,10 @@ private static void setDerbySystemHome() {
 	 * @param derbyPort
 	 *            Port to be used. If 0, then a random port will be used. If null or
 	 *            empty, then the Derby default port will be used.
+	 * @throws Exception
+	 *             an error occured when configuring the ports for Derby
 	 */
-	private static void startDerbyNetworkServer(final String derbyPort) throws Exception, UnknownHostException {
+	private static void startDerbyNetworkServer(final String derbyPort) throws Exception {
 		log.info("Starting Derby Network Server with derby.port={}", derbyPort);
 		final boolean useDefaultPort = StringUtils.isEmpty(derbyPort);
 		final NetworkServerControl server;
@@ -76,7 +83,8 @@ private static void setDerbySystemHome() {
 			server = new NetworkServerControl();
 		} else {
 			final int configuredPortNumber = Integer.parseInt(derbyPort);
-			final int derbyPortNumber = configuredPortNumber!=0 ? configuredPortNumber : SocketUtils.findAvailableTcpPort(10000);
+			final int derbyPortNumber = configuredPortNumber != 0 ? configuredPortNumber
+					: SocketUtils.findAvailableTcpPort(10000);
 			server = new NetworkServerControl(InetAddress.getByName("localhost"), derbyPortNumber);
 		}
 		final PrintWriter printWriter = new PrintWriter(System.out);
@@ -85,7 +93,10 @@ private static void setDerbySystemHome() {
 		// System.out.println(server.getCurrentProperties());
 	}
 
-	/**Displays the names of all Spring beans in the given application context.*/
+	/** Displays the names of all Spring beans in the given application context.
+	 * @param applicationContext
+	 *            object to access many Spring services
+	 */
 	private static void displayAllBeans(final ApplicationContext applicationContext) {
 		System.out.println("Application.displayAllBeans:");
 		final String[] allBeanNames = applicationContext.getBeanDefinitionNames();

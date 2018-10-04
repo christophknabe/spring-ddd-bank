@@ -24,11 +24,11 @@ import multex.Msg;
  * Centralized Exception Reporting for all Controller classes.
  * 
  * @see <a href=
- *      "https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service">Building
- *      a HATEOAS REST Service</a> with Spring.
+ *      "https://spring.io/guides/tutorials/bookmarks/#_building_a_hateoas_rest_service"
+ *      > Building a HATEOAS REST Service</a> with Spring.
  * @see <a href=
- *      "https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc">Exception
- *      Handling in Spring MVC</a>.
+ *      "https://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc" 
+ *      > Exception Handling in Spring MVC</a>.
  * @author Christoph Knabe
  */
 @ControllerAdvice
@@ -83,9 +83,10 @@ public class ExceptionAdvice {
 	/**
 	 * Converts the given exception to the most suiting HTTP response status.
 	 * 
-	 * @return one of {@link HttpStatus.NOT_FOUND}, {@link HttpStatus.FORBIDDEN},
-	 *         {@link HttpStatus.BAD_REQUEST},
-	 *         {@link HttpStatus.INTERNAL_SERVER_ERROR}
+	 * @return one of HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN,
+	 *         HttpStatus.BAD_REQUEST, HttpStatus.INTERNAL_SERVER_ERROR
+	 * @param exc
+	 *            the exception to be converted
 	 */
 	HttpStatus exceptionToStatus(final Exception exc) {
 		if (exc instanceof BankService.ClientNotFoundExc) {
@@ -113,7 +114,9 @@ public class ExceptionAdvice {
 	 * 
 	 * @return if the given class is modeled in the package
 	 *         <code>tld.mysoftware.domain</code>, the result will be
-	 *         <code>tld.mysoftware.domain.</code>
+	 *         <code>tld.mysoftware.domain.</code> with trailing dot.
+	 * @param excClass
+	 *            a Class object for a class in a package
 	 */
 	String _computePackagePrefix(final Class<?> excClass) {
 		final String packageName = excClass.getPackage().getName();

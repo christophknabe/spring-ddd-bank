@@ -8,6 +8,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.SecurityBuilder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,7 +17,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /**Configuration for securing the application.
- * @see <a href="https://spring.io/guides/gs/securing-web/">Spring: Getting Started Guide "Securing a Web Application"</a> 
+ * @see <a href=
+ * "https://spring.io/guides/gs/securing-web/"
+ * >
+ * Spring: Getting Started Guide "Securing a Web Application"
+ * </a> 
  *      for defining users with basic authentication and for access control to URIs.
  * */
 @Configuration
@@ -51,7 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final List<String> predefinedUsernames = Arrays.asList("bank", "hans", "nina", "fritz", "lisa");
     
-	/**Configures the {@link #predefinedUsernames} as known users with their password equal to the user name.*/
+	/**Configures the {@link #predefinedUsernames} as known users with their password equal to the user name.
+	 * @param auth a SecurityBuilder injected by Spring, used to create an AuthenticationManager
+	 * @throws Exception if an error occurs when configuring the in memory authentication
+	 * */
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         final InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthentication = auth.inMemoryAuthentication();

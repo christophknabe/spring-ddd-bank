@@ -238,7 +238,8 @@ public class ApplicationController {
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
-	@ApiOperation(value = "accountsReport", authorizations = { @Authorization(value = "basicAuth") })
+	@ApiOperation(value = "Returns a report of all accounts the current user manages with columns access right (isOwner|manages), the balance, and the name of the account", authorizations = {
+			@Authorization(value = "basicAuth") })
 	@GetMapping("/client/account")
 	public ResponseEntity<String> accountsReport(@ApiParam(hidden = true) final HttpMethod method,
 			final WebRequest request) {
@@ -251,14 +252,21 @@ public class ApplicationController {
 	/**
 	 * Prints a message containing the current class name, the HTTP method, and
 	 * infos about the current request.
+	 * 
+	 * @param method
+	 *            the HTTP method (GET, PUT, POST, DELETE, ...) used in a web
+	 *            request
+	 * @param request
+	 *            the web request as seen by Spring
 	 */
 	private void _print(final HttpMethod method, final WebRequest request) {
 		System.out.printf("%s %s %s\n", className, method, request);
 	}
 
 	/**
-	 * Returns a random birth date ranging from 18 years before now to 100 years
-	 * before now.
+	 * Returns a random possible birth date for a client.
+	 * 
+	 * @return random date ranging from 18 years before now to 100 years before now.
 	 */
 	private LocalDate _randomClientBirthDate() {
 		final long nowEpochDay = LocalDate.now().toEpochDay();
@@ -281,6 +289,9 @@ public class ApplicationController {
 	/**
 	 * Finds the Client for the username, which has been authenticated with this web
 	 * request.
+	 * 
+	 * @param request the current {@link WebRequest} as provided by Spring
+	 * @return the domain entity object for the client
 	 * 
 	 * @throws BankService.ClientNotFoundExc
 	 *             There is no client object with the username of the authenticated

@@ -20,7 +20,11 @@ class CleanupService {
 
     private final AccountAccessRepository accountAccessRepository;
 
-    /**Constructs the cleanup service using the passed required repositories as by Ports and Adapters Pattern.*/
+    /**Constructs the cleanup service using the passed required repositories as by Ports and Adapters Pattern.
+     * @param clientRepository the {@link ClientRepository} to be cleaned up
+     * @param accountRepository the {@link AccountRepository} to be cleaned up
+     * @param accountAccessRepository the {@link AccountAccessRepository} to be cleaned up
+     * */
     @Autowired
     public CleanupService(final ClientRepository clientRepository, final AccountRepository accountRepository, final AccountAccessRepository accountAccessRepository) {
         this.clientRepository = clientRepository;

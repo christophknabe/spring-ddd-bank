@@ -1,6 +1,5 @@
 package de.beuth.knabe.spring_ddd_bank.domain;
 
-import de.beuth.knabe.spring_ddd_bank.domain.BankService.ClientNotFoundExc;
 import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.security.auth.login.AccountNotFoundException;
 
 import static multex.MultexUtil.create;
 
@@ -35,8 +33,13 @@ public class Client extends EntityBase<Client> {
 	}
 
 	/**
-	 * Creates a Client from its unique user name and birthDate. For simplicity we
-	 * do not store a full name of the Client.
+	 * Creates a Client from its user name and birthDate without saving it. For
+	 * simplicity we do not store a full name of the Client.
+	 * 
+	 * @param username
+	 *            the unique user name for the new {@link Client}
+	 * @param birthDate
+	 *            the birth date of the new {@link Client}
 	 */
 	public Client(final String username, final LocalDate birthDate) {
 		this.username = username;
@@ -46,6 +49,8 @@ public class Client extends EntityBase<Client> {
 	/**
 	 * Returns the username of this client, by which he is supposed to login into
 	 * the application.
+	 * 
+	 * @return the unique username of this {@link Client}
 	 */
 	@Column(unique = true, nullable = false)
 	public String getUsername() {
@@ -85,6 +90,12 @@ public class Client extends EntityBase<Client> {
 	/**
 	 * Command: Deposits the given amount into the destination account.
 	 * 
+	 * @param destination
+	 *            the {@link Account} where the given {@link Amount} will be
+	 *            deposited
+	 * @param amount
+	 *            the {@link Amount} which will be deposited
+	 * 
 	 * @throws AmountExc
 	 *             Illegal amount (negative or zero)
 	 */
@@ -105,6 +116,13 @@ public class Client extends EntityBase<Client> {
 	/**
 	 * Command: Transfers the given amount from the source account to the
 	 * destination account.
+	 * 
+	 * @param source
+	 *            the {@link Account} from which the {@link Amount} will be taken
+	 * @param destination
+	 *            the {@link Account} to which the {@link Amount} will be transfered
+	 * @param amount
+	 *            the {@link Amount} to be transfered
 	 * 
 	 * @throws WithoutRightExc
 	 *             The sender is not a manager of the source account.
@@ -152,6 +170,13 @@ public class Client extends EntityBase<Client> {
 	 * Command: Adds the given manager Client to the given account in the role as
 	 * manager, but not owner.
 	 * 
+	 * @param account
+	 *            the {@link Account} to be managed
+	 * @param manager
+	 *            the {@link Client} to e given manager rights for the
+	 *            {@link Account}
+	 * @return the {@link AccountAccess} object created and saved
+	 * 
 	 * @throws NotOwnerExc
 	 *             this Client is not owner of the account.
 	 * @throws DoubleManagerExc
@@ -190,19 +215,11 @@ public class Client extends EntityBase<Client> {
 	}
 
 	/**
-	 * Query: Finds the Account with the given id, if exists.
-	 * 
-	 * @deprecated replaced by findAccount returning Account and throwing exception.
-	 */
-	public Optional<Account> findAccount0(final Long id) {
-		return accountRepository.find(id);
-	}
-
-	/**
-	 * Query: Finds the Account with the given id.
+	 * Query: Finds the {@link Account} with the given id.
 	 * 
 	 * @param id
 	 *            the unique key of the account
+	 * @return the found {@link Account}
 	 * 
 	 * @throws AccountNotFoundExc
 	 *             There is no account object with the given id.
