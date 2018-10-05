@@ -11,7 +11,7 @@ public class AccountAccessResource {
 
 	public String clientUsername;
 	public boolean isOwner;
-	public Long accountId;
+	public Long accountNo;
 	public String accountName;
 	public String accountBalance;
 
@@ -25,7 +25,7 @@ public class AccountAccessResource {
 		final Account account = entity.getAccount();
 		this.clientUsername = entity.getClient().getUsername();
 		this.isOwner = entity.isOwner();
-		this.accountId = account.getId();
+		this.accountNo = account.accountNo().toLong();
 		this.accountName = account.getName();
 		this.accountBalance = Double.toString(account.getBalance().toDouble());
 	}

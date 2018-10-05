@@ -22,10 +22,14 @@ public class Account extends EntityBase<Account> {
 	public Account(final String name) {
 		this.name = name;
 	}
+	
+	public AccountNo accountNo() {
+		return new AccountNo(getId());
+	}
 
 	@Override
 	public String toString() {
-		return String.format("Account{id=%d, name='%s', balance='%s'}", getId(), name, balance);
+		return String.format("Account{accountNo=%d, name='%s', balance='%s'}", accountNo(), name, balance);
 	}
 
 	public String getName() {

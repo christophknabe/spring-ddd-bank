@@ -1,21 +1,6 @@
-/*
- * Copyright 2002-2016 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package de.beuth.knabe.spring_ddd_bank.infrastructure;
 
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.*;
 
 import java.time.LocalDate;
@@ -35,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 
-/**Test driver for the {@linkplain ClientJpaRepository}*/
+/**Test driver for the {@link ClientJpaRepository}*/
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ClientJpaRepositoryTest {
@@ -93,6 +78,27 @@ public class ClientJpaRepositoryTest {
             final Client foundJack = testee.find("jack").get();
             assertEquals(jack, foundJack);        	
         }
+    }
+
+    @Test
+    public void idsAreUniqueAndAscending(){
+        final Client jack = new Client("jack", LocalDate.parse("1966-12-31"));
+        final Client chloe = new Client("chloe", LocalDate.parse("1977-01-01"));       
+        assertNull(jack.getId());
+        assertNull(chloe.getId());
+        
+        //save() sets a unique ID when saving an object the first time:
+        testee.save(jack);       
+        final Long jackId = jack.getId();
+        assertNotNull(jackId);
+        testee.save(chloe);
+        final Long chloeId = chloe.getId();
+        assertNotNull(chloeId);
+        assertThat(chloeId, greaterThan(jackId));
+
+        //Modify and save again, ID must stay the same: 
+        testee.save(chloe);
+        assertEquals(chloeId, chloe.getId());
     }
 
     @Test

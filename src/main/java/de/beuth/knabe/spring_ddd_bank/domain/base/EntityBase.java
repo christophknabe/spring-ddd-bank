@@ -1,6 +1,5 @@
 package de.beuth.knabe.spring_ddd_bank.domain.base;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,6 +27,11 @@ public abstract class EntityBase<T extends EntityBase<T>> {
 	 * Returns the identity of this entity object.
 	 * 
 	 * @return the identity of this entity object
+	 * 
+	 * @deprecated You should not pass this identity to the interface layer, if you
+	 *             can identify an entity by a domain key. You may use it in the
+	 *             domain layer, as accesses by identity are more efficient.
+	 *             2018-10-05 Knabe
 	 */
 	public Long getId() {
 		return id;

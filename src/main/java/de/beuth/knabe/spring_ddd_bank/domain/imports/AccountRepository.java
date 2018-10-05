@@ -3,6 +3,7 @@ package de.beuth.knabe.spring_ddd_bank.domain.imports;
 import java.util.Optional;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Account;
+import de.beuth.knabe.spring_ddd_bank.domain.AccountNo;
 
 /**
  * Required repository for {@link Account} objects.
@@ -13,15 +14,15 @@ import de.beuth.knabe.spring_ddd_bank.domain.Account;
 public interface AccountRepository {
 
 	/**
-	 * Searches the {@link Account} object with the given id.
+	 * Searches the {@link Account} object with the given account number.
 	 * 
-	 * @param id
-	 *            unique ID of the searched account
-	 * @return the {@link Account} object with the given id, if existing.
+	 * @param acccountNo
+	 *            unique account number of the searched account
+	 * @return the {@link Account} object with the given account number, if existing.
 	 * @throws IllegalArgumentException
-	 *             id is null
+	 *             acccountNo is null or empty
 	 */
-	Optional<Account> find(Long id);
+	Optional<Account> find(AccountNo acccountNo);
 
 	/**
 	 * Deletes all Accounts. Useful for test scenarios in order to start with an
@@ -30,7 +31,7 @@ public interface AccountRepository {
 	void deleteAll();
 
 	/**
-	 * Saves the account giving it a unique, higher ID.
+	 * Saves the account giving it a unique, higher account number (accountNo).
 	 * 
 	 * @param account
 	 *            the {@link Account} to be saved

@@ -88,28 +88,32 @@ public class Client extends EntityBase<Client> {
 	}
 
 	/**
-	 * Command: Deposits the given amount into the destination account.
+	 * Command: Deposits the given amount into the managed destination account.
 	 * 
 	 * @param destination
-	 *            the {@link Account} where the given {@link Amount} will be
-	 *            deposited
+	 *            number of the {@link Account} where the given {@link Amount} will be
+	 *            deposited.
 	 * @param amount
 	 *            the {@link Amount} which will be deposited
 	 * 
 	 * @throws AmountExc
 	 *             Illegal amount (negative or zero)
+	 * @throws DestinationAccountNotFoundExc
+	 *             No account with the given destination account number is found.
 	 */
-	public void deposit(final Account destination, final Amount amount) throws AmountExc {
+	public void deposit(final AccountNo destination, final Amount amount) throws AmountExc {
 		// 1. Error checking:
 		if (amount.compareTo(Amount.ZERO) <= 0) {
 			throw create(Client.AmountExc.class, amount);
 		}
+		final Account destinationAccount = _findDestinationAccount(destination);
 		try {
 			// 2. Do modifications:
-			destination.setBalance(destination.getBalance().plus(amount));
-			accountRepository.save(destination);
+			destinationAccount.setBalance(destinationAccount.getBalance().plus(amount));
+			accountRepository.save(destinationAccount);
 		} catch (final Exception ex) {
-			throw new multex.Failure("Amount of {0} EUR could not be deposited.", ex, amount);
+			throw new multex.Failure("Amount of {0} EUR could not be deposited to account No. {1}.", ex, amount,
+					destination);
 		}
 	}
 
@@ -120,7 +124,7 @@ public class Client extends EntityBase<Client> {
 	 * @param source
 	 *            the {@link Account} from which the {@link Amount} will be taken
 	 * @param destination
-	 *            the {@link Account} to which the {@link Amount} will be transfered
+	 *            Number of the {@link Account} to which the {@link Amount} will be transfered
 	 * @param amount
 	 *            the {@link Amount} to be transfered
 	 * 
@@ -131,31 +135,55 @@ public class Client extends EntityBase<Client> {
 	 * @throws MinimumBalanceExc
 	 *             The source account's balance would fall under the minimum
 	 *             balance.
+	 * @throws DestinationAccountNotFoundExc
+	 *             No account with the given destinationAccountNo is found.
 	 */
-	public void transfer(final Account source, final Account destination, final Amount amount)
-			throws AmountExc, WithoutRightExc, MinimumBalanceExc {
+	public void transfer(final Account source, final AccountNo destination, final Amount amount)
+			throws AmountExc, WithoutRightExc, MinimumBalanceExc, DestinationAccountNotFoundExc {
 		// 1. Error checking:
 		if (amount.toDouble() <= 0) {
 			throw create(Client.AmountExc.class, amount);
 		}
 		final Optional<AccountAccess> accountAccessOptional = accountAccessRepository.find(this, source);
 		if (!accountAccessOptional.isPresent()) {
-			throw create(WithoutRightExc.class, getId(), source.getId());
+			throw create(WithoutRightExc.class, username, source.accountNo());
 		}
 		final Amount newBalance = source.getBalance().minus(amount);
 		if (newBalance.compareTo(Account.getMinimumBalance()) < 0) {
 			throw create(MinimumBalanceExc.class, newBalance, Account.getMinimumBalance());
 		}
+		final Account destinationAccount = _findDestinationAccount(destination);
 
 		// 2. Do modifications:
 		source.setBalance(source.getBalance().minus(amount));
-		destination.setBalance(destination.getBalance().plus(amount));
+		destinationAccount.setBalance(destinationAccount.getBalance().plus(amount));
 		accountRepository.save(source);
-		accountRepository.save(destination);
+		accountRepository.save(destinationAccount);
 	}
 
 	/**
-	 * Client with ID {0} ist neither owner nor manager of the account with ID {1}.
+	 * Finds the account with the given account number.
+	 * 
+	 * @param destination
+	 *            Number of the account where to put money
+	 * @throws DestinationAccountNotFoundExc
+	 *             No account with the given account number is found.
+	 */
+	private Account _findDestinationAccount(final AccountNo destination) throws DestinationAccountNotFoundExc {
+		final Optional<Account> accountOptional = accountRepository.find(destination);
+		if (!accountOptional.isPresent()) {
+			throw create(DestinationAccountNotFoundExc.class, destination);
+		}
+		return accountOptional.get();
+	}
+
+	/** The destination account with account number {0} does not exist. */
+	@SuppressWarnings("serial")
+	public static class DestinationAccountNotFoundExc extends Exc {
+	}
+
+	/**
+	 * Client with username {0} ist neither owner nor manager of the account with number {1}.
 	 */
 	@SuppressWarnings("serial")
 	public static class WithoutRightExc extends multex.Exc {
@@ -185,26 +213,26 @@ public class Client extends EntityBase<Client> {
 	public AccountAccess addAccountManager(final Account account, Client manager) {
 		final Optional<AccountAccess> ownerAccessOptional = accountAccessRepository.find(this, account);
 		if (!ownerAccessOptional.isPresent()) {
-			throw create(NotOwnerExc.class, this.getId(), account.getId());
+			throw create(NotOwnerExc.class, this.username, account.accountNo());
 		}
 		final AccountAccess ownerAccess = ownerAccessOptional.get();
 		if (!ownerAccess.isOwner()) {
-			throw create(NotOwnerExc.class, this.getId(), account.getId());
+			throw create(NotOwnerExc.class, this.username, account.accountNo());
 		}
 		final Optional<AccountAccess> managerAccessOptional = accountAccessRepository.find(manager, account);
 		if (managerAccessOptional.isPresent()) {
-			throw create(DoubleManagerExc.class, manager.getId(), account.getId());
+			throw create(DoubleManagerExc.class, manager.username, account.accountNo());
 		}
 		final AccountAccess managerAccountAccess = new AccountAccess(manager, false, account);
 		return accountAccessRepository.save(managerAccountAccess);
 	}
 
-	/** Client with ID {0} is not owner of the account with ID {1}. */
+	/** Client with username {0} is not owner of the account with accountNo {1}. */
 	@SuppressWarnings("serial")
 	public static class NotOwnerExc extends multex.Exc {
 	}
 
-	/** Client with ID {0} is already manager of the account with ID {1}. */
+	/** Client with username {0} is already manager of the account with accountNo {1}. */
 	@SuppressWarnings("serial")
 	public static class DoubleManagerExc extends multex.Exc {
 	}
@@ -215,33 +243,39 @@ public class Client extends EntityBase<Client> {
 	}
 
 	/**
-	 * Query: Finds the {@link Account} with the given id.
+	 * Query: Finds the {@link Account} with the given account number, if it is owned or managed
+	 * by this {@link Client}
 	 * 
-	 * @param id
-	 *            the unique key of the account
+	 * @param accountNo
+	 *            the unique account number of the account
 	 * @return the found {@link Account}
 	 * 
-	 * @throws AccountNotFoundExc
-	 *             There is no account object with the given id.
+	 * @throws NotManagedAccountExc
+	 *             Account with the given accountNo is neither owned nor managed by
+	 *             this {@link Client}.
 	 */
-	public Account findAccount(final Long id) throws AccountNotFoundExc {
-		final Optional<Account> optional = accountRepository.find(id);
-		if (!optional.isPresent()) {
-			throw create(AccountNotFoundExc.class, id);
+	public Account findMyAccount(final AccountNo accountNo) throws NotManagedAccountExc {
+		final Optional<Account> accountOptional = accountRepository.find(accountNo);
+		if (!accountOptional.isPresent()) {
+			throw create(NotManagedAccountExc.class, accountNo, this.username);
 		}
-		return optional.get();
+		final Optional<AccountAccess> accountAccessOptional = accountAccessRepository.find(this, accountOptional.get());
+		if (!accountAccessOptional.isPresent()) {
+			throw create(NotManagedAccountExc.class, accountNo, this.username);
+		}
+		return accountAccessOptional.get().getAccount();
 	}
 
-	/** There is no Account object for the ID {0}. */
+	/** Account with number {0} is neither owned nor managed by client {1}. */
 	@SuppressWarnings("serial")
-	public static class AccountNotFoundExc extends Exc {
+	public static class NotManagedAccountExc extends Exc {
 	}
 
 	/**
 	 * Query: Returns a report about all accounts this {@link Client} has the right
 	 * to manage.
 	 * 
-	 * @return Report with a line for each account manageable. It has 3 columns: the
+	 * @return Report with a line for each account manageable. It has 4 columns: the
 	 *         access right (isOwner|manages), the balance, the name of the account.
 	 *         The columns are separated by tab characters.
 	 */
@@ -253,7 +287,7 @@ public class Client extends EntityBase<Client> {
 			final String accessRight = accountAccess.isOwner() ? "isOwner" : "manages";
 			final Account account = accountAccess.getAccount();
 			result.append(
-					String.format("%s\t%5.2f\t%s\n", accessRight, account.getBalance().toDouble(), account.getName()));
+					String.format("%s\t%s\t%5.2f\t%s\n", account.accountNo(), accessRight, account.getBalance().toDouble(), account.getName()));
 		}
 		return result.toString();
 	}

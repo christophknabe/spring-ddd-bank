@@ -1,6 +1,7 @@
 package de.beuth.knabe.spring_ddd_bank.infrastructure;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Account;
+import de.beuth.knabe.spring_ddd_bank.domain.AccountNo;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import de.beuth.knabe.spring_ddd_bank.infrastructure.imports.ImportedAccountJpaRepository;
 
@@ -23,8 +24,9 @@ public class AccountJpaRepository implements AccountRepository {
         this.impl = impl;
     }
     
-	public Optional<Account> find(final Long id){
-		return impl.findOneById(id);
+	@Override
+	public Optional<Account> find(AccountNo acccountNo) {
+		return impl.findOneById(acccountNo.toLong());
 	}
 
     public void deleteAll(){impl.deleteAll();}

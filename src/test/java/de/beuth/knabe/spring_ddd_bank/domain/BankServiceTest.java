@@ -148,11 +148,10 @@ public class BankServiceTest {
 	public void findRichClients() {
 		final Client kim = bankService.createClient("kim", LocalDate.parse("1994-05-21"));
 		final Client chloe = bankService.createClient("chloe", LocalDate.parse("1992-12-01"));
-		assertTrue(chloe.getId() > kim.getId());
 		final AccountAccess kimAccount = kim.createAccount("Kim's Account");
 		final AccountAccess chloeAccount = chloe.createAccount("Chloe's Account");
-		kim.deposit(kimAccount.getAccount(), new Amount(1000, 01));
-		chloe.deposit(chloeAccount.getAccount(), new Amount(1000, 00));
+		kim.deposit(kimAccount.getAccount().accountNo(), new Amount(1000, 01));
+		chloe.deposit(chloeAccount.getAccount().accountNo(), new Amount(1000, 00));
 		{
 			// Expecting no clients:
 			final Iterable<Client> noClients = bankService.findRichClients(new Amount(1000, 02));
@@ -171,7 +170,7 @@ public class BankServiceTest {
 			final String result = stringize(twoClients);
 			assertEquals("1994-05-21 kim, 1992-12-01 chloe", result);
 		}
-		chloe.deposit(chloeAccount.getAccount(), new Amount(0, 01));
+		chloe.deposit(chloeAccount.getAccount().accountNo(), new Amount(0, 01));
 		{
 			// Expecting two equally rich clients. The entity with the higher ID should be
 			// first.:

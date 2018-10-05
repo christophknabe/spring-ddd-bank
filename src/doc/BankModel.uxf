@@ -24,15 +24,16 @@ toDouble(): double</panel_attributes>
     <type>com.umlet.element.Class</type>
     <coordinates>
       <x>840</x>
-      <y>370</y>
-      <w>150</w>
-      <h>80</h>
+      <y>350</y>
+      <w>180</w>
+      <h>100</h>
     </coordinates>
     <panel_attributes>&lt;&lt;entity&gt;&gt;
 Account
 --
 -name: String
--balance: Amount</panel_attributes>
+-balance: Amount
+/accountNo: AccountNo</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -106,7 +107,7 @@ manages&gt;</panel_attributes>
     </coordinates>
     <panel_attributes>bg=yellow
 Analysis Model of a Bank
-Christoph Knabe, 2018-10-03</panel_attributes>
+Christoph Knabe, 2018-10-05</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -125,11 +126,11 @@ Client
 --
 &lt;&lt;commands&gt;&gt;
 createAccount(accountName: String): AccountAccess
-deposit(destination: Account, amount: Amount)
-transfer(source: Account, destination: Account, amount: Amount)
+deposit(destination: AccountNo, amount: Amount)
+transfer(source: Account, destination: AccountNo, amount: Amount)
 addAccountManager(account: Account, manager: Client): AccountAccess
 &lt;&lt;queries&gt;&gt;
-findAccount(id: Long): Account
+findMyAccount(accountNo: AccountNo): Account
 accountsReport(): String</panel_attributes>
     <additional_attributes/>
   </element>
@@ -159,7 +160,7 @@ accountsReport(): String</panel_attributes>
     <type>com.umlet.element.custom.Text</type>
     <coordinates>
       <x>600</x>
-      <y>210</y>
+      <y>170</y>
       <w>510</w>
       <h>110</h>
     </coordinates>
@@ -170,5 +171,41 @@ accountsReport(): String</panel_attributes>
 &lt;&lt;commands&gt;&gt; Following operations modify the system state.
 &lt;&lt;queries&gt;&gt; Following operations do not modify the system state.</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Class</type>
+    <coordinates>
+      <x>630</x>
+      <y>300</y>
+      <w>110</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;value object&gt;&gt;
+AccountNo
+--
+number: Long</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>440</x>
+      <y>320</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>190;30;30;80</additional_attributes>
+  </element>
+  <element>
+    <type>com.umlet.element.Relation</type>
+    <coordinates>
+      <x>710</x>
+      <y>320</y>
+      <w>150</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>30;30;130;70</additional_attributes>
   </element>
 </diagram>

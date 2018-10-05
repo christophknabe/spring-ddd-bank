@@ -92,7 +92,7 @@ public class ExceptionAdvice {
 		if (exc instanceof BankService.ClientNotFoundExc) {
 			return HttpStatus.NOT_FOUND;
 		}
-		if (exc instanceof Client.AccountNotFoundExc) {
+		if (exc instanceof Client.NotManagedAccountExc) {
 			return HttpStatus.NOT_FOUND;
 		}
 		if (exc instanceof Client.NotOwnerExc) {

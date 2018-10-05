@@ -25,6 +25,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Account;
 import de.beuth.knabe.spring_ddd_bank.domain.AccountAccess;
+import de.beuth.knabe.spring_ddd_bank.domain.AccountNo;
 import de.beuth.knabe.spring_ddd_bank.domain.Amount;
 import de.beuth.knabe.spring_ddd_bank.domain.BankService;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
@@ -184,7 +185,7 @@ public class ApplicationController {
 	 * https://www.thoughtworks.com/de/insights/blog/rest-api-design-resource-
 	 * modeling
 	 */
-	@ApiOperation(value = "Deposits the given amount of money to the account with the given accountId. "
+	@ApiOperation(value = "Deposits the given amount of money to the account with the given accountNo. "
 			+ "This is executed as the authenticated client with his username.", authorizations = {
 					@Authorization(value = "basicAuth") })
 	@PostMapping("/client/deposit")
@@ -192,9 +193,8 @@ public class ApplicationController {
 			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final Client client = _findClient(request);
-		final Account destinationAccount = client.findAccount(command.accountId);
 		final Amount amount = new Amount(command.amount);
-		client.deposit(destinationAccount, amount);
+		client.deposit(new AccountNo(command.accountNo), amount);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
@@ -203,18 +203,17 @@ public class ApplicationController {
 	 * https://www.thoughtworks.com/de/insights/blog/rest-api-design-resource-
 	 * modeling
 	 */
-	@ApiOperation(value = "Transfers the given amount of money from the account with the given sourceAccountId to "
-			+ "the account with the given destinationAccountId. Requires, that the current user is the owner "
+	@ApiOperation(value = "Transfers the given amount of money from the account with the given sourceAccountNo to "
+			+ "the account with the given destinationAccountNo. Requires, that the current user is the owner "
 			+ "of the given source account.", authorizations = { @Authorization(value = "basicAuth") })
 	@PostMapping("/client/transfer")
 	public ResponseEntity<AccountResource> transfer(@RequestBody final TransferCommand command,
 			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final Client client = _findClient(request);
-		final Account sourceAccount = client.findAccount(command.sourceAccountId);
-		final Account destinationAccount = client.findAccount(command.destinationAccountId);
+		final Account sourceAccount = client.findMyAccount(new AccountNo(command.sourceAccountNo));
 		final Amount amount = new Amount(command.amount);
-		client.transfer(sourceAccount, destinationAccount, amount);
+		client.transfer(sourceAccount, new AccountNo(command.destinationAccountNo), amount);
 		final AccountResource result = new AccountResource(sourceAccount);
 		return new ResponseEntity<>(result, HttpStatus.NO_CONTENT);
 	}
@@ -225,14 +224,14 @@ public class ApplicationController {
 	 * >REST API Design - Resource Modeling</a> *
 	 */
 	@ApiOperation(value = "Adds the client with the given username as an account manager to the account with the "
-			+ "given accountId. Requires, that the current user is the owner of the given account.", authorizations = {
+			+ "given accountNo. Requires, that the current user is the owner of the given account.", authorizations = {
 					@Authorization(value = "basicAuth") })
 	@PostMapping("/client/manager")
 	public ResponseEntity<AccountAccessResource> addAccountManager(@RequestBody final AddAccountManagerCommand command,
 			@ApiParam(hidden = true) final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final Client client = _findClient(request);
-		final Account account = client.findAccount(command.accountId);
+		final Account account = client.findMyAccount(new AccountNo(command.accountNo));
 		final Client manager = bankService.findClient(command.username);
 		final AccountAccessResource result = new AccountAccessResource(client.addAccountManager(account, manager));
 		return new ResponseEntity<>(result, HttpStatus.CREATED);

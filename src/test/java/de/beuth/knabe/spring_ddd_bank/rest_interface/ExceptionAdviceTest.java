@@ -48,7 +48,7 @@ public class ExceptionAdviceTest {
 	public void exceptionToStatus() {
 		// Specific business rule violations:
 		_assertStatus(HttpStatus.NOT_FOUND, new BankService.ClientNotFoundExc());
-		_assertStatus(HttpStatus.NOT_FOUND, new Client.AccountNotFoundExc());
+		_assertStatus(HttpStatus.NOT_FOUND, new Client.NotManagedAccountExc());
 		_assertStatus(HttpStatus.FORBIDDEN, new Client.NotOwnerExc());
 		_assertStatus(HttpStatus.FORBIDDEN, new Client.WithoutRightExc());
 
