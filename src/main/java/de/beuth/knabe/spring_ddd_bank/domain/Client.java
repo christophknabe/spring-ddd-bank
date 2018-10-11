@@ -18,7 +18,8 @@ import java.util.Optional;
 
 /**
  * A client of a bank along with some methods he can do. This entity is a Rich
- * Domain Object. It can access services injected into it by Spring DODI.
+ * Domain Object. It can access services injected into it by Spring DODI 
+ * (Domain Object Dependency Injection).
  */
 @Entity
 @Configurable

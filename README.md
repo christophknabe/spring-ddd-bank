@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                            (C) Christoph Knabe, 2017-03-17 ... 2018-09-30
+                                            (C) Christoph Knabe, 2017-03-17 ... 2018-10-11
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
@@ -53,7 +53,8 @@ You can run the application (a REST server) in your IDE by running class `de.beu
 - As simplification an application layer is not implemented, but the interface layer is made transactional.
 - Internationalizable, parameterizable exception message texts
 - Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
-- Tests are run against an empty in-memory Derby database.
+- The application runs against a file-based Derby database. This is configured in file [src/main/resources/application.properties](src/main/resources/application.properties)
+- Tests are run against an empty in-memory Derby database. This is configured in file [src/test/resources/application.properties](src/test/resources/application.properties)
 - Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into [target/site/jacoco-ut/index.html](file:target/site/jacoco-ut/index.html).
 - Simple Spring Security with a fixed number of predefined users (1 bank, and 4 clients).
 

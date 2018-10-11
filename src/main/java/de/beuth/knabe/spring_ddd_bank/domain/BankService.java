@@ -26,6 +26,7 @@ import static multex.MultexUtil.create;
 public class BankService {
 
 	// Required repositories as by Ports and Adapters Pattern:
+	//See http://www.dossier-andreas.net/software_architecture/ports_and_adapters.html
 	private final ClientRepository clientRepository;
 	private final AccountAccessRepository accountAccessRepository;
 

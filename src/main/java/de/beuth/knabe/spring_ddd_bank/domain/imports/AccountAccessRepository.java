@@ -24,7 +24,7 @@ public interface AccountAccessRepository {
 	void deleteAll();
 
 	/**
-	 * Saves the passed object. Linked {@link Client}s or {@link Account}s must be
+	 * Saves the passed object. Linked {@link Client} and {@link Account} must be
 	 * saved before.
 	 * 
 	 * @param accountAccess

@@ -14,10 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import de.beuth.knabe.spring_ddd_bank.domain.Amount;
 import de.beuth.knabe.spring_ddd_bank.domain.BankService;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
-import de.beuth.knabe.spring_ddd_bank.rest_interface.ApplicationController.ClientCreateWithIdExc;
 import multex.Msg;
 
 /**
