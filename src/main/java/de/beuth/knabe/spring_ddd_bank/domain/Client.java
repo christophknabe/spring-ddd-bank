@@ -18,8 +18,8 @@ import java.util.Optional;
 
 /**
  * A client of a bank along with some methods he can do. This entity is a Rich
- * Domain Object. It can access services injected into it by Spring DODI 
- * (Domain Object Dependency Injection).
+ * Domain Object. It can access services injected into it by Spring DODI (Domain
+ * Object Dependency Injection).
  */
 @Entity
 @Configurable
@@ -92,8 +92,8 @@ public class Client extends EntityBase<Client> {
 	 * Command: Deposits the given amount into the managed destination account.
 	 * 
 	 * @param destination
-	 *            number of the {@link Account} where the given {@link Amount} will be
-	 *            deposited.
+	 *            number of the {@link Account} where the given {@link Amount} will
+	 *            be deposited.
 	 * @param amount
 	 *            the {@link Amount} which will be deposited
 	 * 
@@ -101,8 +101,11 @@ public class Client extends EntityBase<Client> {
 	 *             Illegal amount (negative or zero)
 	 * @throws DestinationAccountNotFoundExc
 	 *             No account with the given destination account number is found.
+	 * @throws DepositFailure
+	 *             another error when depositing money
 	 */
-	public void deposit(final AccountNo destination, final Amount amount) throws AmountExc {
+	public void deposit(final AccountNo destination, final Amount amount)
+			throws AmountExc, DestinationAccountNotFoundExc, DepositFailure {
 		// 1. Error checking:
 		if (amount.compareTo(Amount.ZERO) <= 0) {
 			throw create(Client.AmountExc.class, amount);
@@ -113,9 +116,13 @@ public class Client extends EntityBase<Client> {
 			destinationAccount.setBalance(destinationAccount.getBalance().plus(amount));
 			accountRepository.save(destinationAccount);
 		} catch (final Exception ex) {
-			throw new multex.Failure("Amount of {0} EUR could not be deposited to account No. {1}.", ex, amount,
-					destination);
+			throw create(DepositFailure.class, ex, amount, destination);
 		}
+	}
+
+	/** Amount of {0} EUR could not be deposited to account No. {1}. */
+	@SuppressWarnings("serial")
+	public static class DepositFailure extends Exc {
 	}
 
 	/**
@@ -125,7 +132,8 @@ public class Client extends EntityBase<Client> {
 	 * @param source
 	 *            the {@link Account} from which the {@link Amount} will be taken
 	 * @param destination
-	 *            Number of the {@link Account} to which the {@link Amount} will be transfered
+	 *            Number of the {@link Account} to which the {@link Amount} will be
+	 *            transfered
 	 * @param amount
 	 *            the {@link Amount} to be transfered
 	 * 
@@ -184,7 +192,8 @@ public class Client extends EntityBase<Client> {
 	}
 
 	/**
-	 * Client with username {0} ist neither owner nor manager of the account with number {1}.
+	 * Client with username {0} ist neither owner nor manager of the account with
+	 * number {1}.
 	 */
 	@SuppressWarnings("serial")
 	public static class WithoutRightExc extends multex.Exc {
@@ -233,7 +242,10 @@ public class Client extends EntityBase<Client> {
 	public static class NotOwnerExc extends multex.Exc {
 	}
 
-	/** Client with username {0} is already manager of the account with accountNo {1}. */
+	/**
+	 * Client with username {0} is already manager of the account with accountNo
+	 * {1}.
+	 */
 	@SuppressWarnings("serial")
 	public static class DoubleManagerExc extends multex.Exc {
 	}
@@ -244,8 +256,8 @@ public class Client extends EntityBase<Client> {
 	}
 
 	/**
-	 * Query: Finds the {@link Account} with the given account number, if it is owned or managed
-	 * by this {@link Client}
+	 * Query: Finds the {@link Account} with the given account number, if it is
+	 * owned or managed by this {@link Client}
 	 * 
 	 * @param accountNo
 	 *            the unique account number of the account
@@ -287,8 +299,8 @@ public class Client extends EntityBase<Client> {
 		for (final AccountAccess accountAccess : accountAccesses) {
 			final String accessRight = accountAccess.isOwner() ? "isOwner" : "manages";
 			final Account account = accountAccess.getAccount();
-			result.append(
-					String.format("%s\t%s\t%5.2f\t%s\n", account.accountNo(), accessRight, account.getBalance().toDouble(), account.getName()));
+			result.append(String.format("%s\t%s\t%5.2f\t%s\n", account.accountNo(), accessRight,
+					account.getBalance().toDouble(), account.getName()));
 		}
 		return result.toString();
 	}
