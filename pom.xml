@@ -25,6 +25,11 @@
 		<messageTextFile>MessageText.properties</messageTextFile>
 	</properties>
 	<dependencies>
+	    <!-- Experiment Knabe 2018-11-15: Serve Web Content, see https://spring.io/guides/gs/serving-web-content/ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 		<!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
