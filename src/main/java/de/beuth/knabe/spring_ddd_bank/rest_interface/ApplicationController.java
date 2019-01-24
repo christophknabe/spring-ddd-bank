@@ -279,9 +279,9 @@ public class ApplicationController {
 		return LocalDate.ofEpochDay(randomEpochDay);
 	}
 
-	private ResponseEntity<ClientResource[]> _clientsToResources(final List<Client> clients) {
-		final Stream<ClientResource> result = clients.stream().map(c -> new ClientResource(c));
-		final ClientResource[] resultArray = result.toArray(size -> new ClientResource[size]);
+	/*private*/ ResponseEntity<ClientResource[]> _clientsToResources(final List<Client> clients) {
+		final Stream<ClientResource> result = clients.stream().map(ClientResource::new);
+		final ClientResource[] resultArray = result.toArray(ClientResource[]::new);
 		return new ResponseEntity<>(resultArray, HttpStatus.OK);
 	}
 
