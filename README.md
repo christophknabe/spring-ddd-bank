@@ -15,6 +15,7 @@ This project uses
 - Spring Boot
 - Spring Data + JPA + Hibernate + Derby
 - AspectJ Compile Time Weaving for main sources
+- `springfox-swagger` for generating documentation and user interface for the REST service
 - JUnit 4
 - The Exception Handling and Reporting Framework MulTEx
 
