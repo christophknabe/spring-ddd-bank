@@ -16,5 +16,8 @@
 #Created by Maven:
 /target/
 
+#Depends on local Java installation by developer:
+/.mymvn.sh
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
