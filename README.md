@@ -6,7 +6,7 @@ A sample project following Domain Driven Design with Spring Data JPA
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
-This sample application has been used for a course on Software Engineering at Beuth University of Applied Sciences Berlin.
+This sample application has been used for a course on Software Engineering at [Berlin University of Applied Sciences and Technology (BHT)](https://www.bht-berlin.de/en/).
 
 This project uses
 
@@ -19,7 +19,7 @@ This project uses
 - JUnit 4
 - The Exception Handling and Reporting Framework MulTEx
 
-Detailed version indications you can find in the file `pom.xml`.
+Detailed version indications you can find in the file [pom.xml](pom.xml).
 
 ## Usage
 
