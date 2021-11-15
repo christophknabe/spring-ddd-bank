@@ -18,7 +18,7 @@ This project uses
 - [AspectJ](https://www.eclipse.org/aspectj/) Compile Time Weaving for main sources
 - [springfox-swagger](https://springfox.github.io/springfox/) for generating documentation and user interface for the REST service
 - [JUnit 4](https://junit.org/junit4/)
-- The Exception Handling and Reporting Framework [MulTEx](http://public.beuth-hochschule.de/~knabe/java/multex/)
+- The Exception Handling and Reporting Framework [MulTEx](http://public.bht-berlin.de/~knabe/java/multex/)
 
 Detailed version indications you can find in the file [pom.xml](pom.xml).
 
