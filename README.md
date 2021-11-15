@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                            (C) Christoph Knabe, 2017-03-17 ... 2021-10-06
+                                            (C) Christoph Knabe, 2017-03-17 ... 2021-11-15
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to full-blown DDD examples on the web I am applying here some simplifications.
