@@ -10,14 +10,15 @@ This sample application has been used for a course on Software Engineering at [B
 
 This project uses
 
-- JDK 8
-- Maven 3
-- Spring Boot
-- Spring Data + JPA + Hibernate + Derby
-- AspectJ Compile Time Weaving for main sources
-- `springfox-swagger` for generating documentation and user interface for the REST service
-- JUnit 4
-- The Exception Handling and Reporting Framework MulTEx
+- JDK 8 as the platform
+- [Maven](https://maven.apache.org/) 3 as build tool
+- [Spring Boot](https://spring.io/projects/spring-boot) 1.5 as enterprise framework and web server
+- [Spring Data](https://spring.io/projects/spring-data) + [JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) + [Hibernate](https://hibernate.org/) as persistence API and object-relational mapper
+- [Apache Derby](http://db.apache.org/derby/) as relational database
+- [AspectJ](https://www.eclipse.org/aspectj/) Compile Time Weaving for main sources
+- [springfox-swagger](https://springfox.github.io/springfox/) for generating documentation and user interface for the REST service
+- [JUnit 4](https://junit.org/junit4/)
+- The Exception Handling and Reporting Framework [MulTEx](http://public.beuth-hochschule.de/~knabe/java/multex/)
 
 Detailed version indications you can find in the file [pom.xml](pom.xml).
 
@@ -27,31 +28,38 @@ If the correct JDK and Maven versions are installed you can simply use
 `mvn clean test`
 This will fetch all necessary libraries, compile the project, collect the exception message texts, and execute the test suite.
 
-If you experience problems due to versioning of JDK and Maven, see the later chapter about it.
+If you experience problems due to versioning of JDK and Maven, see the chapter about it in document [Maven and IDE Integration](src/doc/Maven-IDE-Integration.md).
 
 After this is working you can import the Maven project into your Java IDE 
-(Spring Tool Suite is recommended, as AspectJ weaving is needed for the compile phase).
+([Spring Tool Suite](https://spring.io/tools) is recommended, see the chapter about IDE Integration in  [Maven and IDE Integration](src/doc/Maven-IDE-Integration.md))
 
-You can run the application (a REST server) in your IDE by running class `de.beuth.knabe.spring_ddd_bank.Application` or on the command line after `mvn package` by 
+You can run the application (a REST server) in your IDE by running class [de.beuth.knabe.spring_ddd_bank.Application](src/main/java/de/beuth/knabe/spring_ddd_bank/Application.java) as Java Application or on the command line after 
+`mvn package` by 
 `java -jar target/spring-ddd-bank-0.1-SNAPSHOT.jar`
-In the last lines of the log you will see the number of the port (usually 8080), on which the server will listen. You can stop it by typing &lt;Ctrl/C&gt;.
+
+This will start the web server Tomcat with the web application Spring DDD Bank. The latter runs the database Derby in embedded mode for the web application, but also offers network access to the database.  In the last lines of the log you will see messages like the following:
+`Tomcat started on port(s): 8080 (http)`
+`Apache Derby Network Server 10.12.1.1 - (1704137) wurde gestartet und ist bereit, Verbindungen auf Port 1527 zu akzeptieren.`
+In these messages you can see the port of the web server (8080), and of the Derby database (1527).
+
+You can stop it by typing &lt;Ctrl/C&gt;.
 
 ## Which DDD principles are implemented?
 
-- Modelling the domain layer as one package, which does not depend on any other package besides standard Java SE packages as `java.time` and `javax.persistence`. The latter only for the JPA annotations.
+- Modeling the domain layer as one package, which does not depend on any other package besides standard Java SE packages as `java.time` and `javax.persistence`. The latter only for the JPA annotations.
 
-- Avoid an [anemic domain model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class `Client`.  
+- Avoid an [anemic domain model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class [Client](src/main/java/de/beuth/knabe/spring_ddd_bank/domain/Client.java).  
   This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
   See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable).
 
-- The Domain Layer references required services only by self-defined, minimal interfaces (in package `domain.imports`).
+- The Domain Layer references required services only by self-defined, minimal interfaces (in package [domain.imports](src/main/java/de/beuth/knabe/spring_ddd_bank/domain/imports)).
 
-- Implementing required services in the infrastructure layer (in package `infrastructure`).
+- Implementing required services in the infrastructure layer (in package [infrastructure](src/main/java/de/beuth/knabe/spring_ddd_bank/infrastructure)).
 
-- Linking together required services and their implementations by Dependency Injection. 
+- Linking together required services and their implementations by Spring Dependency Injection. 
 
 - Implementing an interface layer for external access to the application. 
-  This is implemented as a REST service in package `rest_interface`.
+  This is implemented as a REST service in package [rest_interface](src/main/java/de/beuth/knabe/spring_ddd_bank/rest_interface).
 
 
 ## Other Characteristics
@@ -59,7 +67,7 @@ In the last lines of the log you will see the number of the port (usually 8080),
 - It is a little bank application, where the bank can create clients and clients can create and manage accounts, e.g. deposit and transfer money.
 - The analysis class diagram is in file [src/doc/BankModel.pdf](src/doc/BankModel.pdf). Its editable source by UMLet has extension `.uxf`.
 - An overview of the REST endpoints is given at [src/doc/REST-API.md](src/doc/REST-API.md). Additionally when running the REST service, the REST endpoint documentation generated by Swagger, is accessible at http://localhost:8080/ and clicking on [REST API documentation](http://localhost:8080/swagger-ui.html).   
-- As simplification an application layer is not implemented, but the interface layer is made transactional by annotation `@Transactional` to class `ApplicationController`.
+- As the application layer in this didactical example would only manage transactions, it is leaved out, but the same effect is achieved by making the interface layer transactional by the annotation `@Transactional` to class `ApplicationController`.
 - Internationalizable, parameterizable exception message texts
 - Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
 - The application runs against a file-based Derby database. This is configured in file [src/main/resources/application.properties](src/main/resources/application.properties)
@@ -73,25 +81,6 @@ By Maven phase `compile` this file is copied to `target/classes/`.
 During the following phase `process-classes` the exception message texts are extracted from the JavaDoc comments of all exceptions under `src/main/java/`
 by the  `ExceptionMessagesDoclet`  as configured for the `maven-javadoc-plugin`. They are appended to the message text file in `target/classes/`.
 This process is excluded from m2e lifecycle mapping in the `pom.xml`.
-
-## Overcoming versioning problems with JDK and Maven
-
-If you experience problems which are related to the versions of JDK and Maven you can achieve usage of the same versions as this project was developed on as follows:
-
-* Make the required JDK version available on your computer: I recommend to use https://sdkman.io/
-  Install it like there described. List the available JDKs by 
-  `sdk list java`
-  For installation of the HotSpot variant of JDK 8 of provider AdoptOpenJDK use the listed identifier e.g. `8.0.292.hs-adpt` in the command 
-  `sdk install java 8.0.292.hs-adpt` 
-  If you do not want that it becomes the default Java version, answer in the end with `n`.
-* Make that the required Java version is used by your project:
-  You can do this for the current command window by `sdk use java 8.0.292.hs-adpt`
-  You can do this permanently by `sdk default java 8.0.292.hs-adpt`
-  Or you define the environment variable `JAVA_HOME` as the path of your JDK installation, on my computer it is e.g. `/home/knabe/.sdkman/candidates/java/8.0.292.hs-adpt`. How to define environment variables and for which lifetime depends on your operating system and is beyond the scope of this introduction.
-  If you want to use JDK 8 only for this project you can define a script which defines JAVA_HOME and then runs Maven, e.g. on Linux: File `mymvn.sh` with content `JAVA_HOME=/home/knabe/.sdkman/candidates/java/8.0.292.hs-adpt ./mvnw "$@"`
-  Then `./mymvn.sh clean test` This runs the Maven Wrapper of the project with the given JDK.
-  I recommend not to version this script, as other developers probably have their JDK at another location.
-
 
 ## Plans
 
