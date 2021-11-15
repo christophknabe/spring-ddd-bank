@@ -37,9 +37,9 @@ You can run the application (a REST server) in your IDE by running class [de.beu
 `mvn package` by 
 `java -jar target/spring-ddd-bank-0.1-SNAPSHOT.jar`
 
-This will start the web server Tomcat with the web application Spring DDD Bank. The latter runs the database Derby in embedded mode for the web application, but also offers network access to the database.  In the last lines of the log you will see messages like the following:
-`Tomcat started on port(s): 8080 (http)`
-`Apache Derby Network Server 10.12.1.1 - (1704137) wurde gestartet und ist bereit, Verbindungen auf Port 1527 zu akzeptieren.`
+This will start the web server Tomcat with the web application Spring DDD Bank. The latter runs the database Derby in embedded mode for the web application, but also offers network access to the database.  In the last lines of the log you will see messages like the following:\
+`Tomcat started on port(s): 8080 (http)`\
+`Apache Derby Network Server 10.12.1.1 - (1704137) wurde gestartet und ist bereit, Verbindungen auf Port 1527 zu akzeptieren.`\
 In these messages you can see the port of the web server (8080), and of the Derby database (1527).
 
 You can stop it by typing &lt;Ctrl/C&gt;.
