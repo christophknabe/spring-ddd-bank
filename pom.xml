@@ -11,15 +11,13 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.3.RELEASE</version>
+		<version>2.1.18.RELEASE</version>
 	</parent>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<!-- java.version>1.8</java.version -->
 		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<!-- aspectj.version>1.8.9</aspectj.version -->
 		<aspectj.version>1.9.7</aspectj.version>
 		<derby.version>10.12.1.1</derby.version>
 		<multexVersion>8.3</multexVersion>
@@ -41,8 +39,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		<!-- Derby Database (in-memory in test suite, or in-directory in production 
-			code) -->
+		<!-- Derby Database (in-memory in test suite, or in-directory in production code) -->
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
@@ -87,11 +84,11 @@
 			<artifactId>springfox-swagger-ui</artifactId>
 			<version>${swagger.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime as starting with Java 9 JAXB is no longer part of the JRE.-->
+		<!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime 
+			as starting with Java 9 JAXB is no longer part of the JRE. -->
 		<dependency>
-		    <groupId>org.glassfish.jaxb</groupId>
-		    <artifactId>jaxb-runtime</artifactId>
-		    <version>2.3.1</version>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -117,7 +114,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<!--  was 1.10 -->
 				<version>1.14.0</version>
 				<executions>
 					<execution>
@@ -171,10 +167,10 @@
 							<show>private</show>
 							<verbose>false</verbose>
 							<debug>false</debug>
-							<additionalparam>
+							<additionalOptions>
 								-out
 								${project.build.directory}/classes/${messageTextFile}
-							</additionalparam>
+							</additionalOptions>
 							<!-- For the project-reports page -->
 							<name>ExceptionTexts</name>
 							<description>Extraction of Exception Message Texts from Source
@@ -187,7 +183,6 @@
 				<!-- Java Code Coverage analyzer. See https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<!-- version>0.7.9</version -->
 				<version>0.8.7</version>
 				<executions>
 					<!-- Prepares the property pointing to the JaCoCo runtime agent, which 
@@ -200,13 +195,11 @@
 						<configuration>
 							<!-- Sets the path to the file which contains the execution data. -->
 							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-							<!-- Sets the name of the property containing the settings for the 
-								JaCoCo runtime agent. -->
+							<!-- Sets the name of the property containing the settings for the JaCoCo runtime agent. -->
 							<propertyName>surefireArgLine</propertyName>
 						</configuration>
 					</execution>
-					<!-- Ensures that the code coverage report for unit tests is created 
-						after unit tests have been run. -->
+					<!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
 					<execution>
 						<id>post-unit-test</id>
 						<phase>test</phase>
@@ -214,8 +207,7 @@
 							<goal>report</goal>
 						</goals>
 						<configuration>
-							<!-- Sets the path to the file which contains the collected execution 
-								data. -->
+							<!-- Sets the path to the file which contains the collected execution data. -->
 							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
 							<!-- Sets the output directory for the code coverage report. -->
 							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
@@ -232,68 +224,13 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-javadoc-plugin
-										</artifactId>
-										<versionRange>
-											[2.9.1,)
-										</versionRange>
-										<goals>
-											<goal>javadoc</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-dependency-plugin
-										</artifactId>
-										<versionRange>
-											[3.0.2,)
-										</versionRange>
-										<goals>
-											<goal>sources</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 	<reporting>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.4</version>
+				<version>3.0.1</version>
 				<configuration>
 					<show>private</show>
 				</configuration>
@@ -303,7 +240,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.9</version>
+				<version>3.1.2</version>
 				<configuration>
 					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
 				</configuration>
@@ -312,15 +249,18 @@
 	</reporting>
 
 	<repositories>
+		<!-- Besides Maven central the following repositories are needed: -->
 		<repository>
-			<id>spring-releases</id>
-			<name>Spring Releases</name>
-			<url>https://repo.spring.io/libs-release</url>
+			<!-- For the dummy artifact org.eclipse.m2e:lifecycle-mapping -->
+			<id>tu-delft-repository</id>
+			<name>Technical University Delft Maven repository</name>
+			<url>https://simulation.tudelft.nl/maven/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<repository><!-- For current MulTEx: -->
+		<repository>
+			<!-- For current MulTEx: -->
 			<id>bht-knabe-repository</id>
 			<name>BHT Knabe Maven 2 repository</name>
 			<url>http://public.beuth-hochschule.de/~knabe/mvn-repo/</url>

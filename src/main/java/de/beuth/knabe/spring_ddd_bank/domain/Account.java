@@ -40,6 +40,8 @@ public class Account extends EntityBase<Account> {
 		return balance;
 	}
 
+	/**Sets the balance unchecked to the new amount. 
+	 * Note: This method has only domain package visibility, so that it cannot be called from outside of the domain layer.*/
 	void setBalance(final Amount amount) {
 		this.balance = amount;
 	}
