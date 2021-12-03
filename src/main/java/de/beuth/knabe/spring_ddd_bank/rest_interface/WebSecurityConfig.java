@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 /**Configuration for securing the application.
@@ -60,7 +64,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	/**Configures the {@link #predefinedUsernames} as known users with their password equal to the user name.
 	 * @param auth a SecurityBuilder injected by Spring, used to create an AuthenticationManager
 	 * @throws Exception if an error occurs when configuring the in memory authentication
-	 * */
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
         final InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthentication = auth.inMemoryAuthentication();
@@ -69,6 +72,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			inMemoryAuthentication.withUser(username).password(username).roles(role);
         }
     }
+	 * Approach taken from @see <a href="https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#_hello_web_security_java_configuration">Spring Hello Web Security Java Configuration</a>  */
+    
+	@Bean
+	public UserDetailsService userDetailsService() {
+		final InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+		//manager.createUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
+        for(final String username: predefinedUsernames) {
+        	final String role = username.equalsIgnoreCase(BANK_ROLE) ? BANK_ROLE : CLIENT_ROLE;
+			//inMemoryAuthentication.withUser(username).password(username).roles(role);
+			manager.createUser(User.withDefaultPasswordEncoder().username(username).password(username).roles(role).build());
+        }
+		return manager;
+	}
     
     public List<String> predefinedUsernames(){
     	return predefinedUsernames;

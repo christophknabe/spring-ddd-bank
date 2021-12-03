@@ -21,13 +21,23 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.StreamSupport;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Client.NotManagedAccountExc;
@@ -39,15 +49,50 @@ import de.beuth.knabe.spring_ddd_bank.domain.Client.NotManagedAccountExc;
 @SpringBootTest
 public class ClientTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClientTest.class);
+    
 	/** Only for use in the cleanUp method! */
 	@Autowired
 	private CleanupService cleanupService;
 
 	@Autowired
 	private BankService bankService;
+	
+    @Autowired
+    private ConfigurableEnvironment env;
+    
+    private static AtomicBoolean alreadyLogged = new AtomicBoolean();
+
+    /**Logs all property values in effect when running this test driver.
+     * Mostly taken from https://gist.github.com/sandor-nemeth/f6d2899b714e017266cb9cce66bc719d
+     */
+	public void _logAllProperties() {
+		if(alreadyLogged.getAndSet(true)) { //was already logged
+			return;
+		}
+        final StringBuilder msg = new StringBuilder("\n====== Environment and configuration ======");
+        msg.append("\nActive profiles: ");
+        msg.append(Arrays.toString(env.getActiveProfiles()));
+        final MutablePropertySources sources = env.getPropertySources();
+        sources.stream()
+                .filter(ps -> ps instanceof EnumerablePropertySource)
+                .map(ps -> ((EnumerablePropertySource) ps).getPropertyNames())
+                .flatMap(Arrays::stream)
+                .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
+                .sorted()
+                .forEach(prop -> {
+                	msg.append("\n");
+                	msg.append(prop);
+                	msg.append(": ");
+                	msg.append(env.getProperty(prop));
+                });
+        msg.append("\n===========================================");
+        LOGGER.info(msg.toString());
+	}
 
 	@Before
 	public void cleanUp() {
+		_logAllProperties();
 		cleanupService.deleteAll();
 		Locale.setDefault(Locale.GERMANY);
 	}
@@ -58,16 +103,25 @@ public class ClientTest {
 		final AccountAccess jacksSavings = jack.createAccount("Jack's Savings");
 		assertNotNull(jacksSavings);
 		assertEquals(jack, jacksSavings.getClient());
+		assertEquals(true, jack.sameIdentityAs(jacksSavings.getClient()));
 		assertEquals("jack", jacksSavings.getClient().getUsername());
 		assertEquals(true, jacksSavings.isOwner());
+		
 		final Account jacksSavingsAccount = jacksSavings.getAccount();
 		assertEquals("Jack's Savings", jacksSavingsAccount.getName());
 		assertEquals(0.0, jacksSavingsAccount.getBalance().toDouble(), 0.001);
-		assertEquals(jack.getUsername(), jacksSavings.getClient().getUsername());
-		assertEquals(true, jack.sameIdentityAs(jacksSavings.getClient()));
-		final String report = jack.accountsReport();
 		final AccountNo jacksSavingsAccountNo = jacksSavingsAccount.accountNo();
+		assertLowerBound("Jack's Savings account number", 1L, jacksSavingsAccountNo.toLong());
+		
+		final String report = jack.accountsReport();
 		assertEquals("Accounts of client: jack\n" + jacksSavingsAccountNo + "\tisOwner\t 0,00\tJack's Savings\n", report);
+	}
+
+	private void assertLowerBound(String message, long floor, long actual) {
+		if(floor <= actual) {
+			return;
+		}		
+		fail(String.format("%s: Actual value %d lower than floor %d", message, actual, floor));
 	}
 
 	@Test
@@ -105,7 +159,7 @@ public class ClientTest {
 		final Client jack = bankService.createClient(jackUsername, LocalDate.parse("1966-12-31"));
 		final AccountAccess jacksSavingsAccess = jack.createAccount("Jack's Savings");
 		//Create Anna and her account:
-		final String annaUsername = "jack";
+		final String annaUsername = "anna";
 		final Client anna = bankService.createClient(annaUsername, LocalDate.parse("1970-01-01"));
 		final AccountAccess annasGiroAccess = anna.createAccount("Anna's Giro");
 		//Check that nobody can access an Account of another person:

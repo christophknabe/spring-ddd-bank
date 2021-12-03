@@ -64,16 +64,24 @@ public class Client extends EntityBase<Client> {
 
 	@Override
 	public String toString() {
-		return String.format("Client{id=%d, name='%s', birthDate='%s'}", getId(), username, birthDate);
+		@SuppressWarnings("deprecation")
+		final Long id = getId();
+		return String.format("Client{id=%d, name='%s', birthDate='%s'}", id, username, birthDate);
 	}
 
 	// Required repositories as by Ports and Adapters Pattern:
 
-	@Autowired
+	//@Autowired
 	private transient AccountAccessRepository accountAccessRepository;
-	@Autowired
+	//@Autowired
 	private transient AccountRepository accountRepository;
 
+	/** Provides this Client entity with its required repositories. Avoids AspectJ. */
+	/*package*/ void provideWith(final AccountAccessRepository accountAccessRepository, final AccountRepository accountRepository){
+		this.accountAccessRepository = accountAccessRepository;
+		this.accountRepository = accountRepository;
+	}
+	
 	/**
 	 * Command: Creates a bank account with the given accountName and a zero
 	 * balance.

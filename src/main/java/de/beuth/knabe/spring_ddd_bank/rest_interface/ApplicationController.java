@@ -109,7 +109,7 @@ public class ApplicationController {
 		return _clientsToResources(clients);
 	}
 
-	@ApiOperation(value = "Create a client from the passed client resource.", authorizations = {
+	@ApiOperation(value = "Create a client from the passed client resource.", code=201, authorizations = {
 			@Authorization(value = "basicAuth") })
 	@PostMapping("/bank/client")
 	public ResponseEntity<ClientResource> createClient(@RequestBody final ClientResource clientResource,
