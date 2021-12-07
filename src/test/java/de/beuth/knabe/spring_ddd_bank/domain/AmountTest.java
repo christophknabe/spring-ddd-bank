@@ -17,6 +17,9 @@
 package de.beuth.knabe.spring_ddd_bank.domain;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Locale;
@@ -82,6 +85,18 @@ public class AmountTest {
 
     @Test
     public void outsideRangeConstruction(){
+        try{
+            new Amount(Double.NaN);
+            fail("Amount.RangeExc expected");
+        }catch(Amount.RangeExc expected){}
+        try{
+            new Amount(Double.NEGATIVE_INFINITY);
+            fail("Amount.RangeExc expected");
+        }catch(Amount.RangeExc expected){}
+        try{
+            new Amount(Double.POSITIVE_INFINITY);
+            fail("Amount.RangeExc expected");
+        }catch(Amount.RangeExc expected){}
         final double overgreatValue = Amount.maxValue() + 0.01;
         try{
             new Amount(overgreatValue);
@@ -190,6 +205,48 @@ public class AmountTest {
         assertEquals(0, testAmount.compareTo(equal));
         final Amount higher = new Amount(1000000000,00);
         assertEquals(-1, testAmount.compareTo(higher));
+    }
+    
+    @Test
+    public void twoIdenticalAmountsEqual() {
+        final Amount amount1 = new Amount(100000,0);
+        final Amount amount2 = amount1;
+        assertTrue(amount1.equals(amount2));    	
+    }
+    
+    @Test
+    public void twoEqualAmountsEqual() {
+        final Amount amount1 = new Amount(100000,0);
+        final Amount amount2 = new Amount(100000,0);
+        assertTrue(amount1.equals(amount2));    	
+    }
+    
+    @Test
+    public void twoDifferentAmountsDoNotEqual() {
+        final Amount amount1 = new Amount(100000,0);
+        final Amount amount2 = new Amount(100000,1);
+        assertFalse(amount1.equals(amount2));    	
+    }
+    
+    @Test
+    public void anAmountAndOtherObjectDoNotEqual() {
+        final Amount amount1 = new Amount(100000,0);
+        final String object2 = new String("Other object");
+        assertEquals(false, amount1.equals(object2));    	
+    }    
+    
+    @Test
+    public void hashCodesOfEqualAmountsEqual() {
+        final Amount amount1 = new Amount(100000,0);
+        final Amount amount2 = new Amount(100000,0);
+        assertEquals(amount1.hashCode(), amount2.hashCode());    	
+    }
+    
+    @Test
+    public void hashCodesOfUnequalAmountsDiffer() {
+        final Amount amount1 = new Amount(12345,67);
+        final Amount amount2 = new Amount(12345,68);
+        assertNotEquals(amount1.hashCode(), amount2.hashCode());    	
     }
 
 }

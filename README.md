@@ -2,20 +2,19 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                            (C) Christoph Knabe, 2017-03-17 ... 2021-11-15
+                                            (C) Christoph Knabe, 2017-03-17 ... 2021-12-07
 
 In this project I am trying to apply principles of Domain Driven Design.
-In contrary to full-blown DDD examples on the web I am applying here some simplifications.
-This sample application has been used for a course on Software Engineering at [Berlin University of Applied Sciences and Technology (BHT)](https://www.bht-berlin.de/en/).
+In contrary to more complex DDD examples on the web I am applying here some simplifications.
+This sample application has been used for a course on Software Engineering at [Berlin University of Applied Sciences and Technology (Berliner Hochschule für Technik: BHT)](https://www.bht-berlin.de/en/).
 
 This project uses
 
-- JDK 8 as the platform
+- JDK 11 as the platform
 - [Maven](https://maven.apache.org/) 3 as build tool
-- [Spring Boot](https://spring.io/projects/spring-boot) 1.5 as enterprise framework and web server
+- [Spring Boot](https://spring.io/projects/spring-boot) 2 as enterprise framework and web server
 - [Spring Data](https://spring.io/projects/spring-data) + [JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) + [Hibernate](https://hibernate.org/) as persistence API and object-relational mapper
 - [Apache Derby](http://db.apache.org/derby/) as relational database
-- [AspectJ](https://www.eclipse.org/aspectj/) Compile Time Weaving for main sources
 - [springfox-swagger](https://springfox.github.io/springfox/) for generating documentation and user interface for the REST service
 - [JUnit 4](https://junit.org/junit4/)
 - The Exception Handling and Reporting Framework [MulTEx](http://public.bht-berlin.de/~knabe/java/multex/)
@@ -37,9 +36,9 @@ You can run the application (a REST server) in your IDE by running class [de.beu
 `mvn package` by 
 `java -jar target/spring-ddd-bank-0.1-SNAPSHOT.jar`
 
-This will start the web server Tomcat with the web application Spring DDD Bank. The latter runs the database Derby in embedded mode for the web application, but also offers network access to the database.  In the last lines of the log you will see messages like the following:\
+This will start the web server Tomcat with the web application *Spring DDD Bank*. The latter runs the database Derby in embedded mode for the web application, but also offers network access to the database.  In the last lines of the log you will see messages like the following:\
 `Tomcat started on port(s): 8080 (http)`\
-`Apache Derby Network Server 10.12.1.1 - (1704137) wurde gestartet und ist bereit, Verbindungen auf Port 1527 zu akzeptieren.`\
+`Apache Derby Network Server 10.12.1.1 - (1704137) has been started and is ready to accept connections on port 1527.`\
 In these messages you can see the port of the web server (8080), and of the Derby database (1527).
 
 You can stop it by typing &lt;Ctrl/C&gt;.
@@ -48,9 +47,8 @@ You can stop it by typing &lt;Ctrl/C&gt;.
 
 - Modeling the domain layer as one package, which does not depend on any other package besides standard Java SE packages as `java.time` and `javax.persistence`. The latter only for the JPA annotations.
 
-- Avoid an [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class [Client](src/main/java/de/beuth/knabe/spring_ddd_bank/domain/Client.java).  
-  This requires the feature **Domain Object Dependency Injection** (DODI), which can only be implemented by using full AspectJ compile-time weaving. 
-  See [§11.8.1 Using AspectJ to dependency inject domain objects with Spring](http://docs.spring.io/spring/docs/4.3.x/spring-framework-reference/html/aop.html#aop-atconfigurable).
+- Prefer a [Rich Domain Model](https://www.amido.com/blog/anaemic-domain-model-vs-rich-domain-model) over an [Anemic Domain Model](https://martinfowler.com/bliki/AnemicDomainModel.html) by having relevant business logic methods in entity class [Client](src/main/java/de/beuth/knabe/spring_ddd_bank/domain/Client.java).
+  This requires **Domain Object Dependency Injection** (DODI), which is now done manually by method `Client.provideWith`. (The former automatic DODI on Java 8 by AspectJ compile-time weaving was abandoned, as there were serious configuration issues with AspectJ on Java 11. AspectJ seems to become less popular.)
 
 - The Domain Layer references required services only by self-defined, minimal interfaces (in package [domain.imports](src/main/java/de/beuth/knabe/spring_ddd_bank/domain/imports)).
 
@@ -67,18 +65,18 @@ You can stop it by typing &lt;Ctrl/C&gt;.
 - It is a little bank application, where the bank can create clients and clients can create and manage accounts, e.g. deposit and transfer money.
 - The analysis class diagram is in file [src/doc/BankModel.pdf](src/doc/BankModel.pdf). Its editable source by UMLet has extension `.uxf`.
 - An overview of the REST endpoints is given at [src/doc/REST-API.md](src/doc/REST-API.md). Additionally when running the REST service, the REST endpoint documentation generated by Swagger, is accessible at http://localhost:8080/ and clicking on [REST API documentation](http://localhost:8080/swagger-ui.html).   
-- As the application layer in this didactical example would only manage transactions, it is leaved out, but the same effect is achieved by making the interface layer transactional by the annotation `@Transactional` to class [ApplicationController](https://github.com/christophknabe/spring-ddd-bank/blob/issue-16-ide-importable/src/main/java/de/beuth/knabe/spring_ddd_bank/rest_interface/ApplicationController.java).
+- As the application layer in this didactical example would only manage transactions, it is omitted, but the same effect is achieved by making the interface layer transactional by the annotation `@Transactional` to class [ApplicationController](https://github.com/christophknabe/spring-ddd-bank/blob/issue-16-ide-importable/src/main/java/de/beuth/knabe/spring_ddd_bank/rest_interface/ApplicationController.java).
 - Internationalizable, parameterizable exception message texts
-- Capture of each exception message text in the reference language directly as main JavaDoc comment of the exception
+- Capture of each exception message text in the reference language (english) directly as main JavaDoc comment of the exception
 - The application runs against a file-based Derby database. This is configured in file [src/main/resources/application.properties](src/main/resources/application.properties)
 - Tests are run against an empty in-memory Derby database. This is configured in file [src/test/resources/application.properties](src/test/resources/application.properties)
 - Generation of a test coverage report by the [JaCoCo Maven plugin](http://www.eclemma.org/jacoco/trunk/doc/maven.html) into [target/site/jacoco-ut/index.html](file:target/site/jacoco-ut/index.html).
-- Simple Spring Security with a fixed number of predefined users (1 bank, and 4 clients).
+- Demo-only Spring Security with a fixed number of predefined users (1 bank, and 4 clients).
 
 ### Where are the exception message texts?
-In the file `MessageText.properties`. The editable original with some fixed message texts is in `src/main/resources/`.
+In the file `MessageText.properties`. The editable original with some fixed message texts is in [src/main/resources/](src/main/resources/).
 By Maven phase `compile` this file is copied to `target/classes/`.
-During the following phase `process-classes` the exception message texts are extracted from the JavaDoc comments of all exceptions under `src/main/java/`
+During the following phase `process-classes` the exception message texts are extracted from the JavaDoc comments of all exceptions under [src/main/java/](src/main/java/)
 by the  `ExceptionMessagesDoclet`  as configured for the `maven-javadoc-plugin`. They are appended to the message text file in `target/classes/`.
 This process is excluded from m2e lifecycle mapping in the `pom.xml`.
 
@@ -102,4 +100,4 @@ This process is excluded from m2e lifecycle mapping in the `pom.xml`.
 - [Spring Dependency Injection](http://projects.spring.io/spring-framework/)
 - [Spring Data JPA](https://spring.io/guides/gs/accessing-data-jpa/)
 - [Spring Data JPA Query Methods](http://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
-- This application implements my knowledge about layering and data access at a given point of time. Previous versions were in a 3-layer form in german under [Bank3Tier - Bankanwendung in 3 Schichten](http://public.beuth-hochschule.de/~knabe/java/bank3tier/).
+- This application condenses my knowledge about layering and data access at a given point of time. Previous versions were in a 3-layer form in german under [Bank3Tier - Bankanwendung in 3 Schichten](http://public.beuth-hochschule.de/~knabe/java/bank3tier/).

@@ -1,6 +1,8 @@
 package de.beuth.knabe.spring_ddd_bank.domain;
 
 import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
+import multex.Exc;
+import static multex.MultexUtil.create;
 
 import javax.persistence.Entity;
 
@@ -24,12 +26,22 @@ public class Account extends EntityBase<Account> {
 	}
 	
 	public AccountNo accountNo() {
-		return new AccountNo(getId());
+		final Long id = getId();
+		if(id==null) {
+			throw create(NotYetSavedExc.class);
+		}
+		return new AccountNo(id);
+	}
+	/** This account does not yet have an account number as it has never been saved. */
+	@SuppressWarnings("serial")
+	public static class NotYetSavedExc extends Exc {
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Account{accountNo=%d, name='%s', balance='%s'}", accountNo(), name, balance);
+		final Long id = getId();
+		final String accountNo = id==null ? "" : Long.toString(id);
+		return String.format("Account{accountNo=%s, name='%s', balance='%s'}", accountNo, name, balance);
 	}
 
 	public String getName() {
@@ -40,6 +52,8 @@ public class Account extends EntityBase<Account> {
 		return balance;
 	}
 
+	/**Sets the balance unchecked to the new amount. 
+	 * Note: This method has only domain package visibility, so that it cannot be called from outside of the domain layer.*/
 	void setBalance(final Amount amount) {
 		this.balance = amount;
 	}

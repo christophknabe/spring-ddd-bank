@@ -56,11 +56,12 @@ public class SwaggerConfig {
                         "<p>URIs under <b>/bank/</b> are for bankers, under <b>/client/</b> are for clients.</p>" +
                         "<p>Keep in mind to login via the <b>Authorize</b> button before calling API methods.</p>" +
                         "<p>Click on <b>application-controller</b> in order to see the API methods.</p>" +
+                        "<p>Click on <b>Models</b> in order to see the type definitions for resources and commands.</p>" +
                         "",
                 null,
                 null,
                 new Contact(
-                        "Christoph Knabe", "http://public.beuth-hochschule.de/~knabe/", null
+                        "Christoph Knabe", "http://public.bht-berlin.de/~knabe/", null
                 ),
                 null,
                 null,

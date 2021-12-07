@@ -52,8 +52,8 @@ public class AccountJpaRepositoryTest {
 		assertThat(annasAccountId, greaterThan(jacksAccountId));
 		
 		//The accountNo is always the same as the accountId:
-		assertEquals(annasAccountId, annasAccount.accountNo().toLong());
-		assertEquals(jacksAccountId, jacksAccount.accountNo().toLong());
+		assertEquals(annasAccountId.longValue(), annasAccount.accountNo().toLong());
+		assertEquals(jacksAccountId.longValue(), jacksAccount.accountNo().toLong());
     }
 
 }

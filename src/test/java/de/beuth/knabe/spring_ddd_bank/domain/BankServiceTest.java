@@ -18,11 +18,9 @@ package de.beuth.knabe.spring_ddd_bank.domain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -31,6 +29,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 
 /** Test driver for the service class {@linkplain BankService} */
 @RunWith(SpringRunner.class)
@@ -105,6 +104,15 @@ public class BankServiceTest {
 		final Iterable<Client> clients = bankService.findAllClients();
 		final String result = stringize(clients);
 		assertEquals("1966-12-31 jack, 1994-05-21 kim", result);
+	}
+
+	@Test
+	public void createClientUsernameIsUnique() {
+		bankService.createClient("nina", LocalDate.parse("1970-01-01"));
+		try {
+			bankService.createClient("nina", LocalDate.parse("1980-12-31"));
+			fail("BankService.DuplicateUsernameExc expected");
+		}catch(BankService.DuplicateUsernameExc expected) {}
 	}
 
 	@Test

@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /** Test driver for the entity object {@link Account} */
-public class AccountNoTest {
+public class AccountTest {
 
 	@Before
 	public void setUp() {
@@ -19,19 +19,36 @@ public class AccountNoTest {
 	@Test
 	public void constructExtract() {
 		{
-			final AccountNo result = new AccountNo(0L);
-			assertEquals(0L, result.toLong());
-			assertEquals("0", result.toString());
+			final Account result = new Account("Lisa's Savings");
+			assertEquals(null, result.getId());
+			assertEquals("Lisa's Savings", result.getName());
+			assertEquals(Amount.ZERO, result.getBalance());
+			assertEquals("Account{accountNo=, name='Lisa's Savings', balance='0,00'}", result.toString());
+			try {
+				result.accountNo();
+				fail("Account.NotYetSavedExc expected");
+			} catch (Account.NotYetSavedExc expected) {				
+			}
 		}
+	}
+	
+	@Test
+	public void constructExtractAccountNo() {
 		{
 			final AccountNo result = new AccountNo(Long.MAX_VALUE);
 			assertEquals(Long.MAX_VALUE, result.toLong());
 			assertEquals(Long.toString(Long.MAX_VALUE), result.toString());
 		}
+		{
+			final AccountNo result = new AccountNo("1");
+			assertEquals(1L, result.toLong());
+			assertEquals(Long.toString(1L), result.toString());
+		}
+		
 	}
 
 	@Test
-	public void constructIllegals() {
+	public void constructIllegalAccountNos() {
 		try {
 			new AccountNo((Long)null);
 			fail("AccountNo.IllegalExc expected");

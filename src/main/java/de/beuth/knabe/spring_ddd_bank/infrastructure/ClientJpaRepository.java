@@ -17,9 +17,9 @@ import de.beuth.knabe.spring_ddd_bank.infrastructure.imports.ImportedClientJpaRe
  */
 @Service
 public class ClientJpaRepository implements ClientRepository {
-
+	
     private final ImportedClientJpaRepository impl;
-
+    
     @Autowired
     public ClientJpaRepository(final ImportedClientJpaRepository impl) {
         this.impl = impl;

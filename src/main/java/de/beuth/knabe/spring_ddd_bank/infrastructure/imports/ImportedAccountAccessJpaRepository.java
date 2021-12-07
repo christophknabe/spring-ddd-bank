@@ -25,7 +25,7 @@ public interface ImportedAccountAccessJpaRepository extends JpaRepository<Accoun
 
 	void deleteAll();
 
-	AccountAccess save(AccountAccess account);
+	<S extends AccountAccess> S save(S accountAccess);
 
 	void delete(AccountAccess account);
 

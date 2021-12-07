@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import de.beuth.knabe.spring_ddd_bank.domain.BankService;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
+import multex.Failure;
 import multex.Msg;
 
 /**
@@ -79,7 +79,7 @@ public class ExceptionAdvice {
 	final String domainPackagePrefix = _computePackagePrefix(Client.NotOwnerExc.class);
 
 	/**
-	 * Converts the given exception to the most suiting HTTP response status.
+	 * Converts the given exception to the best suiting HTTP response status.
 	 * 
 	 * @return one of HttpStatus.NOT_FOUND, HttpStatus.FORBIDDEN,
 	 *         HttpStatus.BAD_REQUEST, HttpStatus.INTERNAL_SERVER_ERROR
@@ -99,11 +99,22 @@ public class ExceptionAdvice {
 		if (exc instanceof Client.WithoutRightExc) {
 			return HttpStatus.FORBIDDEN;
 		}
-		final String excClassName = exc.getClass().getName();
-		if (excClassName.startsWith(restInterfacePackagePrefix) || excClassName.startsWith(domainPackagePrefix)) {
+		if (isRuleViolation(exc)) {
 			return HttpStatus.BAD_REQUEST;
 		}
 		return HttpStatus.INTERNAL_SERVER_ERROR;
+	}
+	
+	private boolean isRuleViolation(final Exception exception) {
+		final String excClassName = exception.getClass().getName();
+		if(exception instanceof Failure) {
+			return false;
+		}
+		if (excClassName.startsWith(restInterfacePackagePrefix) || excClassName.startsWith(domainPackagePrefix)) {
+			return true;
+		}
+		//comes from infrastructure layer or lower
+		return false;
 	}
 
 	/**

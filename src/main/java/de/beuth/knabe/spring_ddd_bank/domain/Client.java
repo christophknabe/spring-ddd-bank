@@ -5,8 +5,6 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import multex.Exc;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -18,11 +16,11 @@ import java.util.Optional;
 
 /**
  * A client of a bank along with some methods he can do. This entity is a Rich
- * Domain Object. It can access services injected into it by Spring DODI (Domain
- * Object Dependency Injection).
+ * Domain Object. It can access repositories injected into it by method
+ * {@link #provideWith(AccountAccessRepository, AccountRepository)}. Spring DODI
+ * (Domain Object Dependency Injection) is no longer used.
  */
 @Entity
-@Configurable
 public class Client extends EntityBase<Client> {
 
 	private String username;
@@ -37,10 +35,8 @@ public class Client extends EntityBase<Client> {
 	 * Creates a Client from its user name and birthDate without saving it. For
 	 * simplicity we do not store a full name of the Client.
 	 * 
-	 * @param username
-	 *            the unique user name for the new {@link Client}
-	 * @param birthDate
-	 *            the birth date of the new {@link Client}
+	 * @param username  the unique user name for the new {@link Client}
+	 * @param birthDate the birth date of the new {@link Client}
 	 */
 	public Client(final String username, final LocalDate birthDate) {
 		this.username = username;
@@ -64,22 +60,30 @@ public class Client extends EntityBase<Client> {
 
 	@Override
 	public String toString() {
-		return String.format("Client{id=%d, name='%s', birthDate='%s'}", getId(), username, birthDate);
+		@SuppressWarnings("deprecation")
+		final Long id = getId();
+		return String.format("Client{id=%d, name='%s', birthDate='%s'}", id, username, birthDate);
 	}
 
 	// Required repositories as by Ports and Adapters Pattern:
 
-	@Autowired
 	private transient AccountAccessRepository accountAccessRepository;
-	@Autowired
 	private transient AccountRepository accountRepository;
+
+	/**
+	 * Provides this Client entity with its required repositories. Avoids AspectJ.
+	 */
+	/* package */ void provideWith(final AccountAccessRepository accountAccessRepository,
+			final AccountRepository accountRepository) {
+		this.accountAccessRepository = accountAccessRepository;
+		this.accountRepository = accountRepository;
+	}
 
 	/**
 	 * Command: Creates a bank account with the given accountName and a zero
 	 * balance.
 	 * 
-	 * @param accountName
-	 *            a mnemonic for the purpose or usage of this account
+	 * @param accountName a mnemonic for the purpose or usage of this account
 	 * @return the link object for accessing the owner and the created account
 	 */
 	public AccountAccess createAccount(final String accountName) {
@@ -91,18 +95,14 @@ public class Client extends EntityBase<Client> {
 	/**
 	 * Command: Deposits the given amount into the managed destination account.
 	 * 
-	 * @param destination
-	 *            number of the {@link Account} where the given {@link Amount} will
-	 *            be deposited.
-	 * @param amount
-	 *            the {@link Amount} which will be deposited
+	 * @param destination number of the {@link Account} where the given
+	 *                    {@link Amount} will be deposited.
+	 * @param amount      the {@link Amount} which will be deposited
 	 * 
-	 * @throws AmountExc
-	 *             Illegal amount (negative or zero)
-	 * @throws DestinationAccountNotFoundExc
-	 *             No account with the given destination account number is found.
-	 * @throws DepositFailure
-	 *             another error when depositing money
+	 * @throws AmountExc                     Illegal amount (negative or zero)
+	 * @throws DestinationAccountNotFoundExc No account with the given destination
+	 *                                       account number is found.
+	 * @throws DepositFailure                another error when depositing money
 	 */
 	public void deposit(final AccountNo destination, final Amount amount)
 			throws AmountExc, DestinationAccountNotFoundExc, DepositFailure {
@@ -129,23 +129,19 @@ public class Client extends EntityBase<Client> {
 	 * Command: Transfers the given amount from the source account to the
 	 * destination account.
 	 * 
-	 * @param source
-	 *            the {@link Account} from which the {@link Amount} will be taken
-	 * @param destination
-	 *            Number of the {@link Account} to which the {@link Amount} will be
-	 *            transfered
-	 * @param amount
-	 *            the {@link Amount} to be transfered
+	 * @param source      the {@link Account} from which the {@link Amount} will be
+	 *                    taken
+	 * @param destination Number of the {@link Account} to which the {@link Amount}
+	 *                    will be transfered
+	 * @param amount      the {@link Amount} to be transfered
 	 * 
-	 * @throws WithoutRightExc
-	 *             The sender is not a manager of the source account.
-	 * @throws AmountExc
-	 *             Illegal amount (negative or zero)
-	 * @throws MinimumBalanceExc
-	 *             The source account's balance would fall under the minimum
-	 *             balance.
-	 * @throws DestinationAccountNotFoundExc
-	 *             No account with the given destinationAccountNo is found.
+	 * @throws WithoutRightExc               The sender is not a manager of the
+	 *                                       source account.
+	 * @throws AmountExc                     Illegal amount (negative or zero)
+	 * @throws MinimumBalanceExc             The source account's balance would fall
+	 *                                       under the minimum balance.
+	 * @throws DestinationAccountNotFoundExc No account with the given
+	 *                                       destinationAccountNo is found.
 	 */
 	public void transfer(final Account source, final AccountNo destination, final Amount amount)
 			throws AmountExc, WithoutRightExc, MinimumBalanceExc, DestinationAccountNotFoundExc {
@@ -173,10 +169,9 @@ public class Client extends EntityBase<Client> {
 	/**
 	 * Finds the account with the given account number.
 	 * 
-	 * @param destination
-	 *            Number of the account where to put money
-	 * @throws DestinationAccountNotFoundExc
-	 *             No account with the given account number is found.
+	 * @param destination Number of the account where to put money
+	 * @throws DestinationAccountNotFoundExc No account with the given account
+	 *                                       number is found.
 	 */
 	private Account _findDestinationAccount(final AccountNo destination) throws DestinationAccountNotFoundExc {
 		final Optional<Account> accountOptional = accountRepository.find(destination);
@@ -208,17 +203,14 @@ public class Client extends EntityBase<Client> {
 	 * Command: Adds the given manager Client to the given account in the role as
 	 * manager, but not owner.
 	 * 
-	 * @param account
-	 *            the {@link Account} to be managed
-	 * @param manager
-	 *            the {@link Client} to e given manager rights for the
-	 *            {@link Account}
+	 * @param account the {@link Account} to be managed
+	 * @param manager the {@link Client} to e given manager rights for the
+	 *                {@link Account}
 	 * @return the {@link AccountAccess} object created and saved
 	 * 
-	 * @throws NotOwnerExc
-	 *             this Client is not owner of the account.
-	 * @throws DoubleManagerExc
-	 *             the given manager Client is already manager of the account.
+	 * @throws NotOwnerExc      this Client is not owner of the account.
+	 * @throws DoubleManagerExc the given manager Client is already manager of the
+	 *                          account.
 	 */
 	public AccountAccess addAccountManager(final Account account, Client manager) {
 		final Optional<AccountAccess> ownerAccessOptional = accountAccessRepository.find(this, account);
@@ -259,13 +251,11 @@ public class Client extends EntityBase<Client> {
 	 * Query: Finds the {@link Account} with the given account number, if it is
 	 * owned or managed by this {@link Client}
 	 * 
-	 * @param accountNo
-	 *            the unique account number of the account
+	 * @param accountNo the unique account number of the account
 	 * @return the found {@link Account}
 	 * 
-	 * @throws NotManagedAccountExc
-	 *             Account with the given accountNo is neither owned nor managed by
-	 *             this {@link Client}.
+	 * @throws NotManagedAccountExc Account with the given accountNo is neither
+	 *                              owned nor managed by this {@link Client}.
 	 */
 	public Account findMyAccount(final AccountNo accountNo) throws NotManagedAccountExc {
 		final Optional<Account> accountOptional = accountRepository.find(accountNo);

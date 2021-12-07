@@ -19,6 +19,10 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public abstract class EntityBase<T extends EntityBase<T>> {
 
+	/**
+	 * This identity field has the wrapper class type Long so that an entity which
+	 * has not been saved is recognizable by a null identity.
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -40,12 +44,11 @@ public abstract class EntityBase<T extends EntityBase<T>> {
 	/**
 	 * Entities compare by identity, not by attributes.
 	 *
-	 * @param that
-	 *            The other entity of the same type
+	 * @param that The other entity of the same type
 	 * @return true if the identities are the same, regardless of the other
 	 *         attributes.
-	 * @throws IllegalStateException
-	 *             one of the entities does not have the identity attribute set.
+	 * @throws IllegalStateException one of the entities does not have the identity
+	 *                               attribute set.
 	 */
 	public boolean sameIdentityAs(final T that) {
 		return this.equals(that);
@@ -66,10 +69,9 @@ public abstract class EntityBase<T extends EntityBase<T>> {
 	 * Checks the passed entity, if it has an identity. It gets an identity only by
 	 * saving.
 	 * 
-	 * @param entity
-	 *            the entity to be checked
-	 * @throws IllegalStateException
-	 *             the passed entity does not have the identity attribute set.
+	 * @param entity the entity to be checked
+	 * @throws IllegalStateException the passed entity does not have the identity
+	 *                               attribute set.
 	 */
 	private void _checkIdentity(final EntityBase<?> entity) {
 		if (entity.getId() == null) {
