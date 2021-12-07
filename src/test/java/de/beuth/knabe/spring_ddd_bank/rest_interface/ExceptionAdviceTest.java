@@ -2,27 +2,17 @@ package de.beuth.knabe.spring_ddd_bank.rest_interface;
 
 import static org.junit.Assert.*;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import de.beuth.knabe.spring_ddd_bank.domain.Amount;
 import de.beuth.knabe.spring_ddd_bank.domain.BankService;
 import de.beuth.knabe.spring_ddd_bank.domain.Client;
-import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
 import de.beuth.knabe.spring_ddd_bank.rest_interface.ApplicationController.ClientCreateWithIdExc;
-import multex.Exc;
 
 /** Test driver for the {@link ExceptionAdvice} */
 public class ExceptionAdviceTest {

@@ -18,8 +18,8 @@
 		<java.version>11</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<aspectj.version>1.9.7</aspectj.version>
-		<derby.version>10.12.1.1</derby.version>
+		<!-- As not all Derby artifacts are managed by the parent POM we manage the Derby version here -->
+		<derby.version>10.14.2.0</derby.version>
 		<multexVersion>8.3</multexVersion>
 		<swagger.version>2.8.0</swagger.version>
 		<messageTextFile>MessageText.properties</messageTextFile>
@@ -43,6 +43,7 @@
 		<dependency>
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derby</artifactId>
+			<version>${derby.version}</version>
 		</dependency>
 		<!-- For offering the Derby network server when the REST server is running: -->
 		<dependency>
@@ -55,7 +56,7 @@
 			<groupId>org.apache.derby</groupId>
 			<artifactId>derbyclient</artifactId>
 			<version>${derby.version}</version>
-			<!-- Install artifact into the local repo, so that a database browser 
+			<!-- Install artifact into the local repository, so that a database browser 
 				can pick it up, but do not deliver it with the product: -->
 			<scope>test</scope>
 		</dependency>
@@ -68,11 +69,6 @@
 			<groupId>de.tfh-berlin.knabe</groupId>
 			<artifactId>multex</artifactId>
 			<version>${multexVersion}</version>
-		</dependency>
-		<!-- Following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
-		<dependency>
-			<groupId>org.aspectj</groupId>
-			<artifactId>aspectjrt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -98,51 +94,6 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<!-- Disable Maven Compiler Plugin for production sources following https://stackoverflow.com/questions/14614446/how-do-i-disable-the-maven-compiler-plugin -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<phase>none</phase>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Use AspectJ Maven Plugin instead for compiling production sources 
-				following http://www.mojohaus.org/aspectj-maven-plugin/usage.html -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>1.14.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>       <!-- use this goal to weave all your main classes -->
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<complianceLevel>${java.version}</complianceLevel>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-					<aspectLibraries>
-						<aspectLibrary>
-							<groupId>org.springframework</groupId>
-							<artifactId>spring-aspects</artifactId>
-						</aspectLibrary>
-					</aspectLibraries>
-				</configuration>
-				<dependencies>
-					<!-- Avoid AspectJ version clashes between 1.8.9 and 1.8.10 following 
-						https://stackoverflow.com/questions/41646801/maven-aspectj-weaving-for-java8 -->
-					<dependency>
-						<groupId>org.aspectj</groupId>
-						<artifactId>aspectjweaver</artifactId>
-						<version>${aspectj.version}</version>
-					</dependency>
-				</dependencies>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -153,7 +104,6 @@
 						<goals>
 							<goal>javadoc</goal>
 						</goals>
-						<!-- <phase>process-classes</phase> -->
 						<phase>compile</phase>
 						<configuration>
 							<!-- Specific configuration for the messages report -->

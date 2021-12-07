@@ -18,11 +18,9 @@ package de.beuth.knabe.spring_ddd_bank.domain;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -32,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import de.beuth.knabe.spring_ddd_bank.domain.BankService.DuplicateUsernameExc;
 
 /** Test driver for the service class {@linkplain BankService} */
 @RunWith(SpringRunner.class)

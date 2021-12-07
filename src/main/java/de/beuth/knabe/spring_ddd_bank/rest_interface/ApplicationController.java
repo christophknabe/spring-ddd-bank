@@ -13,7 +13,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -71,8 +70,7 @@ public class ApplicationController {
 	// For everyone (guests):
 
 	@GetMapping(path = "/")
-	public ResponseEntity<String> home(/* final WebSecurityConfig webSecurityConfig, */final HttpMethod method,
-			final WebRequest request) {
+	public ResponseEntity<String> home(final HttpMethod method, final WebRequest request) {
 		_print(method, request);
 		final String htmlContent = "<!DOCTYPE html><html><body>"
 				+ "<h1>Welcome to the Spring DDD Bank REST Webservice.</h1>"
@@ -109,7 +107,7 @@ public class ApplicationController {
 		return _clientsToResources(clients);
 	}
 
-	@ApiOperation(value = "Create a client from the passed client resource.", code=201, authorizations = {
+	@ApiOperation(value = "Create a client from the passed client resource.", code = 201, authorizations = {
 			@Authorization(value = "basicAuth") })
 	@PostMapping("/bank/client")
 	public ResponseEntity<ClientResource> createClient(@RequestBody final ClientResource clientResource,
@@ -252,11 +250,9 @@ public class ApplicationController {
 	 * Prints a message containing the current class name, the HTTP method, and
 	 * infos about the current request.
 	 * 
-	 * @param method
-	 *            the HTTP method (GET, PUT, POST, DELETE, ...) used in a web
-	 *            request
-	 * @param request
-	 *            the web request as seen by Spring
+	 * @param method  the HTTP method (GET, PUT, POST, DELETE, ...) used in a web
+	 *                request
+	 * @param request the web request as seen by Spring
 	 */
 	private void _print(final HttpMethod method, final WebRequest request) {
 		System.out.printf("%s %s %s\n", className, method, request);
@@ -279,7 +275,7 @@ public class ApplicationController {
 		return LocalDate.ofEpochDay(randomEpochDay);
 	}
 
-	/*private*/ ResponseEntity<ClientResource[]> _clientsToResources(final List<Client> clients) {
+	/* private */ ResponseEntity<ClientResource[]> _clientsToResources(final List<Client> clients) {
 		final Stream<ClientResource> result = clients.stream().map(ClientResource::new);
 		final ClientResource[] resultArray = result.toArray(ClientResource[]::new);
 		return new ResponseEntity<>(resultArray, HttpStatus.OK);
@@ -292,9 +288,9 @@ public class ApplicationController {
 	 * @param request the current {@link WebRequest} as provided by Spring
 	 * @return the domain entity object for the client
 	 * 
-	 * @throws BankService.ClientNotFoundExc
-	 *             There is no client object with the username of the authenticated
-	 *             user of this web request.
+	 * @throws BankService.ClientNotFoundExc There is no client object with the
+	 *                                       username of the authenticated user of
+	 *                                       this web request.
 	 */
 	private Client _findClient(final WebRequest request) {
 		final String username = request.getRemoteUser();

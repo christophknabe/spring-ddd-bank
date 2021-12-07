@@ -24,10 +24,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.StreamSupport;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -35,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -66,7 +63,7 @@ public class ClientTest {
     /**Logs all property values in effect when running this test driver.
      * Mostly taken from https://gist.github.com/sandor-nemeth/f6d2899b714e017266cb9cce66bc719d
      */
-	public void _logAllProperties() {
+	private void _logAllProperties() {
 		if(alreadyLogged.getAndSet(true)) { //was already logged
 			return;
 		}
@@ -76,7 +73,7 @@ public class ClientTest {
         final MutablePropertySources sources = env.getPropertySources();
         sources.stream()
                 .filter(ps -> ps instanceof EnumerablePropertySource)
-                .map(ps -> ((EnumerablePropertySource) ps).getPropertyNames())
+                .map(ps -> ((EnumerablePropertySource<?>) ps).getPropertyNames())
                 .flatMap(Arrays::stream)
                 .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
                 .sorted()
@@ -92,7 +89,7 @@ public class ClientTest {
 
 	@Before
 	public void cleanUp() {
-		_logAllProperties();
+		//_logAllProperties();
 		cleanupService.deleteAll();
 		Locale.setDefault(Locale.GERMANY);
 	}

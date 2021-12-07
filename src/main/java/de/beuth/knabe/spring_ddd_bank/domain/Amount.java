@@ -13,7 +13,7 @@ public class Amount {
 	/**
 	 * Returns the maximum positive value that should be used as a Euro amount.
 	 * 
-	 * @return maximum double value to be converted to {@link Amount}
+	 * @return maximum double value that can be converted to {@link Amount}
 	 */
 	public static double maxValue() {
 		return 9E13;
@@ -22,7 +22,7 @@ public class Amount {
 	/**
 	 * Returns the minimum negative value that should be used as a Euro amount.
 	 * 
-	 * @return minimum double value to be converted to {@link Amount}
+	 * @return minimum double value that can be converted to {@link Amount}
 	 */
 	public static double minValue() {
 		return -maxValue();
@@ -66,16 +66,12 @@ public class Amount {
 	 *             the resulting value is out of range
 	 */
 	public Amount(final double euros) {
-		if (euros < minValue() || maxValue() < euros) {
+		if (Double.isNaN(euros) || euros < minValue() || euros > maxValue()) {
 			throw create(RangeExc.class, euros, minValue(), maxValue());
 		}
-		final long result = Math.round(euros * 100.0);
-		// System.out.printf("Amount of %f euros results in %d cents.\n", euros,
-		// result);
-		if (result == Long.MIN_VALUE || result == Long.MAX_VALUE) {
-			throw new IllegalArgumentException(String.format("Amount of %f euros is out of range.", euros));
-		}
-		cents = result;
+		cents = Math.round(euros * 100d);
+		//The for Math.round() documented error results Long.MIN_VALUE or Long.MAX_VALUE cannot occur,
+		//as the range minValue() ... maxValue() is much smaller.
 	}
 
 	/** The amount of {0} euros is out of range. It must be between {1} and {2}. */

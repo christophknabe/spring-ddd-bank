@@ -121,7 +121,9 @@ public class BankService {
 		if (!optional.isPresent()) {
 			throw create(ClientNotFoundExc.class, username);
 		}
-		return optional.get();
+		final Client client = optional.get();
+		client.provideWith(accountAccessRepository, accountRepository);
+		return client;
 	}
 
 	/** There is no Client object for the username {0}. */

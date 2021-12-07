@@ -19,13 +19,8 @@ public interface ImportedAccountJpaRepository extends JpaRepository<Account, Lon
 
     Optional<Account> findOneById(Long id);
     
-    Account save(Account account);
+    <S extends Account> S save(S account);
 
     List<Account> findAllByOrderByIdAsc();
-
-    /*
-    Iterable<Client> findAllBornFrom(LocalDate minDate);
-
-    Optional<Client> findFirstByOrderByIdAsc();
-    */
+    
 }

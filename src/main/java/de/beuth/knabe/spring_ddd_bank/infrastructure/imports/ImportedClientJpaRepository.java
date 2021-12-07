@@ -18,7 +18,7 @@ public interface ImportedClientJpaRepository extends JpaRepository<Client, Long>
     /**Deletes all Clients. Useful for test scenarios in order to start with an empty client set*/
     void deleteAll();
 
-    Client save(Client client);
+    <S extends Client> S save(S client);
 
     void delete(Client client);
     
