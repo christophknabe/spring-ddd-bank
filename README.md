@@ -2,7 +2,7 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                            (C) Christoph Knabe, 2017-03-17 ... 2021-12-07
+                                            (C) Christoph Knabe, 2017-03-17 ... 2021-12-08
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to more complex DDD examples on the web I am applying here some simplifications.
@@ -30,7 +30,7 @@ This will fetch all necessary libraries, compile the project, collect the except
 If you experience problems due to versioning of JDK and Maven, see the chapter about it in document [Maven and IDE Integration](src/doc/Maven-IDE-Integration.md).
 
 After this is working you can import the Maven project into your Java IDE 
-([Spring Tool Suite](https://spring.io/tools) is recommended, see the chapter about IDE Integration in  [Maven and IDE Integration](src/doc/Maven-IDE-Integration.md))
+([Spring Tools](https://spring.io/tools) may be preferred, see the chapter about IDE Integration in  [Maven and IDE Integration](src/doc/Maven-IDE-Integration.md))
 
 You can run the application (a REST server) in your IDE by running class [de.beuth.knabe.spring_ddd_bank.Application](src/main/java/de/beuth/knabe/spring_ddd_bank/Application.java) as Java Application or on the command line after 
 `mvn package` by 
@@ -41,7 +41,7 @@ This will start the web server Tomcat with the web application *Spring DDD Bank*
 `Apache Derby Network Server 10.12.1.1 - (1704137) has been started and is ready to accept connections on port 1527.`\
 In these messages you can see the port of the web server (8080), and of the Derby database (1527).
 
-You can stop it by typing &lt;Ctrl/C&gt;.
+You can shutdown it by typing &lt;Ctrl/C&gt;. Killing it in IntelliJ IDEA or Spring Tools by the red icon also stopped it without a visible negative effect.
 
 ## Which DDD principles are implemented?
 
