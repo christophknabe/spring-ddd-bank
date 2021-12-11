@@ -40,7 +40,9 @@ Click File > Import > Maven > Existing Maven Project. The dialog "Import Maven P
 ### Run the REST Server
 Navigate to file `src/main/java/.../Application.java`. By MouseRight choose "Run as Java Application".
 
-For the current version of Spring DDD Bank it is important, that it is executed on a Java 11 VM. Please check in the title line of the Console window. If you have tocorrect, go into the dialog Window > Preferences. In the left-hand tree choose Java > Installed JREs. If a Java 11 VM is not listed, click Add..., select Installed JRE Type as Standard VM and select a Directory... of an installed JVM 11. 
+For the current version of Spring DDD Bank it is important, that it is executed on a Java 11 VM. Please check in the title line of the Console window. 
+If you have to correct, go into the dialog Window > Preferences. In the left-hand tree choose Java > Installed JREs. 
+If a Java 11 VM is not listed, click Add..., select Installed JRE Type as Standard VM and select a Directory... of an installed JVM 11. 
 
 The JVM 11 does not have to become the default JVM for new projects, but has to be the JVM on which the Application and the test suite are executed in the Spring Tools.
 
