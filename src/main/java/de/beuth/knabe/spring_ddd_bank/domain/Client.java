@@ -204,7 +204,7 @@ public class Client extends EntityBase<Client> {
 	 * manager, but not owner.
 	 * 
 	 * @param account the {@link Account} to be managed
-	 * @param manager the {@link Client} to e given manager rights for the
+	 * @param manager the {@link Client} to be given manager rights for the
 	 *                {@link Account}
 	 * @return the {@link AccountAccess} object created and saved
 	 * 
