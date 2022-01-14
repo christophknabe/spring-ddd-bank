@@ -17,7 +17,8 @@ public final class AccountNo {
 	 */
 	private long number;
 
-	/** Constructs an AccountNo holding the given number. */
+	/** Constructs an AccountNo holding the given number.
+	 * @param number the contained Long number */
 	public AccountNo(final Long number) {
 		if (number == null) {
 			throw create(IllegalExc.class, "null");

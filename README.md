@@ -2,11 +2,11 @@ Project Spring DDD Bank
 =======================
 A sample project following Domain Driven Design with Spring Data JPA
 
-                                            (C) Christoph Knabe, 2017-03-17 ... 2022-01-12
+                                            (C) Christoph Knabe, 2017-03-17 ... 2022-01-14
 
 In this project I am trying to apply principles of Domain Driven Design.
 In contrary to more complex DDD examples on the web I am applying here some simplifications.
-This sample application has been used for a course on Software Engineering at [Berlin University of Applied Sciences and Technology (Berliner Hochschule für Technik: BHT)](https://www.bht-berlin.de/en/).
+This sample application has been developed for a course on Software Engineering at [Berlin University of Applied Sciences and Technology (Berliner Hochschule für Technik: BHT)](https://www.bht-berlin.de/en/).
 
 This project uses
 
@@ -24,8 +24,10 @@ Detailed version indications you can find in the file [pom.xml](pom.xml).
 ## Usage
 
 If the correct JDK and Maven versions are installed you can simply use 
-`mvn clean package`
-This will fetch all necessary libraries, compile the project, collect the exception message texts, execute the test suite, and package all into an executable .jar file.
+`mvn clean package site`
+This will fetch all necessary libraries, compile the project, collect the exception message texts, 
+execute the test suite, package all into an executable .jar file, and generate the reports and project site.
+The most interesting report is about Code Coverage.
 
 If you experience problems due to versioning of JDK and Maven, see the chapter about it in document [Maven and IDE Integration](src/doc/Maven-IDE-Integration.md).
 
