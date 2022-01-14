@@ -1,214 +1,271 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
 
-	<name>Spring DDD Bank</name>
-	<groupId>de.bht-berlin.knabe</groupId>
-	<artifactId>spring-ddd-bank</artifactId>
-	<version>0.1-SNAPSHOT</version>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.18.RELEASE</version>
-	</parent>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>11</java.version>
-		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
-		<!-- As not all Derby artifacts are managed by the parent POM we manage the Derby version here -->
-		<derby.version>10.14.2.0</derby.version>
-		<multexVersion>8.4</multexVersion>
-		<swagger.version>2.8.0</swagger.version>
-		<messageTextFile>MessageText.properties</messageTextFile>
-	</properties>
-	<dependencies>
-		<!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
-		</dependency>
-		<!-- According to https://spring.io/guides/gs/securing-web/ -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<!-- Derby Database (in-memory in test suite, or in-directory in production code) -->
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derby</artifactId>
-			<version>${derby.version}</version>
-		</dependency>
-		<!-- For offering the Derby network server when the REST server is running: -->
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbynet</artifactId>
-			<version>${derby.version}</version>
-		</dependency>
-		<!-- For downloading the Derby Client Driver: -->
-		<dependency>
-			<groupId>org.apache.derby</groupId>
-			<artifactId>derbyclient</artifactId>
-			<version>${derby.version}</version>
-			<!-- Install artifact into the local repository, so that a database browser 
-				can pick it up, but do not deliver it with the product: -->
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.github.christophknabe</groupId>
-			<artifactId>multex</artifactId>
-			<version>${multexVersion}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${swagger.version}</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime 
-			as starting with Java 9 JAXB is no longer part of the JRE. -->
-		<dependency>
-			<groupId>org.glassfish.jaxb</groupId>
-			<artifactId>jaxb-runtime</artifactId>
-		</dependency>
-	</dependencies>
+  <name>Spring DDD Bank</name>
+  <groupId>de.bht-berlin.knabe</groupId>
+  <artifactId>spring-ddd-bank</artifactId>
+  <version>0.1-SNAPSHOT</version>
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.18.RELEASE</version>
+  </parent>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
+    <!-- As not all Derby artifacts are managed by the parent POM we manage the Derby version here -->
+    <derby.version>10.14.2.0</derby.version>
+    <multexVersion>8.4</multexVersion>
+    <swagger.version>2.8.0</swagger.version>
+    <message.text.file>MessageText.properties</message.text.file>
+  </properties>
+  <dependencies>
+    <!-- According to https://spring.io/guides/gs/rest-hateoas/ -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-hateoas</artifactId>
+    </dependency>
+    <!-- According to https://spring.io/guides/gs/securing-web/ -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    <!-- Derby Database (in-memory in test suite, or in-directory in production code) -->
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>${derby.version}</version>
+    </dependency>
+    <!-- For offering the Derby network server when the REST server is running: -->
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbynet</artifactId>
+      <version>${derby.version}</version>
+    </dependency>
+    <!-- For downloading the Derby Client Driver: -->
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <version>${derby.version}</version>
+      <!-- Install artifact into the local repository, so that a database browser can pick it up, but do not deliver it with 
+        the product: -->
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.christophknabe</groupId>
+      <artifactId>multex</artifactId>
+      <version>${multexVersion}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>${swagger.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>${swagger.version}</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.glassfish.jaxb/jaxb-runtime as starting with Java 9 JAXB is no longer part 
+      of the JRE. -->
+    <dependency>
+      <groupId>org.glassfish.jaxb</groupId>
+      <artifactId>jaxb-runtime</artifactId>
+    </dependency>
+  </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<!-- Here used for extraction of exception message texts in the reference 
-							language from the exception Javadoc comments. -->
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-						<phase>compile</phase>
-						<configuration>
-							<!-- Specific configuration for the messages report -->
-							<doclet>multex.tool.ExceptionMessagesDoclet</doclet>
-							<docletArtifact>
-								<groupId>io.github.christophknabe</groupId>
-								<artifactId>multex</artifactId>
-								<version>${multexVersion}</version>
-							</docletArtifact>
-							<useStandardDocletOptions>false</useStandardDocletOptions>
-							<show>private</show>
-							<verbose>false</verbose>
-							<debug>false</debug>
-							<additionalOptions>
-								-out
-								${project.build.directory}/classes/${messageTextFile}
-							</additionalOptions>
-							<!-- For the project-reports page -->
-							<name>ExceptionTexts</name>
-							<description>Extraction of Exception Message Texts from Source
-								Code</description>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<!-- Java Code Coverage analyzer. See https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
-				<executions>
-					<!-- Prepares the property pointing to the JaCoCo runtime agent, which 
-						is passed as VM argument, when the Maven Surefire plugin is executed. -->
-					<execution>
-						<id>pre-unit-test</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-							<destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
-							<!-- Sets the name of the property containing the settings for the JaCoCo runtime agent. -->
-							<propertyName>surefireArgLine</propertyName>
-						</configuration>
-					</execution>
-					<!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
-					<execution>
-						<id>post-unit-test</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-						<configuration>
-							<!-- Sets the path to the file which contains the collected execution data. -->
-							<dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
-							<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<!-- Sets the VM argument line for test runs in Surefire, created by 
-						the upper prepare-agent goal of the jacoco-maven-plugin. -->
-					<argLine>${surefireArgLine}</argLine>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
-				<configuration>
-					<show>private</show>
-				</configuration>
-			</plugin>
-			<!-- Do not look for possible repositories for each dependency in order 
-				to speed up project site generation. See https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>3.1.2</version>
-				<configuration>
-					<dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-				</configuration>
-			</plugin>
-		</plugins>
-	</reporting>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <!-- Here used for extraction of exception message texts in the reference language from the exception Javadoc 
+              comments. -->
+            <goals>
+              <goal>javadoc</goal>
+            </goals>
+            <phase>compile</phase>
+            <configuration>
+              <!-- Specific configuration for the messages report -->
+              <doclet>multex.tool.ExceptionMessagesDoclet</doclet>
+              <docletArtifact>
+                <groupId>io.github.christophknabe</groupId>
+                <artifactId>multex</artifactId>
+                <version>${multexVersion}</version>
+              </docletArtifact>
+              <useStandardDocletOptions>false</useStandardDocletOptions>
+              <show>private</show>
+              <verbose>false</verbose>
+              <debug>false</debug>
+              <additionalOptions>
+                -out
+                ${project.build.directory}/classes/${message.text.file}
+              </additionalOptions>
+              <!-- For the project-reports page -->
+              <name>ExceptionTexts</name>
+              <description>Extraction of Exception Message Texts from Source
+                Code</description>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <!-- Java Code Coverage analyzer. See https://www.petrikainulainen.net/programming/maven/creating-code-coverage-reports-for-unit-and-integration-tests-with-the-jacoco-maven-plugin/ -->
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.7</version>
+        <executions>
+          <!-- Prepares the property pointing to the JaCoCo runtime agent, which is passed as VM argument, when the Maven 
+            Surefire plugin is executed. -->
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the execution data. -->
+              <destFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</destFile>
+              <!-- Sets the name of the property containing the settings for the JaCoCo runtime agent. -->
+              <propertyName>surefireArgLine</propertyName>
+            </configuration>
+          </execution>
+          <!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <!-- Sets the path to the file which contains the collected execution data. -->
+              <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- Sets the VM argument line for test runs in Surefire, created by the upper prepare-agent goal of the jacoco-maven-plugin. -->
+          <argLine>${surefireArgLine}</argLine>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>3.0.1</version>
+        <configuration>
+          <show>private</show>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jdepend-maven-plugin</artifactId>
+        <version>2.0</version>
+      </plugin>
+      <!-- Do not look for possible repositories for each dependency in order to speed up project site generation. See https://www.mkyong.com/maven/maven-site-build-is-very-slow-dependency-report/ -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>3.1.2</version>
+        <configuration>
+          <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <reportSets>
+          <!-- Ensures that the code coverage report for unit tests is created after unit tests have been run. -->
+          <reportSet>
+            <id>post-unit-test</id>
+            <reports>
+              <report>report</report>
+            </reports>
+            <configuration>
+              <!-- Sets the path to the file which contains the collected execution data. -->
+              <dataFile>${project.build.directory}/coverage-reports/jacoco-ut.exec</dataFile>
+              <!-- Sets the output directory for the code coverage report. -->
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
+            </configuration>
+          </reportSet>
+        </reportSets>
+      </plugin>
+    </plugins>
+  </reporting>
 
-	<repositories>
-		<!-- Besides Maven Central the following repositories are needed: -->
-		<repository>
-			<!-- For the dummy artifact org.eclipse.m2e:lifecycle-mapping -->
-			<id>tu-delft-repository</id>
-			<name>Technical University Delft Maven repository</name>
-			<url>https://simulation.tudelft.nl/maven/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-	</repositories>
+  <repositories>
+    <!-- Besides Maven Central the following repositories are needed: -->
+    <repository>
+      <!-- For the dummy artifact org.eclipse.m2e:lifecycle-mapping -->
+      <id>tu-delft-repository</id>
+      <name>Technical University Delft Maven repository</name>
+      <url>https://simulation.tudelft.nl/maven/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <!-- More Project Information -->
+  <description>A sample project following Domain Driven Design with Spring Data JPA.
+    Originally developed for a course on Software Engineering at Berliner Hochschule für Technik.
+  </description>
+  <url>https://github.com/christophknabe/spring-ddd-bank/</url>
+  <inceptionYear>2017</inceptionYear>
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License, Version 3</name>
+      <url>https://www.gnu.org/licenses/lgpl-3.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <organization>
+    <name>Berliner Hochschule für Technik - Berlin University of Applied Sciences and Technology</name>
+    <url>https://www.bht-berlin.de/</url>
+  </organization>
+  <developers>
+    <developer>
+      <name>Christoph Knabe</name>
+      <url>http://public.bht-berlin.de/~knabe/</url>
+      <roles>
+        <role>architect</role>
+        <role>developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:https://github.com/christophknabe/spring-ddd-bank.git</connection>
+    <developerConnection>scm:git:git@github.com:christophknabe/spring-ddd-bank.git</developerConnection>
+    <tag>HEAD</tag>
+    <url>https://github.com/christophknabe/spring-ddd-bank/</url>
+  </scm>
 
 </project>

@@ -72,6 +72,8 @@ public class Client extends EntityBase<Client> {
 
 	/**
 	 * Provides this Client entity with its required repositories. Avoids AspectJ.
+	 * @param accountAccessRepository needed for methods checking access rights to an account
+	 * @param accountRepository needed for methods reading, searching, or updating an account
 	 */
 	/* package */ void provideWith(final AccountAccessRepository accountAccessRepository,
 			final AccountRepository accountRepository) {
@@ -170,6 +172,7 @@ public class Client extends EntityBase<Client> {
 	 * Finds the account with the given account number.
 	 * 
 	 * @param destination Number of the account where to put money
+	 * @return the Account with the given {@link AccountNo}
 	 * @throws DestinationAccountNotFoundExc No account with the given account
 	 *                                       number is found.
 	 */

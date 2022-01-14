@@ -55,27 +55,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 	
 	private static final List<String> predefinedUsernames = Arrays.asList("bank", "hans", "nina", "fritz", "lisa");
-    
+
 	/**Configures the {@link #predefinedUsernames} as known users with their password equal to the user name.
-	 * @param auth a SecurityBuilder injected by Spring, used to create an AuthenticationManager
-	 * @throws Exception if an error occurs when configuring the in memory authentication
-    @Autowired
-    public void configureGlobal(final AuthenticationManagerBuilder auth) throws Exception {
-        final InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryAuthentication = auth.inMemoryAuthentication();
-        for(final String username: predefinedUsernames) {
-        	final String role = username.equalsIgnoreCase(BANK_ROLE) ? BANK_ROLE : CLIENT_ROLE;
-			inMemoryAuthentication.withUser(username).password(username).roles(role);
-        }
-    }
-	 * Approach taken from @see <a href="https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#_hello_web_security_java_configuration">Spring Hello Web Security Java Configuration</a>  */
-    
+	 * Approach taken from 
+	 * @see <a href="https://docs.spring.io/spring-security/reference/servlet/configuration/java.html#_hello_web_security_java_configuration">
+	 * Spring Hello Web Security Java Configuration</a>
+	 */
 	@Bean
 	public UserDetailsService userDetailsService() {
 		final InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-		//manager.createUser(User.withDefaultPasswordEncoder().username("user").password("password").roles("USER").build());
         for(final String username: predefinedUsernames) {
         	final String role = username.equalsIgnoreCase(BANK_ROLE) ? BANK_ROLE : CLIENT_ROLE;
-			//inMemoryAuthentication.withUser(username).password(username).roles(role);
 			manager.createUser(User.withDefaultPasswordEncoder().username(username).password(username).roles(role).build());
         }
 		return manager;
