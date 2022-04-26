@@ -26,6 +26,7 @@ public class Account extends EntityBase<Account> {
 	}
 	
 	public AccountNo accountNo() {
+		@SuppressWarnings("deprecation") //Should be used only in domain model
 		final Long id = getId();
 		if(id==null) {
 			throw create(NotYetSavedExc.class);
@@ -39,8 +40,9 @@ public class Account extends EntityBase<Account> {
 
 	@Override
 	public String toString() {
+		@SuppressWarnings("deprecation") //Should be used only in domain model
 		final Long id = getId();
-		final String accountNo = id==null ? "" : Long.toString(id);
+		final String accountNo = id==null ? "NotYetSaved" : Long.toString(id);
 		return String.format("Account{accountNo=%s, name='%s', balance='%s'}", accountNo, name, balance);
 	}
 

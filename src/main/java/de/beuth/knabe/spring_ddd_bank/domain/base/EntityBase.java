@@ -43,6 +43,7 @@ public abstract class EntityBase<T extends EntityBase<T>> {
 
 	/**
 	 * Entities compare by identity, not by attributes.
+	 * Comparison by this method is to be preferred over comparison by {@link #equals(Object)}, as this method is typed stronger.
 	 *
 	 * @param that The other entity of the same type
 	 * @return true if the identities are the same, regardless of the other
@@ -57,6 +58,9 @@ public abstract class EntityBase<T extends EntityBase<T>> {
 	@Override
 	public boolean equals(final Object object) {
 		if (!(object instanceof EntityBase)) {
+			return false;
+		}
+		if(!getClass().equals(object.getClass())){
 			return false;
 		}
 		final EntityBase<?> that = (EntityBase<?>) object;
@@ -75,7 +79,7 @@ public abstract class EntityBase<T extends EntityBase<T>> {
 	 */
 	private void _checkIdentity(final EntityBase<?> entity) {
 		if (entity.getId() == null) {
-			throw new IllegalStateException("Identity missing in entity: " + entity);
+			throw new IllegalStateException("Comparison identity missing in entity: " + entity);
 		}
 	}
 

@@ -18,61 +18,21 @@ public class AccountTest {
 
 	@Test
 	public void constructExtract() {
-		{
-			final Account result = new Account("Lisa's Savings");
-			assertEquals(null, result.getId());
-			assertEquals("Lisa's Savings", result.getName());
-			assertEquals(Amount.ZERO, result.getBalance());
-			assertEquals("Account{accountNo=, name='Lisa's Savings', balance='0,00'}", result.toString());
-			try {
-				result.accountNo();
-				fail("Account.NotYetSavedExc expected");
-			} catch (Account.NotYetSavedExc expected) {				
-			}
-		}
-	}
-	
-	@Test
-	public void constructExtractAccountNo() {
-		{
-			final AccountNo result = new AccountNo(Long.MAX_VALUE);
-			assertEquals(Long.MAX_VALUE, result.toLong());
-			assertEquals(Long.toString(Long.MAX_VALUE), result.toString());
-		}
-		{
-			final AccountNo result = new AccountNo("1");
-			assertEquals(1L, result.toLong());
-			assertEquals(Long.toString(1L), result.toString());
-		}
-		
+		final Account result = new Account("Lisa's Savings");
+		thenHasGivenNameAndNoIdAndZeroBalance(result);
 	}
 
-	@Test
-	public void constructIllegalAccountNos() {
+	private void thenHasGivenNameAndNoIdAndZeroBalance(Account result) {
+		@SuppressWarnings("deprecation") //Should be used only in domain model
+		final Long id = result.getId();
+		assertEquals(null, id);
+		assertEquals("Lisa's Savings", result.getName());
+		assertEquals(Amount.ZERO, result.getBalance());
+		assertEquals("Account{accountNo=NotYetSaved, name='Lisa's Savings', balance='0,00'}", result.toString());
 		try {
-			new AccountNo((Long)null);
-			fail("AccountNo.IllegalExc expected");
-		} catch (AccountNo.IllegalExc expected) {
-		}
-		try {
-			new AccountNo((String)null);
-			fail("AccountNo.IllegalExc expected");
-		} catch (AccountNo.IllegalExc expected) {
-		}
-		try {
-			new AccountNo("");
-			fail("AccountNo.IllegalExc expected");
-		} catch (AccountNo.IllegalExc expected) {
-		}
-		try {
-			new AccountNo("A");
-			fail("AccountNo.IllegalExc expected");
-		} catch (AccountNo.IllegalExc expected) {
-		}
-		try {
-			new AccountNo(".");
-			fail("AccountNo.IllegalExc expected");
-		} catch (AccountNo.IllegalExc expected) {
+			result.accountNo();
+			fail("Account.NotYetSavedExc expected");
+		} catch (Account.NotYetSavedExc expected) {
 		}
 	}
 	

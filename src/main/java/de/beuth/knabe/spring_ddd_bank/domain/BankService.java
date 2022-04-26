@@ -49,11 +49,14 @@ public class BankService {
 	 *                  regular expression <code>[a-z_A-Z][a-z_A-Z0-9]{0,30}</code>.
 	 * @param birthDate the birth date of the new client, must not be null
 	 * @return the saved new {@link Client} with the ID set.
-	 * @throws UsernameExc the username does not match the required pattern.
+	 * @throws UsernameExc The username does not match the required pattern, or is null.
 	 * 
 	 */
 	public Client createClient(final String username, final LocalDate birthDate) {
 		final Pattern pattern = Pattern.compile("[a-z_A-Z][a-z_A-Z0-9]{0,30}");
+		if (username==null) {
+			throw create(UsernameExc.class, username);
+		}
 		if (!pattern.matcher(username).matches()) {
 			throw create(UsernameExc.class, username);
 		}
@@ -91,7 +94,7 @@ public class BankService {
 	 *                   yet be deleted.
 	 */
 	public void deleteClient(final Client client) {
-		final List<AccountAccess> managedAccounts = accountAccessRepository.findManagedAccountsOf(client, true);
+		final List<AccountAccess> managedAccounts = accountAccessRepository.findManagedAccountsOf(client, false);
 		for (final AccountAccess accountAccess : managedAccounts) {
 			if (accountAccess.isOwner()) {
 				throw create(DeleteExc.class, client, accountAccess.getAccount());

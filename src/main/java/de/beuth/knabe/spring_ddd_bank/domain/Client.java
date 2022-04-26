@@ -4,6 +4,7 @@ import de.beuth.knabe.spring_ddd_bank.domain.base.EntityBase;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
 import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import multex.Exc;
+import multex.Failure;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -60,9 +61,9 @@ public class Client extends EntityBase<Client> {
 
 	@Override
 	public String toString() {
-		@SuppressWarnings("deprecation")
+		@SuppressWarnings("deprecation") //Should be used only in domain model
 		final Long id = getId();
-		return String.format("Client{id=%d, name='%s', birthDate='%s'}", id, username, birthDate);
+		return String.format("Client{id=%d, username='%s', birthDate='%s'}", id, username, birthDate);
 	}
 
 	// Required repositories as by Ports and Adapters Pattern:
@@ -124,7 +125,7 @@ public class Client extends EntityBase<Client> {
 
 	/** Amount of {0} EUR could not be deposited to account No. {1}. */
 	@SuppressWarnings("serial")
-	public static class DepositFailure extends Exc {
+	public static class DepositFailure extends Failure {
 	}
 
 	/**
