@@ -7,7 +7,7 @@ import javax.persistence.*;
 /**
  * Many-to-many association "Client may access Account" with specific
  * privileges. This entity is an Anemic Domain Object, as it only has stupid
- * setters.
+ * getters.
  * 
  * @author Christoph Knabe
  */
@@ -60,7 +60,7 @@ public class AccountAccess extends EntityBase<AccountAccess> {
 
 	@Override
 	public String toString() {
-		return String.format("%s{client='%s', isOwner='%b', account='%s'}", getClass().getSimpleName(), client, isOwner,
+		return String.format("%s{client=%s, isOwner=%b, account=%s}", getClass().getSimpleName(), client, isOwner,
 				account);
 	}
 

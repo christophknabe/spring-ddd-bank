@@ -16,18 +16,21 @@
 
 package de.beuth.knabe.spring_ddd_bank.domain;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountAccessRepository;
+import de.beuth.knabe.spring_ddd_bank.domain.imports.AccountRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,9 +98,21 @@ public class ClientTest {
 	}
 
 	@Test
-	public void createAccountCheckProperties() {
+	public void toStringShouldContainAllAttributes(){
 		final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
+		final String result = jack.toString();
+		@SuppressWarnings("deprecation") //Should be used only in domain model
+		final Long id = jack.getId();
+		assertEquals("Client{id=" + id + ", username='jack', birthDate='1966-12-31'}", result);
+	}
+
+	@Test
+	public void createAccountCheckProperties() {
+		//Given:
+		final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
+		//When:
 		final AccountAccess jacksSavings = jack.createAccount("Jack's Savings");
+		//Then:
 		assertNotNull(jacksSavings);
 		assertEquals(jack, jacksSavings.getClient());
 		assertEquals(true, jack.sameIdentityAs(jacksSavings.getClient()));
@@ -109,6 +124,7 @@ public class ClientTest {
 		assertEquals(0.0, jacksSavingsAccount.getBalance().toDouble(), 0.001);
 		final AccountNo jacksSavingsAccountNo = jacksSavingsAccount.accountNo();
 		assertLowerBound("Jack's Savings account number", 1L, jacksSavingsAccountNo.toLong());
+		assertEquals("Account{accountNo=" + jacksSavingsAccountNo + ", name='Jack's Savings', balance='0,00'}", jacksSavingsAccount.toString());
 		
 		final String report = jack.accountsReport();
 		assertEquals("Accounts of client: jack\n" + jacksSavingsAccountNo + "\tisOwner\t 0,00\tJack's Savings\n", report);
@@ -181,7 +197,19 @@ public class ClientTest {
 	}
 
 	@Test
-	public void depositAmountExc() {
+	public void whenDepositsToUnknownAccount_thenThrowsDestinationAccountNotFoundExc() {
+		final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
+		final AccountNo accountNo = new AccountNo(999L);
+		try {
+			jack.deposit(accountNo, new Amount(1));
+			fail("Client.DestinationAccountNotFoundExc expected");
+		} catch (Client.DestinationAccountNotFoundExc expected) {
+			assertEquals(accountNo, expected.getParameters()[0]);
+		}
+		final String report = jack.accountsReport();
+	}
+	@Test
+	public void whenDepositsZeroAmount_thenThrowsAmountExc() {
 		final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
 		final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
 		final AccountNo accountNo = jacksGiro.accountNo();
@@ -192,6 +220,31 @@ public class ClientTest {
 		}
 		final String report = jack.accountsReport();
 		assertEquals("Accounts of client: jack\n" + accountNo + "\tisOwner\t 0,00\tJack's Giro\n", report);
+	}
+	@Test
+	public void whenDepositFails_thenCauseShouldBeContainedInDepositFailure() {
+		/* This method uses Mockito to provide mocks of 2 repositories.
+		* When the save method called from the tested deposit method fails with an exception,
+		* this exception should be contained in the exception thrown by the deposit method. */
+		final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
+		final Account jacksGiro = jack.createAccount("Jack's Giro").getAccount();
+		final AccountNo accountNo = jacksGiro.accountNo();
+		final AccountAccessRepository accountAccessRepository = Mockito.mock(AccountAccessRepository.class);
+		final AccountRepository accountRepository = Mockito.mock(AccountRepository.class);
+		jack.provideWith(accountAccessRepository, accountRepository);
+		when(accountRepository.find(accountNo)).thenReturn(Optional.of(jacksGiro));
+		final var illegalStateException = new IllegalStateException("Database error");
+		when(accountRepository.save(jacksGiro)).thenThrow(illegalStateException);
+		final var amount = new Amount(9999.99);
+		try {
+			jack.deposit(accountNo, amount);
+			fail("Client.DepositFailure expected");
+		} catch (Client.DepositFailure expected) {
+			assertEquals(illegalStateException, expected.getCause());
+			final var parameters = expected.getParameters();
+			assertEquals(amount, parameters[0]);
+			assertEquals(accountNo, parameters[1]);
+		}
 	}
 
 	@Test
@@ -278,8 +331,15 @@ public class ClientTest {
 		jack.addAccountManager(jacksGiro, chloe);
 
 		// THEN:
+
+		//In the accounts report Chloe is mentioned as "manages" for Jacks's Giro
+		final String accountsReport = chloe.accountsReport();
+		assertEquals("Accounts of client: chloe\n" +
+				jacksGiro.accountNo() + "\tmanages\t 0,00\tJack's Giro\n", accountsReport);
+
 		// Now chloe can transfer from jacksGiro account:
 		chloe.transfer(jacksGiro, jacksSavings.accountNo(), new Amount(0, 01));
+
 
 		// But chloe is only manager of the account, not owner. She cannot add another
 		// Manager to the account.
@@ -298,9 +358,6 @@ public class ClientTest {
 		}
 	}
 
-	// TODO Test against double adding of a Client as manager to the same Account.
-	// 17-08-18
-
 	/**
 	 * Makes a String representation of all passed clients, separated by commas.
 	 * 
@@ -309,13 +366,15 @@ public class ClientTest {
 	 * @return the String representation in the format "1999-12-31 name1, 2017-12-31
 	 *         name2"
 	 */
-	private String stringize(Iterable<Client> clients) {
+	private String stringize(final Iterable<Client> clients) {
 		final StringBuilder result = new StringBuilder();
 		for (final Client client : clients) {
 			if (result.length() > 0) {
 				result.append(", ");
 			}
-			assertNotNull(client.getId());
+			@SuppressWarnings("deprecation") //Should be used only in domain model
+			final Long id = client.getId();
+			assertNotNull(id);
 			result.append(client.getBirthDate());
 			result.append(' ');
 			result.append(client.getUsername());

@@ -18,12 +18,16 @@ public final class AccountNo {
 	private long number;
 
 	/** Constructs an AccountNo holding the given number.
-	 * @param number the contained Long number */
+	 * @param number the contained Long number
+	 * @throws IllegalExc The number is null or negative. */
 	public AccountNo(final Long number) {
 		if (number == null) {
 			throw create(IllegalExc.class, "null");
 		}
 		this.number = number.longValue();
+		if (this.number < 0) {
+			throw create(IllegalExc.class, number);
+		}
 	}
 
 	/**
@@ -32,6 +36,7 @@ public final class AccountNo {
 	 * @param number
 	 *            An account number as String. It must not be null or empty and
 	 *            contain only decimal digits.
+	 * @throws IllegalExc The number String is null or contains non-digit characters.
 	 */
 	public AccountNo(final String number) {
 		if (number == null) {

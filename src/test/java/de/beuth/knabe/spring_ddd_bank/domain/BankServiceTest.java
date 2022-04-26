@@ -83,6 +83,20 @@ public class BankServiceTest {
 	}
 
 	@Test
+	public void createClientIllegal(){
+		try {
+			bankService.createClient(null, LocalDate.parse("1992-12-31"));
+			fail("BankService.UsernameExc expected");
+		} catch (BankService.UsernameExc expected) {
+		}
+		try {
+			bankService.createClient("012A", LocalDate.parse("1992-12-31"));
+			fail("BankService.UsernameExc expected");
+		} catch (BankService.UsernameExc expected) {
+		}
+	}
+
+	@Test
 	public void createNothingFindAllClients() {
 		final Iterable<Client> noClients = bankService.findAllClients();
 		_assertEmpty(noClients);
@@ -113,6 +127,33 @@ public class BankServiceTest {
 			bankService.createClient("nina", LocalDate.parse("1980-12-31"));
 			fail("BankService.DuplicateUsernameExc expected");
 		}catch(BankService.DuplicateUsernameExc expected) {}
+	}
+
+	@Test
+	public void deleteClient_throwsDeleteExc_whenClientOwnsAccount() {
+		final Client kim = bankService.createClient("kim", LocalDate.parse("1994-05-21"));
+		kim.createAccount("Kim's Account");
+		try {
+			bankService.deleteClient(kim);
+			fail("BankService.DeleteExc expected");
+		}catch(BankService.DeleteExc expected) {}
+	}
+
+	@Test
+	public void deleteClient_deletesAllUnownedAccountAccessesAndTheClient() {
+		//GIVEN
+		final Client kim = bankService.createClient("kim", LocalDate.parse("1994-05-21"));
+		System.out.println(kim);
+		final Client jack = bankService.createClient("jack", LocalDate.parse("1966-12-31"));
+		final AccountAccess jackAccount = jack.createAccount("Jack's Account");
+		jack.addAccountManager(jackAccount.getAccount(), kim);
+		//WHEN
+		bankService.deleteClient(kim);
+		//THEN
+		try {
+			bankService.findClient("kim");
+			fail("BankService.ClientNotFoundExc expected");
+		}catch(BankService.ClientNotFoundExc expected) {}
 	}
 
 	@Test

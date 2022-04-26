@@ -12,7 +12,7 @@ import de.beuth.knabe.spring_ddd_bank.domain.imports.ClientRepository;
  * @since 2017-03-08
  */
 @Service
-class CleanupService {
+public class CleanupService {
 
     private final ClientRepository clientRepository;
 
