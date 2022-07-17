@@ -25,13 +25,14 @@ public class ClientResource {
 	/**
 	 * Constructs a ClientResource with the data of the passed Client entity.
 	 * 
-	 * @param entity
-	 *            the entity to be converted
+	 * @param id The unique identification of this client
+	 * @param username the username of this client
+	 * @param birthDate the birth date of this client
 	 */
-	public ClientResource(final Client entity) {
-		this.id = entity.getId();
-		this.username = entity.getUsername();
-		this.birthDate = Util.MEDIUM_DATE_FORMATTER.format(entity.getBirthDate());
+	public ClientResource(final Long id, final String username, final String birthDate) {
+		this.id = id;
+		this.username = username;
+		this.birthDate = birthDate;
 	}
 
 	@Override

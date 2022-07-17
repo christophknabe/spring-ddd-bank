@@ -3,7 +3,6 @@ package de.beuth.knabe.spring_ddd_bank.rest_interface;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Stream;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -51,6 +50,8 @@ public class ApplicationController {
 	private final BankService bankService;
 
 	private final String className = getClass().getSimpleName();
+
+	private final Converter converter = new Converter();
 
 	@Autowired
 	public ApplicationController(final BankService bankService) {
@@ -104,7 +105,7 @@ public class ApplicationController {
 		final Client client2 = bankService.createClient("jana" + number, _randomClientBirthDate());
 		System.out.printf("Client %s created.\n", client2);
 		final List<Client> clients = bankService.findAllClients();
-		return _clientsToResources(clients);
+		return converter.clientsToResources(clients);
 	}
 
 	@ApiOperation(value = "Create a client from the passed client resource.", code = 201, authorizations = {
@@ -116,9 +117,9 @@ public class ApplicationController {
 		if (clientResource.id != null) {
 			throw create(ClientCreateWithIdExc.class, clientResource.username, clientResource.id);
 		}
-		final LocalDate birthLocalDate = LocalDate.parse(clientResource.birthDate, Util.MEDIUM_DATE_FORMATTER);
+		final LocalDate birthLocalDate = converter.toLocaldate(clientResource.birthDate);
 		final Client client = bankService.createClient(clientResource.username, birthLocalDate);
-		return new ResponseEntity<>(new ClientResource(client), HttpStatus.CREATED);
+		return new ResponseEntity<>(converter.toClientResource(client), HttpStatus.CREATED);
 	}
 
 	/**
@@ -151,17 +152,20 @@ public class ApplicationController {
 		if ("".equals(fromBirth) && "".equals(minBalance)) {
 			clients = bankService.findAllClients();
 		} else if ("".equals(minBalance)) { // only fromBirth given
-			final LocalDate fromBirthLocalDate = LocalDate.parse(fromBirth, Util.MEDIUM_DATE_FORMATTER);
+			final LocalDate fromBirthLocalDate = converter.toLocaldate(fromBirth);
 			clients = bankService.findYoungClients(fromBirthLocalDate);
 		} else if (fromBirth.equals("")) { // only minBalance given
 			final double minBalanceDouble = Double.parseDouble(minBalance);
 			final Amount minBalanceAmount = new Amount(minBalanceDouble);
 			clients = bankService.findRichClients(minBalanceAmount);
 		} else {
-			throw new Exc("Must not provide both parameters: fromBirth and minBalance!");
+			throw create(FindClientsBothConstraintsExc.class, fromBirth, minBalance);
 		}
-		return _clientsToResources(clients);
+		return converter.clientsToResources(clients);
 	}
+
+	/** Must not provide both parameters: fromBirth=$1 and minBalance=$2!*/
+	public static class FindClientsBothConstraintsExc extends Exc {}
 
 	// For the client role all URIs under /client:
 
@@ -275,12 +279,6 @@ public class ApplicationController {
 		return LocalDate.ofEpochDay(randomEpochDay);
 	}
 
-	/* private */ ResponseEntity<ClientResource[]> _clientsToResources(final List<Client> clients) {
-		final Stream<ClientResource> result = clients.stream().map(ClientResource::new);
-		final ClientResource[] resultArray = result.toArray(ClientResource[]::new);
-		return new ResponseEntity<>(resultArray, HttpStatus.OK);
-	}
-
 	/**
 	 * Finds the Client for the username, which has been authenticated with this web
 	 * request.
@@ -294,6 +292,7 @@ public class ApplicationController {
 	 */
 	private Client _findClient(final WebRequest request) {
 		final String username = request.getRemoteUser();
+		System.out.printf("ApplicationController._findClient(username=%s)\n", username);
 		return bankService.findClient(username);
 	}
 

@@ -33,7 +33,7 @@ public class CleanupService {
     }
 
     /**Deletes all entities from all used repositories.*/
-    void deleteAll(){
+    public void deleteAll(){
         accountAccessRepository.deleteAll();
         accountRepository.deleteAll();
         clientRepository.deleteAll();
